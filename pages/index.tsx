@@ -57,10 +57,10 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
       <Head>
         <title>ChatGPT</title>
         <meta name="description" content="A Personal ChatGPT Client" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="icon" href="/chatgpt-green-icon.png" />
       </Head>
-      <main className="mx-auto w-full min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
+      <main className="mx-auto w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
         <Header OPENAI_API_KEY={OPENAI_API_KEY} />
         <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
           <SystemMessage text={SYSTEM_MESSAGE} />

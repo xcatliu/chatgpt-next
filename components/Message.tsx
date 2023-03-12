@@ -28,7 +28,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
       )}
       <p
         className={classNames('mx-3 px-3 py-2 rounded text-red', {
-          'text-red-600': error,
+          'text-red-500': error,
           'bg-[#abe987]': align === 'right',
           'bg-white': align !== 'right',
         })}
@@ -37,10 +37,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
       <div className="flex-none w-8" />
       {/* 三角箭头 */}
       {align === 'right' ? (
-        <div
-          className="absolute mx-2 my-3 right-12 border-solid border-l-8 border-y-transparent border-y-8 border-r-0"
-          style={{ borderLeftColor: '#abe987' }}
-        />
+        <div className="absolute mx-2 my-3 right-12 border-solid border-l-8 border-y-transparent border-y-8 border-r-0 border-l-[#abe987]" />
       ) : (
         <div className="absolute mx-2 my-3 left-12 border-solid border-r-white border-r-8 border-y-transparent border-y-8 border-l-0" />
       )}

@@ -57,7 +57,7 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY }) => {
         <KeyIcon
           className={classNames('w-12 h-12 p-3.5', {
             'text-green-600': logged,
-            'text-red-400': !logged,
+            'text-red-500': !logged,
           })}
           onClick={onKeyIconClick}
         />

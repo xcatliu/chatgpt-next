@@ -119,8 +119,10 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
 
   return (
     <>
-      <div ref={placeholderRef} style={{ height: '3.75rem' }} />
-      <div className="w-inherit fixed bottom-0 z-10 md:px-[1.75rem] bg-gray-100 px-3 py-2.5">
+      <div className="pb-[env(safe-area-inset-bottom)]">
+        <div className="h-[3.75rem] mb-[env(safe-area-inset-bottom)]" ref={placeholderRef} />
+      </div>
+      <div className="w-inherit fixed bottom-0 z-10 bg-gray-100 md:px-[1.75rem] px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <form ref={formRef} className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
             ref={textareaRef}
