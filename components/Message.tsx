@@ -5,12 +5,13 @@ import { FC } from 'react';
 
 export interface MessageProps {
   avatar?: 'ChatGPT' | string;
-  chatMessage: Partial<ChatMessage>;
+  chatMessage?: Partial<ChatMessage>;
   align?: 'left' | 'right';
+  error?: Error;
 }
 
 /** 单个消息气泡 */
-export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left' }) => {
+export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left', error }) => {
   return (
     <div
       className={classNames('relative px-2.5 my-4 flex', {
@@ -35,11 +36,13 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left' 
         />
       )}
       <p
-        className="mx-3 px-3 py-2 rounded"
+        className={classNames('mx-3 px-3 py-2 rounded text-red', {
+          'text-red-600': error,
+        })}
         style={{
           backgroundColor: align === 'right' ? '#abe987' : 'white',
         }}
-        dangerouslySetInnerHTML={{ __html: chatMessage.text?.replace(/\\n/g, '<br />') ?? '' }}
+        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.replace(/\\n/g, '<br />') ?? '' }}
       />
       <div className="flex-none w-8" />
       {/* 三角箭头 */}

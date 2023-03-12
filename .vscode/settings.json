@@ -15,7 +15,7 @@
     "source.fixAll.eslint": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["chatgpt", "endregion", "GPTAPI", "heroicons", "OPENAI", "tailwindcss"],
+  "cSpell.words": ["chatgpt", "endregion", "GPTAPI", "heroicons", "nextjs", "OPENAI", "tailwindcss"],
   "cSpell.ignorePaths": [
     "pnpm-lock.yaml",
     "node_modules",

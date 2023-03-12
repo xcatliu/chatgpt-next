@@ -32,7 +32,9 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
         setChatLoading(false);
         setMessages([...messages, ...newMessages]);
       } catch (e: any) {
-        alert(e.message);
+        setChatLoading(false);
+        newMessages.push({ avatar: 'ChatGPT', error: e });
+        setMessages([...messages, ...newMessages]);
       }
     },
     [messages],
