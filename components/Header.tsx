@@ -49,15 +49,21 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY }) => {
   }, [logged]);
 
   return (
-    <header className="sticky top-0 z-10 border-b border-gray-300 text-center" style={{ backgroundColor: '#ededed' }}>
-      <h1 className="text-lg py-2.5">ChatGPT</h1>
-      <KeyIcon
-        className={classNames('absolute top-0 right-0 w-12 h-12 p-3.5', {
-          'text-green-600': logged,
-          'text-red-400': !logged,
-        })}
-        onClick={onKeyIconClick}
-      />
-    </header>
+    <div>
+      <div className="h-12" />
+      <header
+        className="fixed w-full top-0 z-10 border-b border-gray-300 text-center"
+        style={{ backgroundColor: '#ededed' }}
+      >
+        <h1 className="text-lg py-2.5">ChatGPT</h1>
+        <KeyIcon
+          className={classNames('absolute top-0 right-0 w-12 h-12 p-3.5', {
+            'text-green-600': logged,
+            'text-red-400': !logged,
+          })}
+          onClick={onKeyIconClick}
+        />
+      </header>
+    </div>
   );
 };

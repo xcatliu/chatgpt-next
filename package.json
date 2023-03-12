@@ -1,5 +1,5 @@
 {
-  "name": "chatgpt-nextjs",
+  "name": "chatgpt-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,6 +21,7 @@
     "cookies-next": "^2.1.1",
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
+    "is-mobile": "^4.0.0",
     "next": "13.2.3",
     "postcss": "^8.4.21",
     "react": "18.2.0",

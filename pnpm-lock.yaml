@@ -13,6 +13,7 @@ specifiers:
   eslint-config-next: 13.2.3
   eslint-config-prettier: ^8.7.0
   eslint-plugin-import: ^2.27.5
+  is-mobile: ^4.0.0
   next: 13.2.3
   postcss: ^8.4.21
   prettier: ^2.8.4
@@ -32,6 +33,7 @@ dependencies:
   cookies-next: 2.1.1
   eslint: 8.35.0
   eslint-config-next: 13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
+  is-mobile: 4.0.0
   next: 13.2.3_biqbaboplfbrettd7655fr4n2y
   postcss: 8.4.21
   react: 18.2.0
@@ -1691,6 +1693,10 @@ packages:
 
   /is-map/2.0.2:
     resolution: {integrity: sha512-cOZFQQozTha1f4MxLFzlgKYPTyj26picdZTx82hbc/Xf4K/tZOOXSCkMvU4pKioRXGDLJRn0GM7Upe7kR721yg==}
+    dev: false
+
+  /is-mobile/4.0.0:
+    resolution: {integrity: sha512-mlcHZA84t1qLSuWkt2v0I2l61PYdyQDt4aG1mLIXF5FDMm4+haBCxCPYSr/uwqQNRk1MiTizn0ypEuRAOLRAew==}
     dev: false
 
   /is-negative-zero/2.0.2:

@@ -42,7 +42,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
         style={{
           backgroundColor: align === 'right' ? '#abe987' : 'white',
         }}
-        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.replace(/\\n/g, '<br />') ?? '' }}
+        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.replace(/\n/g, '<br />') ?? '' }}
       />
       <div className="flex-none w-8" />
       {/* 三角箭头 */}
@@ -67,7 +67,7 @@ export const SystemMessage: FC<SystemMessageProps> = ({ text }) => {
   return (
     <div
       className="px-16 my-4 text-center text-gray-400 text-sm"
-      dangerouslySetInnerHTML={{ __html: text.replace(/\\n/g, '<br />') }}
+      dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, '<br />') }}
     />
   );
 };
