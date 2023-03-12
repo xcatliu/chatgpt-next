@@ -10,8 +10,8 @@ http://chat.xcatliu.com
 - 支持通过环境变量配置密钥，这样不用暴露 OPENAI_API_KEY 就可以分享给朋友用了
 - 微信风格的交互体验
 
-<img src="./public/screenshot-mobile.png" height="128">
-<img src="./public/screenshot-desktop.png" height="128">
+<img src="./public/screenshot-mobile.png" height="512">
+<img src="./public/screenshot-desktop.png" height="512">
 
 ## 快速开始
 
