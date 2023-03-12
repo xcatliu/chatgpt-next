@@ -1,0 +1,7 @@
+.prettierignore
+.gitignore
+.next
+pnpm-lock.yaml
+
+*.ico
+*.svg
