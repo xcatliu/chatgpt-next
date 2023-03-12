@@ -1,38 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+ChatGPT Next
 
-## Getting Started
+使用 Next.js 构建的 ChatGPT 应用
 
-First, run the development server:
+## 特性
+
+- 支持传入 OPENAI_API_KEY
+- 支持通过环境变量配置密钥，这样不用暴露 OPENAI_API_KEY 就可以分享给朋友用了
+- 微信风格的交互体验
+
+![screenshot-mobile](./public/screenshot-mobile.png)
+![screenshot-desktop](./public/screenshot-desktop.png)
+
+## 快速开始
+
+需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+# 安装依赖
+npm i -g pnpm
+pnpm i
+# 构建
+pnpm build
+# 启动
+pnpm start
+# 使用 pm2 后台运行
+npm i -g pm2
+pm2 start npm --name chatgpt-next -- start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 配置
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+OPENAI_API_KEY_ALIAS=firstkey:sk-********FUt3|secondkey:sk-********f1J3
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+# 本地调试
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+pnpm dev
+```
