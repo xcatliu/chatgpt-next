@@ -21,14 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (req.method !== HttpMethod.POST) {
     res
       .status(HttpStatusCode.MethodNotAllowed)
-      .send({ code: HttpStatusCode.MethodNotAllowed, message: 'Only POST requests allowed' });
+      .send({ code: HttpStatusCode.MethodNotAllowed, message: '仅支持 POST 请求' });
     return;
   }
 
   if (!req.cookies.OPENAI_API_KEY) {
-    res
-      .status(HttpStatusCode.BadRequest)
-      .send({ code: HttpStatusCode.BadRequest, message: 'Cookie `OPENAI_API_KEY` is required' });
+    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '密钥未设置' });
     return;
   }
 
@@ -36,9 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const { text, parentMessageId } = req.body as ChatReq;
 
   if (!text) {
-    res
-      .status(HttpStatusCode.BadRequest)
-      .send({ code: HttpStatusCode.BadRequest, message: 'Parameter `text` is required' });
+    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '缺少 text 参数' });
     return;
   }
 
