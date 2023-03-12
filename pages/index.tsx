@@ -34,7 +34,7 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
       await sleep(16);
       scrollToBottom();
       try {
-        const parentMessageId = messages[messages.length]?.chatMessage?.id;
+        const parentMessageId = messages[messages.length - 1]?.chatMessage?.id;
         const chatRes = await fetchChat({ text, parentMessageId });
         newMessages.push({ avatar: 'ChatGPT', chatMessage: chatRes });
         setChatLoading(false);
