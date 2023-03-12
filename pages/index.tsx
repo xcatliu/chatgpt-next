@@ -7,7 +7,7 @@ import { Header } from '@/components/Header';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
-import { exampleChatMessage, exampleChatMessage2 } from '@/utils/exampleChatMessage';
+// import { exampleChatMessage, exampleChatMessage2 } from '@/utils/exampleChatMessage';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
 
@@ -60,21 +60,16 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/chatgpt-green-icon.png" />
       </Head>
-      <main>
+      <main className="mx-auto w-full min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
         <Header OPENAI_API_KEY={OPENAI_API_KEY} />
-        <div
-          style={{
-            display: 'flow-root',
-          }}
-          className="pt-1"
-        >
+        <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
           <SystemMessage text={SYSTEM_MESSAGE} />
           {/* <SystemMessage text="Tips: [Shift+回车]换行" /> */}
           <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
-          <Message align="right" chatMessage={exampleChatMessage2} />
+          {/* <Message align="right" chatMessage={exampleChatMessage2} />
           <Message avatar="ChatGPT" chatMessage={exampleChatMessage} />
           <Message align="right" chatMessage={exampleChatMessage2} />
-          <Message avatar="ChatGPT" chatMessage={exampleChatMessage} />
+          <Message avatar="ChatGPT" chatMessage={exampleChatMessage} /> */}
           {messages.map((messageProps, index) => (
             <Message key={index} {...messageProps} />
           ))}

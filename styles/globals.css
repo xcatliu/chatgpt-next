@@ -3,5 +3,11 @@
 @tailwind utilities;
 
 html {
-  background-color: #ededed;
+  @apply bg-white;
+  @apply max-[768px]:bg-[#ededed];
+}
+
+/** 用于 fixed 宽度设置 */
+.w-inherit {
+  width: inherit;
 }

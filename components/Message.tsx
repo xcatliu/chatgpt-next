@@ -1,6 +1,5 @@
 import { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
-import Image from 'next/image';
 import { FC } from 'react';
 
 export interface MessageProps {
@@ -14,34 +13,25 @@ export interface MessageProps {
 export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left', error }) => {
   return (
     <div
-      className={classNames('relative px-2.5 my-4 flex', {
+      className={classNames('relative px-3 my-4 flex', {
         'flex-row-reverse': align === 'right',
       })}
     >
       {avatar ? (
-        <Image
+        <img
           className="rounded w-10 h-10"
           src={avatar === 'ChatGPT' ? '/chatgpt-green-icon.png' : avatar}
           alt="avatar"
-          width={48}
-          height={48}
         />
       ) : (
-        <Image
-          className="rounded p-1.5 w-10 h-10 bg-white"
-          src="/heroicons-user.svg"
-          alt="avatar"
-          width={48}
-          height={48}
-        />
+        <img className="rounded p-1.5 w-10 h-10 bg-white" src="/heroicons-user.svg" alt="avatar" />
       )}
       <p
         className={classNames('mx-3 px-3 py-2 rounded text-red', {
           'text-red-600': error,
+          'bg-[#abe987]': align === 'right',
+          'bg-white': align !== 'right',
         })}
-        style={{
-          backgroundColor: align === 'right' ? '#abe987' : 'white',
-        }}
         dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.replace(/\n/g, '<br />') ?? '' }}
       />
       <div className="flex-none w-8" />

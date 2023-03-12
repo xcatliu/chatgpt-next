@@ -47,22 +47,27 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
       setSubmitDisabled(true);
     }
   }, []);
+  /** 更新 textarea 的高度 */
+  const updateTextareaHeight = useCallback(() => {
+    const textareaElement = textareaRef.current;
+    if (!textareaElement) {
+      return;
+    }
+    // https://stackoverflow.com/a/24676492/2777142
+    textareaElement.style.height = '5px';
+    const newHeight = Math.min(textareaElement.scrollHeight, 260);
+    textareaElement.style.height = `${newHeight}px`;
+    if (placeholderRef.current) {
+      placeholderRef.current.style.height = `${newHeight + 20}px`;
+    }
+  }, []);
   /** 输入内容触发 */
-  const onChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      // https://stackoverflow.com/a/24676492/2777142
-      e.target.style.height = '5px';
-      const newHeight = Math.min(e.target.scrollHeight, 260);
-      e.target.style.height = `${newHeight}px`;
-      if (placeholderRef.current) {
-        placeholderRef.current.style.height = `${newHeight + 20}px`;
-      }
-      // 保持滚动到最底下，bug 太多，先关闭
-      // scrollToBottom();
-      updateSubmitDisabled();
-    },
-    [updateSubmitDisabled],
-  );
+  const onChange = useCallback(() => {
+    updateTextareaHeight();
+    // 保持滚动到最底下，bug 太多，先关闭
+    // scrollToBottom();
+    updateSubmitDisabled();
+  }, [updateTextareaHeight, updateSubmitDisabled]);
   /** 中文输入法控制 */
   const onCompositionStart = useCallback(() => setComposing(true), []);
   const onCompositionEnd = useCallback(() => {
@@ -82,11 +87,12 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
       if (textareaRef.current?.value) {
         textareaRef.current.value = '';
       }
+      updateTextareaHeight();
       setSubmitDisabled(true);
       await onSubmit(value);
       setSubmitDisabled(false);
     },
-    [onSubmit],
+    [onSubmit, updateTextareaHeight],
   );
   /** 修改回车默认行为 */
   const onKeyDone = useCallback(
@@ -112,9 +118,9 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
   );
 
   return (
-    <div>
-      <div ref={placeholderRef} className="w-full" style={{ height: 60 }} />
-      <div className="fixed w-full bottom-0 z-10 bg-gray-100 p-2.5">
+    <>
+      <div ref={placeholderRef} style={{ height: '3.75rem' }} />
+      <div className="w-inherit fixed bottom-0 z-10 md:px-[1.75rem] bg-gray-100 px-3 py-2.5">
         <form ref={formRef} className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
             ref={textareaRef}
@@ -141,6 +147,6 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 };
