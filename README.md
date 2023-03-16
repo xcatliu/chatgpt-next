@@ -1,4 +1,4 @@
-ChatGPT Next
+# ChatGPT Next
 
 使用 Next.js 构建的 ChatGPT 应用，私人部署的最佳选择！
 
