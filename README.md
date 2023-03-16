@@ -12,7 +12,6 @@
 - 支持移动端和 PC 端，在微信内打开也有超棒的体验
 
 <img src="./public/screenshot-mobile.png" width="390">
-<img src="./public/screenshot-desktop.png">
 
 ## 快速开始
 
