@@ -6,9 +6,10 @@
 
 ## 特性
 
-- 支持传入 OPENAI_API_KEY
-- 支持通过环境变量配置密钥，这样不用暴露 OPENAI_API_KEY 就可以分享给朋友用了
-- 微信风格的交互体验
+- 支持私人部署，通过环境变量配置多组密钥
+- 支持配置密钥别名，无需暴露 apiKey 就可以分享给朋友
+- 微信风格，打造最极致的交互体验
+- 支持移动端和 PC 端
 
 <img src="./public/screenshot-mobile.png" width="390">
 <img src="./public/screenshot-desktop.png">
@@ -23,6 +24,7 @@ npm i -g pnpm
 pnpm i
 # 本地开发
 pnpm dev
+```
 
 ## 部署
 
