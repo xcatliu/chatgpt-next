@@ -8,8 +8,8 @@
 
 - 支持私人部署，通过环境变量配置多组密钥
 - 支持配置密钥别名，无需暴露 apiKey 就可以分享给朋友
-- 微信风格，打造最极致的交互体验
-- 支持移动端和 PC 端
+- 微信风格的聊天气泡，打造最极致的 UI 交互
+- 支持移动端和 PC 端，在微信内打开也有超棒的体验
 
 <img src="./public/screenshot-mobile.png" width="390">
 <img src="./public/screenshot-desktop.png">
