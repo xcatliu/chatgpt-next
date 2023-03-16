@@ -10,8 +10,8 @@ http://chat.xcatliu.com
 - 支持通过环境变量配置密钥，这样不用暴露 OPENAI_API_KEY 就可以分享给朋友用了
 - 微信风格的交互体验
 
-<img src="./public/screenshot-mobile.png" height="512">
-<img src="./public/screenshot-desktop.png" height="512">
+<img src="./public/screenshot-mobile.png" width="390">
+<img src="./public/screenshot-desktop.png">
 
 ## 快速开始
 
@@ -21,10 +21,21 @@ http://chat.xcatliu.com
 # 安装依赖
 npm i -g pnpm
 pnpm i
+# 本地开发
+pnpm dev
+
+## 部署
+
+```bash
 # 构建
 pnpm build
 # 启动
 pnpm start
+```
+
+也可以使用 pm2 后台运行：
+
+```bash
 # 使用 pm2 后台运行
 npm i -g pm2
 pm2 start npm --name chatgpt-next -- start
@@ -34,10 +45,4 @@ pm2 start npm --name chatgpt-next -- start
 
 ```
 OPENAI_API_KEY_ALIAS=firstkey:sk-********FUt3|secondkey:sk-********f1J3
-```
-
-# 本地调试
-
-```bash
-pnpm dev
 ```
