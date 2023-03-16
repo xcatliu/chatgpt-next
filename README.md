@@ -1,8 +1,8 @@
 ChatGPT Next
 
-使用 Next.js 构建的 ChatGPT 应用
+使用 Next.js 构建的 ChatGPT 应用，私人部署的最佳选择！
 
-http://chat.xcatliu.com
+示例网址： https://chatgpt-next-xcatliu.vercel.app/
 
 ## 特性
 
