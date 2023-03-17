@@ -8,6 +8,8 @@ https://chatgpt-next.com
 - https://chatgpt-next-xcatliu.vercel.app
 - https://chatgpt-next.zeabur.app
 
+如果你也部署了一个站点并且愿意公开出来，欢迎 pr！
+
 ## 特性
 
 - 支持私有化部署，通过环境变量配置多组密钥
