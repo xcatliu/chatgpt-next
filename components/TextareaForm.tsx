@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { isMobile } from 'is-mobile';
-import { ChangeEvent, FC, FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 
+import { isMobile } from '@/utils/device';
 import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
@@ -137,7 +137,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
           />
           <div className="flex items-center">
             <input
-              className={classNames(' active:bg-gray-200 px-3 py-2 rounded h-full max-h-16 w-14', {
+              className={classNames('active:bg-gray-200 px-3 py-2 rounded h-full max-h-16 w-14 cursor-pointer', {
                 'bg-white': !submitDisabled,
                 'bg-gray-200': submitDisabled,
                 'text-gray-400': submitDisabled,

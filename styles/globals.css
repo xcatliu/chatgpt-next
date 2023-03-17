@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 html {
-  @apply bg-white;
-  @apply max-[768px]:bg-[#ededed];
+  @apply bg-[#ededed];
+  @apply md:bg-white;
 }
 
 /** 用于 fixed 宽度设置 */

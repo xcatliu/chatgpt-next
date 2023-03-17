@@ -27,20 +27,26 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
         <img className="rounded p-1.5 w-10 h-10 bg-white" src="/heroicons-user.svg" alt="avatar" />
       )}
       <p
-        className={classNames('mx-3 px-3 py-2 rounded text-red', {
+        className={classNames('mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words text-red', {
           'text-red-500': error,
           'bg-[#abe987]': align === 'right',
           'bg-white': align !== 'right',
         })}
-        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.replace(/\n/g, '<br />') ?? '' }}
+        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.trim().replace(/\n/g, '<br />') ?? '' }}
       />
-      <div className="flex-none w-8" />
       {/* 三角箭头 */}
-      {align === 'right' ? (
-        <div className="absolute mx-2 my-3 right-12 border-solid border-l-8 border-y-transparent border-y-8 border-r-0 border-l-[#abe987]" />
-      ) : (
-        <div className="absolute mx-2 my-3 left-12 border-solid border-r-white border-r-8 border-y-transparent border-y-8 border-l-0" />
-      )}
+      <div
+        className={classNames('absolute mx-2.5 my-3.5 border-solid border-y-transparent border-y-[6px]', {
+          'right-12': align === 'right',
+          'left-12': align === 'left',
+          'border-r-0': align === 'right',
+          'border-l-0': align === 'left',
+          'border-l-[6px]': align === 'right',
+          'border-r-[6px]': align === 'left',
+          'border-l-[#abe987]': align === 'right',
+          'border-r-white': align === 'left',
+        })}
+      />
     </div>
   );
 };
@@ -53,7 +59,7 @@ interface SystemMessageProps {
 export const SystemMessage: FC<SystemMessageProps> = ({ text }) => {
   return (
     <div
-      className="px-16 my-4 text-center text-gray-400 text-sm"
+      className="px-16 my-5 text-center text-gray-400 text-sm"
       dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, '<br />') }}
     />
   );

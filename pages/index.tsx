@@ -13,14 +13,15 @@ import { sleep } from '@/utils/sleep';
 
 const SYSTEM_MESSAGE = `本页面会将数据发送给 OpenAI
 请注意隐私风险，禁止发送违法内容`;
-const WELCOME_MESSAGE = '你好，有什么需要帮助的吗？';
+const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
 const LOADING_MESSAGE = '正在努力思考...';
 
 interface HomeProps {
   OPENAI_API_KEY?: string;
+  userAgent?: string;
 }
 
-export default function Home({ OPENAI_API_KEY }: HomeProps) {
+export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
   const [chatLoading, setChatLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
@@ -61,7 +62,7 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
         <link rel="icon" href="/chatgpt-green-icon.png" />
       </Head>
       <main className="mx-auto w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
-        <Header OPENAI_API_KEY={OPENAI_API_KEY} />
+        <Header OPENAI_API_KEY={OPENAI_API_KEY} userAgent={userAgent} />
         <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
           <SystemMessage text={SYSTEM_MESSAGE} />
           {/* <SystemMessage text="Tips: [Shift+回车]换行" /> */}
@@ -84,8 +85,12 @@ export default function Home({ OPENAI_API_KEY }: HomeProps) {
 // This gets called on every request
 export async function getServerSideProps(ctx: NextPageContext) {
   const OPENAI_API_KEY = getCookie('OPENAI_API_KEY', ctx);
+  const userAgent = ctx.req?.headers['user-agent'];
 
   return {
-    props: OPENAI_API_KEY ? { OPENAI_API_KEY } : {},
+    props: {
+      ...(OPENAI_API_KEY ? { OPENAI_API_KEY } : {}),
+      ...(userAgent ? { userAgent } : {}),
+    },
   };
 }

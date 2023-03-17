@@ -3,17 +3,19 @@ import classNames from 'classnames';
 import { getCookie } from 'cookies-next';
 import { FC, useCallback, useEffect, useState } from 'react';
 
+import { isWeChat } from '@/utils/device';
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
 
 interface HeaderProps {
   OPENAI_API_KEY?: string;
+  userAgent?: string;
 }
 
 /**
  * 顶部栏
  */
-export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY }) => {
+export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
   const [logged, setLogged] = useState(!!(OPENAI_API_KEY ?? getCookie('OPENAI_API_KEY')));
 
   useEffect(() => {
@@ -50,12 +52,35 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY }) => {
 
   return (
     <>
-      <div className="h-12 md:h-16" />
-      <header className="w-inherit fixed flex top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-b border-gray-300 text-center">
-        <div className="w-12 h-12 p-3.5" />
-        <h1 className="grow text-lg py-2.5">ChatGPT</h1>
+      <div
+        className={classNames('h-14 md:h-[4.5rem]', {
+          hidden: isWeChat(userAgent),
+        })}
+      />
+      <header
+        className={classNames(
+          'fixed flex justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center',
+          {
+            'border-b-[0.5px]': !isWeChat(userAgent),
+            'w-inherit': !isWeChat(userAgent),
+            'right-0': isWeChat(userAgent),
+          },
+        )}
+      >
+        <div
+          className={classNames('w-14 h-14 p-3.5', {
+            hidden: isWeChat(userAgent),
+          })}
+        />
+        <h1
+          className={classNames('grow text-lg py-3.5', {
+            hidden: isWeChat(userAgent),
+          })}
+        >
+          ChatGPT
+        </h1>
         <KeyIcon
-          className={classNames('w-12 h-12 p-3.5', {
+          className={classNames('w-14 h-14 p-[1.125rem] cursor-pointer', {
             'text-green-600': logged,
             'text-red-500': !logged,
           })}
