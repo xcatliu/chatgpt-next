@@ -50,37 +50,29 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
     }
   }, [logged]);
 
+  if (isWeChat(userAgent)) {
+    return (
+      <header className="absolute top-0 right-0">
+        <h1 className="hidden">ChatGPT</h1>
+        <KeyIcon
+          className={classNames('w-10 h-10 m-2 p-[0.625rem] cursor-pointer', {
+            'text-green-600': logged,
+            'text-red-500': !logged,
+          })}
+          onClick={onKeyIconClick}
+        />
+      </header>
+    );
+  }
+
   return (
     <>
-      <div
-        className={classNames('h-14 md:h-[4.5rem]', {
-          hidden: isWeChat(userAgent),
-        })}
-      />
-      <header
-        className={classNames(
-          'fixed flex justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center',
-          {
-            'border-b-[0.5px]': !isWeChat(userAgent),
-            'w-inherit': !isWeChat(userAgent),
-            'right-0': isWeChat(userAgent),
-          },
-        )}
-      >
-        <div
-          className={classNames('w-14 h-14 p-3.5', {
-            hidden: isWeChat(userAgent),
-          })}
-        />
-        <h1
-          className={classNames('grow text-lg py-3.5', {
-            hidden: isWeChat(userAgent),
-          })}
-        >
-          ChatGPT
-        </h1>
+      <div className="h-14 md:h-[4.5rem]" />
+      <header className="fixed flex w-inherit justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
+        <div className="w-14 h-14 p-3.5" />
+        <h1 className="grow text-lg py-3.5">ChatGPT</h1>
         <KeyIcon
-          className={classNames('w-14 h-14 p-[1.125rem] cursor-pointer', {
+          className={classNames('w-10 h-10 m-2 p-[0.625rem] cursor-pointer', {
             'text-green-600': logged,
             'text-red-500': !logged,
           })}

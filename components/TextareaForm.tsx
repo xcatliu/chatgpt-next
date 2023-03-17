@@ -88,11 +88,10 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
         textareaRef.current.value = '';
       }
       updateTextareaHeight();
-      setSubmitDisabled(true);
+      updateSubmitDisabled();
       await onSubmit(value);
-      setSubmitDisabled(false);
     },
-    [onSubmit, updateTextareaHeight],
+    [onSubmit, updateTextareaHeight, updateSubmitDisabled],
   );
   /** 修改回车默认行为 */
   const onKeyDone = useCallback(
@@ -137,7 +136,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
           />
           <div className="flex items-center">
             <input
-              className={classNames('active:bg-gray-200 px-3 py-2 rounded h-full max-h-16 w-14 cursor-pointer', {
+              className={classNames('px-3 py-2 rounded h-full max-h-16 w-14 cursor-pointer active:bg-gray-200', {
                 'bg-white': !submitDisabled,
                 'bg-gray-200': submitDisabled,
                 'text-gray-400': submitDisabled,
