@@ -41,6 +41,20 @@ npm i -g pm2
 pm2 start npm --name chatgpt-next -- start
 ```
 
+也可以使用 [Zeabur](https://github.com/zeabur) 来进行部署
+
+- 第一步：Fork 本仓库
+  <img src="./public/deploy/fork.png" width="390">  
+- 第二步：在 Zeabur 中创建新服务
+  使用 [Zeabur](https://dash.zeabur.com)，创建一个新服务，选择 chatgpt-next 并导入部署
+  <img src="./public/deploy/create.png" width="390">  
+  <img src="./public/deploy/deploy.png" width="390">  
+
+- 第三步：添加域名
+  可以在服务的设置页面为其添加一个域名，通过该域名即可访问服务
+  <img src="./public/deploy/domain.png" width="390">  
+  <img src="./public/deploy/finish.png" width="390">  
+
 ## 配置
 
 ```
