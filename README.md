@@ -28,6 +28,12 @@ pnpm i
 pnpm dev
 ```
 
+## 配置
+
+```
+OPENAI_API_KEY_ALIAS=firstkey:sk-********FUt3|secondkey:sk-********f1J3
+```
+
 ## 部署
 
 ```bash
@@ -58,9 +64,3 @@ pm2 start npm --name chatgpt-next -- start
   可以在服务的设置页面为其添加一个域名，通过该域名即可访问服务
   <img src="./public/deploy/domain.png" width="390">  
   <img src="./public/deploy/finish.png" width="390">  
-
-## 配置
-
-```
-OPENAI_API_KEY_ALIAS=firstkey:sk-********FUt3|secondkey:sk-********f1J3
-```
