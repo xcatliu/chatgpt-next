@@ -2,7 +2,7 @@
 
 使用 Next.js 构建的 ChatGPT 应用，私人部署的最佳选择！
 
-示例网址：https://chatgpt-next-xcatliu.vercel.app/
+示例网址：http://chatgpt-next.com/
 
 ## 特性
 
