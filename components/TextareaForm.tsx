@@ -6,11 +6,11 @@ import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
 interface TextareaFormProps {
-  placeholder?: string;
+  logged: boolean;
   onSubmit: (text: string) => Promise<void>;
 }
 
-export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) => {
+export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
   // 是否正在编辑
   const [composing, setComposing] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
@@ -125,8 +125,9 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
         <form ref={formRef} className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
             ref={textareaRef}
-            className="flex-grow px-3 py-2 rounded resize-none"
-            placeholder={placeholder}
+            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed"
+            disabled={!logged}
+            placeholder={logged ? undefined : '请点击右上角设置密钥'}
             // onFocus={onFocus}
             onChange={onChange}
             onKeyDown={onKeyDone}
@@ -136,7 +137,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ placeholder, onSubmit }) =
           />
           <div className="flex items-center">
             <input
-              className={classNames('px-3 py-2 rounded h-full max-h-16 w-14 cursor-pointer active:bg-gray-200', {
+              className={classNames('px-3 py-2 h-full max-h-16 w-14 active:bg-gray-200 disabled:cursor-not-allowed', {
                 'bg-white': !submitDisabled,
                 'bg-gray-200': submitDisabled,
                 'text-gray-400': submitDisabled,

@@ -15,7 +15,18 @@
     "source.fixAll.eslint": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["chatgpt", "endregion", "GPTAPI", "heroicons", "micromessenger", "nextjs", "OPENAI", "tailwindcss"],
+  "cSpell.words": [
+    "appleboy",
+    "chatgpt",
+    "endregion",
+    "GPTAPI",
+    "heroicons",
+    "micromessenger",
+    "nextjs",
+    "OPENAI",
+    "tailwindcss",
+    "zeabur"
+  ],
   "cSpell.ignorePaths": [
     "pnpm-lock.yaml",
     "node_modules",

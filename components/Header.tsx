@@ -1,29 +1,25 @@
 import { KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
-import { getCookie } from 'cookies-next';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 
-import { isWeChat } from '@/utils/device';
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
 
 interface HeaderProps {
-  OPENAI_API_KEY?: string;
-  userAgent?: string;
+  logged: boolean;
+  setLogged: (logged: boolean) => void;
+  isWeChat: boolean;
 }
 
 /**
  * 顶部栏
  */
-export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
-  const [logged, setLogged] = useState(!!(OPENAI_API_KEY ?? getCookie('OPENAI_API_KEY')));
-
+export const Header: FC<HeaderProps> = ({ logged, setLogged, isWeChat }) => {
   useEffect(() => {
     (async () => {
       // 最开始如果未登录，则弹窗登录
       if (!logged) {
-        const loginResult = await login();
-        setLogged(loginResult);
+        setLogged(await login());
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,8 +29,7 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
   const onKeyIconClick = useCallback(async () => {
     // 如果未登录，则弹窗登录
     if (!logged) {
-      const loginResult = await login();
-      setLogged(loginResult);
+      setLogged(await login());
       return;
     }
 
@@ -48,19 +43,21 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
       const loginResult = await login();
       setLogged(loginResult);
     }
-  }, [logged]);
+  }, [logged, setLogged]);
 
-  if (isWeChat(userAgent)) {
+  if (isWeChat) {
     return (
       <header className="absolute top-0 right-0">
         <h1 className="hidden">ChatGPT</h1>
-        <KeyIcon
-          className={classNames('w-10 h-10 m-2 p-[0.625rem] cursor-pointer', {
-            'text-green-600': logged,
-            'text-red-500': !logged,
-          })}
-          onClick={onKeyIconClick}
-        />
+        <button className="w-10 h-10 m-2 p-[0.625rem]">
+          <KeyIcon
+            className={classNames({
+              'text-green-600': logged,
+              'text-red-500': !logged,
+            })}
+            onClick={onKeyIconClick}
+          />
+        </button>
       </header>
     );
   }
@@ -71,13 +68,15 @@ export const Header: FC<HeaderProps> = ({ OPENAI_API_KEY, userAgent }) => {
       <header className="fixed flex w-inherit justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
         <div className="w-14 h-14 p-3.5" />
         <h1 className="grow text-lg py-3.5">ChatGPT</h1>
-        <KeyIcon
-          className={classNames('w-10 h-10 m-2 p-[0.625rem] cursor-pointer', {
-            'text-green-600': logged,
-            'text-red-500': !logged,
-          })}
-          onClick={onKeyIconClick}
-        />
+        <button className="w-10 h-10 m-2 p-[0.625rem]">
+          <KeyIcon
+            className={classNames({
+              'text-green-600': logged,
+              'text-red-500': !logged,
+            })}
+            onClick={onKeyIconClick}
+          />
+        </button>
       </header>
     </>
   );

@@ -1,5 +1,6 @@
 import { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
+import Image from 'next/image';
 import { FC } from 'react';
 
 export interface MessageProps {
@@ -18,13 +19,21 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
       })}
     >
       {avatar ? (
-        <img
+        <Image
           className="rounded w-10 h-10"
           src={avatar === 'ChatGPT' ? '/chatgpt-green-icon.png' : avatar}
           alt="avatar"
+          width={40}
+          height={40}
         />
       ) : (
-        <img className="rounded p-1.5 w-10 h-10 bg-white" src="/heroicons-user.svg" alt="avatar" />
+        <Image
+          className="rounded p-1.5 w-10 h-10 bg-white"
+          src="/heroicons-user.svg"
+          alt="avatar"
+          width={40}
+          height={40}
+        />
       )}
       <p
         className={classNames('mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words text-red', {

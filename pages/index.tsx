@@ -8,6 +8,7 @@ import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
 // import { exampleChatMessage, exampleChatMessage2 } from '@/utils/exampleChatMessage';
+import { isWeChat as utilsIsWeChat } from '@/utils/device';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
 
@@ -24,6 +25,8 @@ interface HomeProps {
 export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
   const [chatLoading, setChatLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [logged, setLogged] = useState(!!OPENAI_API_KEY);
+  const isWeChat = utilsIsWeChat(userAgent);
 
   /** 提交回调 */
   const onSubmit = useCallback(
@@ -60,9 +63,10 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
         <meta name="description" content="A Personal ChatGPT Client" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <link rel="icon" href="/chatgpt-green-icon.png" />
+        <link rel="apple-touch-icon" type="image/png" href="/chatgpt-green-icon.png" />
       </Head>
       <main className="mx-auto w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
-        <Header OPENAI_API_KEY={OPENAI_API_KEY} userAgent={userAgent} />
+        <Header logged={logged} setLogged={setLogged} isWeChat={isWeChat} />
         <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
           <SystemMessage text={SYSTEM_MESSAGE} />
           {/* <SystemMessage text="Tips: [Shift+回车]换行" /> */}
@@ -76,7 +80,7 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
           ))}
           {chatLoading && <Message avatar="ChatGPT" chatMessage={{ text: LOADING_MESSAGE }} />}
         </div>
-        <TextareaForm onSubmit={onSubmit} />
+        <TextareaForm logged={logged} onSubmit={onSubmit} />
       </main>
     </>
   );
