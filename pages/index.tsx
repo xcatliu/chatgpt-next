@@ -7,8 +7,8 @@ import { Header } from '@/components/Header';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
-// import { exampleChatMessage, exampleChatMessage2 } from '@/utils/exampleChatMessage';
 import { isWeChat as utilsIsWeChat } from '@/utils/device';
+// import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
 
@@ -71,10 +71,10 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
           <SystemMessage text={SYSTEM_MESSAGE} />
           {/* <SystemMessage text="Tips: [Shift+回车]换行" /> */}
           <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
-          {/* <Message align="right" chatMessage={exampleChatMessage2} />
-          <Message avatar="ChatGPT" chatMessage={exampleChatMessage} />
-          <Message align="right" chatMessage={exampleChatMessage2} />
-          <Message avatar="ChatGPT" chatMessage={exampleChatMessage} /> */}
+          {/* <Message align="right" chatMessage={userMessage} />
+          <Message avatar="ChatGPT" chatMessage={regexpNumberMessage} />
+          <Message align="right" chatMessage={userMessage} />
+          <Message avatar="ChatGPT" chatMessage={htmlMessage} /> */}
           {messages.map((messageProps, index) => (
             <Message key={index} {...messageProps} />
           ))}

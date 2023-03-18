@@ -11,8 +11,7 @@ input,
 button,
 textarea {
   @apply rounded;
-  @apply focus-visible:outline;
-  @apply focus-visible:outline-amber-500;
+  @apply focus-visible:outline focus-visible:outline-amber-500;
 }
 
 input[type='button'],
@@ -24,4 +23,13 @@ button {
 /** 用于 fixed 宽度设置 */
 .w-inherit {
   width: inherit;
+}
+
+.chatgpt-message p {
+  @apply mt-6 first:mt-0;
+}
+.chatgpt-message code {
+  @apply text-sm bg-gray-100 py-0.5;
+  padding-left: 3px;
+  padding-right: 3px;
 }

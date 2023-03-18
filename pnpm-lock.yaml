@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@heroicons/react': ^2.0.16
+  '@types/markdown-it': ^12.2.3
   '@types/node': 18.14.6
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
@@ -13,6 +14,7 @@ specifiers:
   eslint-config-next: 13.2.3
   eslint-config-prettier: ^8.7.0
   eslint-plugin-import: ^2.27.5
+  markdown-it: ^13.0.1
   next: 13.2.3
   postcss: ^8.4.21
   prettier: ^2.8.4
@@ -32,6 +34,7 @@ dependencies:
   cookies-next: 2.1.1
   eslint: 8.35.0
   eslint-config-next: 13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
+  markdown-it: 13.0.1
   next: 13.2.3_biqbaboplfbrettd7655fr4n2y
   postcss: 8.4.21
   react: 18.2.0
@@ -40,6 +43,7 @@ dependencies:
   typescript: 4.9.5
 
 devDependencies:
+  '@types/markdown-it': 12.2.3
   eslint-config-prettier: 8.7.0_eslint@8.35.0
   eslint-plugin-import: 2.27.5_eslint@8.35.0
   prettier: 2.8.4
@@ -300,6 +304,21 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+
+  /@types/linkify-it/3.0.2:
+    resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
+    dev: true
+
+  /@types/markdown-it/12.2.3:
+    resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
+    dependencies:
+      '@types/linkify-it': 3.0.2
+      '@types/mdurl': 1.0.2
+    dev: true
+
+  /@types/mdurl/1.0.2:
+    resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
+    dev: true
 
   /@types/node/16.18.15:
     resolution: {integrity: sha512-a5RBe4vw4bFITL6351US4glblsc0m7JKfm9RpSl9f/rSAXmZmulIEzk7fvpWFr14iJCvKxV7sQUqI0bwee0iVw==}
@@ -890,6 +909,11 @@ packages:
     dependencies:
       graceful-fs: 4.2.10
       tapable: 2.2.1
+    dev: false
+
+  /entities/3.0.1:
+    resolution: {integrity: sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==}
+    engines: {node: '>=0.12'}
     dev: false
 
   /env-paths/3.0.0:
@@ -1861,6 +1885,12 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: false
 
+  /linkify-it/4.0.1:
+    resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
+    dependencies:
+      uc.micro: 1.0.6
+    dev: false
+
   /locate-path/6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
@@ -1889,6 +1919,21 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: false
+
+  /markdown-it/13.0.1:
+    resolution: {integrity: sha512-lTlxriVoy2criHP0JKRhO2VDG9c2ypWCsT237eDiLqi09rmbKoUetyGHq2uOIRoRS//kfoJckS0eUzzkDR+k2Q==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+      entities: 3.0.1
+      linkify-it: 4.0.1
+      mdurl: 1.0.1
+      uc.micro: 1.0.6
+    dev: false
+
+  /mdurl/1.0.1:
+    resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
     dev: false
 
   /merge2/1.4.1:
@@ -2686,6 +2731,10 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: false
+
+  /uc.micro/1.0.6:
+    resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
     dev: false
 
   /unbox-primitive/1.0.2:

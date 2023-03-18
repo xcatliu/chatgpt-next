@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { FC } from 'react';
 
+import { formatMessage, formatMessageMode } from '@/utils/formatMessage';
+
 export interface MessageProps {
   avatar?: 'ChatGPT' | string;
   chatMessage?: Partial<ChatMessage>;
@@ -35,13 +37,18 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
           height={40}
         />
       )}
-      <p
+      <div
         className={classNames('mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words text-red', {
+          'chatgpt-message': avatar === 'ChatGPT',
           'text-red-500': error,
           'bg-[#abe987]': align === 'right',
           'bg-white': align !== 'right',
         })}
-        dangerouslySetInnerHTML={{ __html: error?.message ?? chatMessage?.text?.trim().replace(/\n/g, '<br />') ?? '' }}
+        dangerouslySetInnerHTML={{
+          __html:
+            error?.message ??
+            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? formatMessageMode.partial : formatMessageMode.br),
+        }}
       />
       {/* 三角箭头 */}
       <div
