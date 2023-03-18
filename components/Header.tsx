@@ -68,13 +68,12 @@ export const Header: FC<HeaderProps> = ({ logged, setLogged, isWeChat }) => {
       <header className="fixed flex w-inherit justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
         <div className="w-14 h-14 p-3.5" />
         <h1 className="grow text-lg py-3.5">ChatGPT</h1>
-        <button className="w-10 h-10 m-2 p-[0.625rem]">
+        <button className="w-10 h-10 m-2 p-[0.625rem]" onClick={onKeyIconClick}>
           <KeyIcon
             className={classNames({
               'text-green-600': logged,
               'text-red-500': !logged,
             })}
-            onClick={onKeyIconClick}
           />
         </button>
       </header>

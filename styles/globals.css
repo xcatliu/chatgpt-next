@@ -11,8 +11,8 @@ input,
 button,
 textarea {
   @apply rounded;
-  @apply focus:outline focus-visible:outline;
-  @apply focus:outline-amber-500 focus-visible:outline-amber-500;
+  @apply focus-visible:outline;
+  @apply focus-visible:outline-amber-500;
 }
 
 input[type='button'],
