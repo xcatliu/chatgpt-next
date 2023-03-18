@@ -63,8 +63,7 @@ git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
 ### 使用 [Zeabur](https://github.com/zeabur) 部署
 
 1. Fork 本仓库
-2. 在 [Zeabur](https://dash.zeabur.com) 中创建新服务，选择 chatgpt-next 并导入部署  
-   <img src="./public/zeabur/create.png" width="390">  
+2. 在 [Zeabur](https://dash.zeabur.com) 中创建新服务，选择 chatgpt-next 并导入部署
    <img src="./public/zeabur/deploy.png" width="390">
-3. [可选] 在设置页面为其添加一个域名  
+3. [可选] 在设置页面为其添加一个域名
    <img src="./public/zeabur/domain.png" width="390">
