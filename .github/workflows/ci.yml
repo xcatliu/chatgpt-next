@@ -15,4 +15,7 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script: ${{ secrets.SCRIPT }}
+          script: |
+            source ~/.zshrc
+            cd chatgpt-next
+            git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
