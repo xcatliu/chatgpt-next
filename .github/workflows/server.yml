@@ -1,11 +1,10 @@
-name: Deploy https://chatgpt-next.com
+name: Server deploy https://chatgpt-next.com
 on:
   push:
     branches:
       - main
 jobs:
   build:
-    name: Deploy
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands
