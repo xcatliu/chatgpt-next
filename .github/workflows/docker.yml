@@ -22,4 +22,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: chatgpt-next:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/chatgpt-next:latest

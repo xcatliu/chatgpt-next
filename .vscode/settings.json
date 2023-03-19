@@ -17,8 +17,10 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
     "appleboy",
+    "Buildx",
     "chatgpt",
     "commonmark",
+    "DOCKERHUB",
     "endregion",
     "GPTAPI",
     "heroicons",
