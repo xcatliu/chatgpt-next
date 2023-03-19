@@ -64,6 +64,13 @@ pm2 start npm --name chatgpt-next -- start
 git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
 ```
 
+### 运行 docker 镜像
+
+```bash
+docker run --name chatgpt-next -d -p 3000:3000 -e OPENAI_API_KEY_ALIAS xcatliu/chatgpt-next:latest
+# --name 容器名称，-d 后台运行，-p 端口映射，-e 透传环境变量
+```
+
 ### 使用 [Zeabur](https://github.com/zeabur) 部署
 
 1. Fork 本仓库
