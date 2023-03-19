@@ -1,6 +1,6 @@
 # ChatGPT Next
 
-使用 Next.js 构建的 ChatGPT 应用，私有化部署的最佳选择！
+使用 Next.js 构建的 ChatGPT 应用，微信风格的聊天气泡，私有化部署的最佳选择！
 
 https://chatgpt-next.com
 
@@ -13,9 +13,9 @@ https://chatgpt-next.com
 
 ## 特性
 
+- 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
 - 支持私有化部署，通过环境变量配置多组密钥
 - 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
-- 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
 
 <img src="./public/screenshot.png" width="390">
 
