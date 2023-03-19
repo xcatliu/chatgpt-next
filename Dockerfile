@@ -8,7 +8,7 @@ COPY . .
 
 # 安装依赖
 RUN npm i -g pnpm
-RUN pnpm i
+RUN pnpm i -P
 
 # 构建
 RUN pnpm build
