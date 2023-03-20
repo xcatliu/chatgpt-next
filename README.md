@@ -39,7 +39,9 @@ pnpm dev
 
 ### 配置 apiKey 別名
 
-配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名，使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
+配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名。
+
+使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
 
 ```
 OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
