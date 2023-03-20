@@ -81,6 +81,6 @@ docker run --name chatgpt-next -d -p 3000:3000 -e OPENAI_API_KEY_ALIAS xcatliu/c
 
 ## 开源协议
 
-MIT，随便拿去用（可以商用），记得多帮我宣传宣传。
+MIT，随便拿去用，记得多帮我宣传宣传。
 
 如果觉得帮助到你了，欢迎[请我喝一杯咖啡☕️](https://github.com/xcatliu/buy-me-a-coffee)。
