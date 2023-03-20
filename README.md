@@ -23,6 +23,10 @@ https://chatgpt-next.com
 
 需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
 
+### 重要提醒
+
+**中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 `pages/api/chat.ts` 文件中的相关代码注释掉。**
+
 ```bash
 # 安装依赖
 npm i -g pnpm
@@ -83,4 +87,4 @@ docker run --name chatgpt-next -d -p 3000:3000 -e OPENAI_API_KEY_ALIAS xcatliu/c
 
 MIT，随便拿去用，记得多帮我宣传宣传。
 
-如果觉得帮助到你了，欢迎[请我喝一杯咖啡☕️](https://github.com/xcatliu/buy-me-a-coffee)。
+如果觉得帮助到你了，欢迎[请我喝一杯咖啡 ☕️](https://github.com/xcatliu/buy-me-a-coffee)。
