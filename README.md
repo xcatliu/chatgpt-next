@@ -45,6 +45,8 @@ pnpm dev
 OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
 ```
 
+按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
+
 ## 交流群
 
 <img src="./public/wechat-group.jpg" width="155">
