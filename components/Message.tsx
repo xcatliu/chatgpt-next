@@ -47,7 +47,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
         dangerouslySetInnerHTML={{
           __html:
             error?.message ??
-            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? formatMessageMode.partial : formatMessageMode.br),
+            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? formatMessageMode.partial : formatMessageMode.zero),
         }}
       />
       {/* 三角箭头 */}

@@ -1,40 +1,39 @@
 import MarkdownIt from 'markdown-it';
-const partialMarkdownIt = new MarkdownIt('zero', {
-  breaks: true,
-  linkify: true,
-})
-  .enable(['code', 'fence'])
-  .enable(['autolink', 'backticks', 'image', 'link', 'newline']);
+
+/** 多种 markdown-it 配置 */
+const markdownItMap = {
+  zero: new MarkdownIt('zero'),
+  partial: new MarkdownIt('zero', {
+    breaks: true,
+    linkify: true,
+  })
+    .enable(['code', 'fence'])
+    .enable(['autolink', 'backticks', 'image', 'link', 'newline']),
+};
 
 export enum formatMessageMode {
-  /** 只处理换行符，将 \n 替换为 <br> */
-  br = 'br',
+  /** 只处理换行符、空格、html 转义 */
+  zero = 'zero',
   /** 只处理一部分 md 语法，如 link、image、code 等 */
   partial = 'partial',
   /** 完整的 markdown 处理 */
-  // md = 'md',
+  // full = 'full',
 }
 
-export function formatMessage(message?: string, mode?: formatMessageMode) {
+export function formatMessage(message?: string, mode = formatMessageMode.zero) {
   let result = message?.trim();
 
   if (!result) {
     return '';
   }
 
-  // 只处理换行符，将 \n 替换为 <br>
-  if (mode === formatMessageMode.br) {
-    return result.replace(/\n/g, '<br />') ?? '';
-  }
-
-  /**
-   * 由于空格解析在 md.render 过程中的一些 bug
-   * 这里先把超过2个的空格转换成 __SPACE_PLACEHOLDER__
-   * 等 md.render 解析好之后，再转换成 &nbsp;
-   */
-  result = result.replace(/ {2,}/g, (match) => '==SPACE=PLACEHOLDER=='.repeat(match.length));
-  result = partialMarkdownIt.render(result).trim();
+  // 由于多个换行符和空格在 markdown 中会被合并成一个，为了保留内容的格式，这里自行处理
+  result = result.replace(/\n/g, '==BREAK=PLACEHOLDER==');
+  // 遇到连续的 2个或 2个以上空格时，先替换，但保留第一个空格
+  result = result.replace(/ {2,}/g, (match) => ' ' + '==SPACE=PLACEHOLDER=='.repeat(match.length - 1));
+  result = markdownItMap[mode].render(result).trim();
   result = result.replace(/==SPACE=PLACEHOLDER==/g, '&nbsp;');
+  result = result.replace(/==BREAK=PLACEHOLDER==/g, '<br>');
 
   return result;
 }
