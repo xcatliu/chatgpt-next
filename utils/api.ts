@@ -11,6 +11,13 @@ export const fetchChat = async ({ text, parentMessageId }: ChatReq): Promise<Cha
     body: JSON.stringify({ text, parentMessageId }),
   });
 
+  const resContentType = res.headers.get('Content-Type');
+  // 如果不是 json 格式的返回，则抛错
+  if (!resContentType?.startsWith('application/json')) {
+    const resText = await res.text();
+    throw new Error(resText);
+  }
+
   const resJson: ChatRes = await res.json();
 
   if (!res.ok) {
