@@ -1,3 +1,5 @@
+import { env } from 'process';
+
 import { ChatGPTError, ChatMessage, SendMessageOptions } from 'chatgpt';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -43,6 +45,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   const api = getAPIInstance(OPENAI_API_KEY);
+
+  // 删除下一行的 // 可以注释整个 if 判断
+  // /**
+  if (env.NODE_ENV === 'development') {
+    res.status(HttpStatusCode.OK).json({
+      id: 'dev',
+      role: 'assistant',
+      text: '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下关闭了请求，如需开启，请将 pages/api/chat.ts 文件中的这段代码注释掉',
+    });
+
+    return;
+  }
+  // */
 
   try {
     const chatGptRes = await api.sendMessage(text, {
