@@ -78,3 +78,9 @@ docker run --name chatgpt-next -d -p 3000:3000 -e OPENAI_API_KEY_ALIAS xcatliu/c
    <img src="./public/zeabur/deploy.png" width="390">
 3. [可选] 在设置页面为其添加一个域名  
    <img src="./public/zeabur/domain.png" width="390">
+
+## 开源协议
+
+MIT，随便拿去用（可以商用），记得多帮我宣传宣传。
+
+如果觉得帮助到你了，欢迎请我喝一杯咖啡☕️。
