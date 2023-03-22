@@ -3,7 +3,7 @@ import { NextPageContext } from 'next';
 import Head from 'next/head';
 import { useCallback, useState } from 'react';
 
-import { Header } from '@/components/Header';
+import { Menu } from '@/components/Menu';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
@@ -18,14 +18,22 @@ const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
 const LOADING_MESSAGE = '正在努力思考...';
 
 interface HomeProps {
-  OPENAI_API_KEY?: string;
+  apiKey?: string;
   userAgent?: string;
 }
 
-export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
-  const [chatLoading, setChatLoading] = useState(false);
+export type CompletionParams =
+  | {
+      model?: 'gpt-3.5-turbo-0301' | 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-0314' | 'gpt-4-32k' | 'gpt-4-32k-0314';
+    }
+  | undefined;
+
+export default function Home({ apiKey, userAgent }: HomeProps) {
+  const [logged, setLogged] = useState(!!apiKey);
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
-  const [logged, setLogged] = useState(!!OPENAI_API_KEY);
+  const [completionParams, setCompletionParams] = useState<CompletionParams>(undefined);
+
   const isWeChat = utilsIsWeChat(userAgent);
 
   /** 提交回调 */
@@ -34,26 +42,26 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
       let newMessages: MessageProps[] = [];
       newMessages.push({ align: 'right', chatMessage: { text } });
       setMessages([...messages, ...newMessages]);
-      setChatLoading(true);
+      setLoading(true);
       await sleep(16);
       scrollToBottom();
       try {
         const parentMessageId = messages[messages.length - 1]?.chatMessage?.id;
-        const chatRes = await fetchChat({ text, parentMessageId });
+        const chatRes = await fetchChat({ text, parentMessageId, completionParams });
         newMessages.push({ avatar: 'ChatGPT', chatMessage: chatRes });
-        setChatLoading(false);
+        setLoading(false);
         setMessages([...messages, ...newMessages]);
         await sleep(16);
         scrollToBottom();
       } catch (e: any) {
-        setChatLoading(false);
+        setLoading(false);
         newMessages.push({ avatar: 'ChatGPT', error: e });
         setMessages([...messages, ...newMessages]);
         await sleep(16);
         scrollToBottom();
       }
     },
-    [messages],
+    [messages, completionParams],
   );
 
   return (
@@ -65,11 +73,15 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
         <link rel="icon" href="/chatgpt-green-icon.png" />
         <link rel="apple-touch-icon" type="image/png" href="/chatgpt-green-icon.png" />
       </Head>
+      <Menu
+        logged={logged}
+        setLogged={setLogged}
+        completionParams={completionParams}
+        setCompletionParams={setCompletionParams}
+      />
       <main className="mx-auto w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
-        <Header logged={logged} setLogged={setLogged} isWeChat={isWeChat} />
         <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
           <SystemMessage text={SYSTEM_MESSAGE} />
-          {/* <SystemMessage text="Tips: [Shift+回车]换行" /> */}
           <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
           {/* <Message align="right" chatMessage={userMessage} />
           <Message avatar="ChatGPT" chatMessage={regexpNumberMessage} />
@@ -78,7 +90,7 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
           {messages.map((messageProps, index) => (
             <Message key={index} {...messageProps} />
           ))}
-          {chatLoading && <Message avatar="ChatGPT" chatMessage={{ text: LOADING_MESSAGE }} />}
+          {loading && <Message avatar="ChatGPT" chatMessage={{ text: LOADING_MESSAGE }} />}
         </div>
         <TextareaForm logged={logged} onSubmit={onSubmit} />
       </main>
@@ -88,12 +100,12 @@ export default function Home({ OPENAI_API_KEY, userAgent }: HomeProps) {
 
 // This gets called on every request
 export async function getServerSideProps(ctx: NextPageContext) {
-  const OPENAI_API_KEY = getCookie('OPENAI_API_KEY', ctx);
+  const apiKey = getCookie('apiKey', ctx);
   const userAgent = ctx.req?.headers['user-agent'];
 
   return {
     props: {
-      ...(OPENAI_API_KEY ? { OPENAI_API_KEY } : {}),
+      ...(apiKey ? { apiKey } : {}),
       ...(userAgent ? { userAgent } : {}),
     },
   };

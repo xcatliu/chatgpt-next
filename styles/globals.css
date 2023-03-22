@@ -24,6 +24,10 @@ textarea {
   @apply focus-visible:outline focus-visible:outline-amber-500;
 }
 
+button {
+  @apply w-10 h-10 m-2 p-[0.625rem];
+}
+
 input[type='button'],
 input[type='submit'],
 button {

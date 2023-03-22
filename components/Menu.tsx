@@ -2,20 +2,23 @@ import { AdjustmentsHorizontalIcon, InboxStackIcon, KeyIcon } from '@heroicons/r
 import classNames from 'classnames';
 import { FC, useCallback, useEffect, useState } from 'react';
 
+import { CompletionParams } from '@/pages';
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
 
 interface MenuProps {
   logged: boolean;
   setLogged: (logged: boolean) => void;
-  isWeChat: boolean;
+  completionParams: CompletionParams;
+  setCompletionParams: (completionParams: CompletionParams) => void;
 }
 
 /**
  * 侧边菜单栏
  */
-export const Menu: FC<MenuProps> = ({ logged, setLogged, isWeChat }) => {
+export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCompletionParams }) => {
   const [isMenuShow, setIsMenuShow] = useState(false);
+  const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
 
   useEffect(() => {
     (async () => {
@@ -48,22 +51,91 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, isWeChat }) => {
   }, [logged, setLogged]);
 
   return (
-    <menu className="flex w-inherit justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
-      <button className="w-10 h-10 m-2 p-[0.625rem]" onClick={() => alert(1)}>
-        <InboxStackIcon className="text-gray-400" />
+    <>
+      <button
+        className={classNames('absolute top-0 right-0 text-gray-400', {
+          hidden: isMenuShow,
+        })}
+        onClick={() => {
+          if (logged) {
+            setCurrentTab('AdjustmentsHorizontal');
+            setIsMenuShow(true);
+            document.documentElement.classList.add('show-menu');
+          } else {
+            onKeyIconClick();
+          }
+        }}
+      >
+        {logged ? (
+          <AdjustmentsHorizontalIcon />
+        ) : (
+          <KeyIcon
+            className={classNames({
+              'text-green-600': logged,
+              'text-red-500': !logged,
+            })}
+          />
+        )}
       </button>
-      <button className="w-10 h-10 m-2 p-[0.625rem]" onClick={() => alert(1)}>
-        <AdjustmentsHorizontalIcon className="text-gray-400" />
-      </button>
-      <div className="grow" />
-      <button className="w-10 h-10 m-2 p-[0.625rem]" onClick={onKeyIconClick}>
-        <KeyIcon
-          className={classNames({
-            'text-green-600': logged,
-            'text-red-500': !logged,
-          })}
-        />
-      </button>
-    </menu>
+
+      {isMenuShow && (
+        <>
+          <div
+            className="fixed z-20 top-0 left-0 w-screen h-screen"
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            }}
+            onClick={() => {
+              setIsMenuShow(false);
+              document.documentElement.classList.remove('show-menu');
+            }}
+          />
+          <div className="fixed top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen">
+            <menu className="flex w-inherit justify-end top-0 md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
+              <button onClick={() => setCurrentTab('InboxStack')}>
+                <InboxStackIcon className={classNames({ 'text-gray-400': currentTab !== 'InboxStack' })} />
+              </button>
+              <button onClick={() => setCurrentTab('AdjustmentsHorizontal')}>
+                <AdjustmentsHorizontalIcon
+                  className={classNames({ 'text-gray-400': currentTab !== 'AdjustmentsHorizontal' })}
+                />
+              </button>
+              <div className="grow" />
+              <button onClick={onKeyIconClick}>
+                <KeyIcon
+                  className={classNames({
+                    'text-green-600': logged,
+                    'text-red-500': !logged,
+                  })}
+                />
+              </button>
+            </menu>
+            <div className="grow" />
+            {currentTab === 'InboxStack' && <div className="m-4">聊天记录功能开发中...</div>}
+            {currentTab === 'AdjustmentsHorizontal' && (
+              <div className="m-4">
+                模型：
+                <select
+                  value={completionParams?.model}
+                  onChange={(e) =>
+                    setCompletionParams({
+                      ...completionParams,
+                      model: e.target.value as any,
+                    })
+                  }
+                >
+                  {['gpt-3.5-turbo-0301', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-0314', 'gpt-4-32k', 'gpt-4-32k-0314'].map(
+                    (model) => (
+                      <option key={model}>{model}</option>
+                    ),
+                  )}
+                  <option />
+                </select>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </>
   );
 };
