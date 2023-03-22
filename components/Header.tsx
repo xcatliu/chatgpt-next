@@ -1,9 +1,11 @@
-import { KeyIcon } from '@heroicons/react/24/outline';
+import { AdjustmentsHorizontalIcon, KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
+
+import { Menu } from './Menu';
 
 interface HeaderProps {
   logged: boolean;
@@ -15,6 +17,8 @@ interface HeaderProps {
  * 顶部栏
  */
 export const Header: FC<HeaderProps> = ({ logged, setLogged, isWeChat }) => {
+  const [isMenuShow, setIsMenuShow] = useState(false);
+
   useEffect(() => {
     (async () => {
       // 最开始如果未登录，则弹窗登录
@@ -47,18 +51,39 @@ export const Header: FC<HeaderProps> = ({ logged, setLogged, isWeChat }) => {
 
   if (isWeChat) {
     return (
-      <header className="absolute top-0 right-0">
-        <h1 className="hidden">ChatGPT</h1>
-        <button className="w-10 h-10 m-2 p-[0.625rem]">
-          <KeyIcon
-            className={classNames({
-              'text-green-600': logged,
-              'text-red-500': !logged,
+      <>
+        <header className="absolute top-0 right-0">
+          <h1 className="hidden">ChatGPT</h1>
+          <button
+            className={classNames('w-10 h-10 m-2 p-[0.625rem] text-gray-700', {
+              hidden: isMenuShow,
             })}
-            onClick={onKeyIconClick}
-          />
-        </button>
-      </header>
+            onClick={() => {
+              setIsMenuShow(true);
+              document.documentElement.classList.add('show-menu');
+            }}
+          >
+            <AdjustmentsHorizontalIcon />
+          </button>
+        </header>
+        {isMenuShow && (
+          <>
+            <div className="fixed top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen">
+              <Menu logged={logged} setLogged={setLogged} isWeChat={isWeChat} />
+            </div>
+            <div
+              className="fixed z-20 top-0 left-0 w-screen h-screen"
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              }}
+              onClick={() => {
+                setIsMenuShow(false);
+                document.documentElement.classList.remove('show-menu');
+              }}
+            />
+          </>
+        )}
+      </>
     );
   }
 

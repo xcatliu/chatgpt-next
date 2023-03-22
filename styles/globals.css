@@ -6,6 +6,16 @@ html {
   @apply bg-[#ededed];
   @apply md:bg-white;
 }
+body {
+  @apply min-h-screen;
+  @apply transition;
+}
+html.show-menu {
+  @apply overflow-hidden;
+}
+html.show-menu body {
+  @apply translate-x-[calc(6.25rem-100vw)];
+}
 
 input,
 button,
