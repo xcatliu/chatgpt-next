@@ -11,9 +11,10 @@ interface MenuProps {
   setLogged: (logged: boolean) => void;
   completionParams: CompletionParams;
   setCompletionParams: (completionParams: CompletionParams) => void;
+  windowHeight: string | number;
 }
 
-export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCompletionParams }) => {
+export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCompletionParams, windowHeight }) => {
   const [isMenuShow, setIsMenuShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
 
@@ -62,13 +63,13 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
         />
       </div>
       <div
-        className={classNames('fixed z-20 top-0 left-0 w-screen h-screen', {
+        className={classNames('fixed z-20 top-0 left-0 w-screen bg-[rgba(0,0,0,0.4)] md:h-screen', {
           hidden: !isMenuShow,
         })}
         style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          height: windowHeight,
         }}
-        onClick={() => {
+        onTouchStart={() => {
           document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
         }}
@@ -76,11 +77,14 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
       <div
         // 293px 是 768px 的黄金分割点，239 + 16 * 2 = 325
         className={classNames(
-          'fixed flex flex-col top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen bg-gray-100 md:flex md:relative md:left-0 md:w-[325px] md:px-4 md:border-r md:border-gray-300',
+          'fixed flex flex-col top-0 left-[100vw] w-[calc(100vw-6.25rem)] bg-gray-100 md:h-screen md:flex md:relative md:left-0 md:w-[325px] md:px-4 md:border-r md:border-gray-300',
           {
             hidden: !isMenuShow,
           },
         )}
+        style={{
+          height: windowHeight,
+        }}
       >
         <MenuContent
           logged={logged}
@@ -92,53 +96,6 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
         />
       </div>
     </>
-  );
-};
-
-export const MenuPC: FC<MenuProps> = ({ logged, setLogged, completionParams, setCompletionParams }) => {
-  const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
-
-  useEffect(() => {
-    (async () => {
-      // 最开始如果未登录，则弹窗登录
-      if (!logged) {
-        setLogged(await login());
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /** 点击钥匙按钮，弹出重新登录框 */
-  const onKeyIconClick = useCallback(async () => {
-    // 如果未登录，则弹窗登录
-    if (!logged) {
-      setLogged(await login());
-      return;
-    }
-
-    // 如果已登录，则弹窗登出
-    const logoutResult = await logout();
-    setLogged(!logoutResult);
-
-    // 如果登出成功，则继续弹窗要求用户登录
-    if (logoutResult) {
-      await sleep(100);
-      const loginResult = await login();
-      setLogged(loginResult);
-    }
-  }, [logged, setLogged]);
-
-  return (
-    <div className="fixed top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen">
-      <MenuContent
-        logged={logged}
-        currentTab={currentTab}
-        setCurrentTab={setCurrentTab}
-        completionParams={completionParams}
-        setCompletionParams={setCompletionParams}
-        onKeyIconClick={onKeyIconClick}
-      />
-    </div>
   );
 };
 

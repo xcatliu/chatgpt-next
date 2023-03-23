@@ -8,7 +8,7 @@ import { Menu } from '@/components/Menu';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
-import { isWeChat as utilsIsWeChat } from '@/utils/device';
+import { isMobile, isWeChat as utilsIsWeChat } from '@/utils/device';
 // import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
@@ -32,12 +32,19 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [completionParams, setCompletionParams] = useState<CompletionParams>(undefined);
+  const [windowHeight, setWindowHeight] = useState<string | number>('100vh');
 
   const isWeChat = utilsIsWeChat(userAgent);
 
   useEffect(() => {
+    // 仅在 mobile 场景下通过计算获取高度
     // https://stackoverflow.com/a/52936500/2777142
+    if (!isMobile()) {
+      return;
+    }
+    setWindowHeight(window.innerHeight);
     document.body.style.minHeight = `${window.innerHeight}px`;
+    window.addEventListener('resize', () => setWindowHeight(window.innerHeight));
   }, []);
 
   /** 提交回调 */
@@ -83,8 +90,8 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
           setLogged={setLogged}
           completionParams={completionParams}
           setCompletionParams={setCompletionParams}
+          windowHeight={windowHeight}
         />
-        {/* <main className="w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col"> */}
         <main className="w-full md:bg-[#ededed] md:w-[50rem] md:px-4 md:flex md:flex-col">
           <h1
             className={classNames(
