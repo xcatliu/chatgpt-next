@@ -15,5 +15,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            ${{ secrets.CD_PROJECT }}
+            ${{ vars.CD_PROJECT }}
             git pull && pnpm i && pnpm build && pm2 restart chatgpt-next

@@ -1,9 +1,9 @@
-import { ChatMessage } from 'chatgpt';
+import type { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
 import Image from 'next/image';
-import { FC } from 'react';
+import type { FC } from 'react';
 
-import { formatMessage, formatMessageMode } from '@/utils/formatMessage';
+import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
 
 export interface MessageProps {
   avatar?: 'ChatGPT' | string;
@@ -47,7 +47,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
         dangerouslySetInnerHTML={{
           __html:
             error?.message ??
-            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? formatMessageMode.partial : formatMessageMode.zero),
+            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? FormatMessageMode.partial : FormatMessageMode.zero),
         }}
       />
       {/* 三角箭头 */}
@@ -68,15 +68,10 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
 };
 
 interface SystemMessageProps {
-  text: string;
+  children: React.ReactNode;
 }
 
 /** 系统消息 */
-export const SystemMessage: FC<SystemMessageProps> = ({ text }) => {
-  return (
-    <div
-      className="px-16 my-5 text-center text-gray-400 text-sm"
-      dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, '<br />') }}
-    />
-  );
+export const SystemMessage: FC<SystemMessageProps> = ({ children }) => {
+  return <div className="px-16 my-4 text-center text-gray-400 text-sm">{children}</div>;
 };
