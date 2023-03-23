@@ -32,4 +32,18 @@ module.exports = {
     ],
     'react/self-closing-comp': 'error',
   },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: __dirname,
+      },
+      rules: {
+        '@typescript-eslint/consistent-type-imports': 'warn',
+      },
+    },
+  ],
 };

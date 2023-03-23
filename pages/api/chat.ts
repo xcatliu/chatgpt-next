@@ -1,6 +1,7 @@
 import { env } from 'process';
 
-import { ChatGPTAPIOptions, ChatGPTError, ChatMessage, SendMessageOptions } from 'chatgpt';
+import type { ChatGPTAPIOptions, ChatMessage, SendMessageOptions } from 'chatgpt';
+import { ChatGPTError } from 'chatgpt';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 

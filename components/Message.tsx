@@ -1,7 +1,7 @@
-import { ChatMessage } from 'chatgpt';
+import type { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
 import Image from 'next/image';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { formatMessage, formatMessageMode } from '@/utils/formatMessage';
 

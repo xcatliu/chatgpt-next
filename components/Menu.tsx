@@ -1,8 +1,9 @@
 import { AdjustmentsHorizontalIcon, InboxStackIcon, KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
-import { FC, useCallback, useEffect, useState } from 'react';
+import type { FC } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { CompletionParams } from '@/pages';
+import type { CompletionParams } from '@/pages';
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
 

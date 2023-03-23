@@ -2,42 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 微信灰色背景 */
+.wx-bg-gray {
+  @apply bg-[#ededed];
+}
+
 html {
   @apply bg-[#ededed];
+  /* 移动端全屏应用，大屏下白色背景墙 */
   @apply md:bg-white;
 }
 body {
+  /* 移动端菜单从右侧滑出，需要整个 body 偏移 */
   @apply transition-transform;
 }
+/* 打开菜单后，禁用滚动 */
 html.show-menu {
   @apply overflow-hidden;
 }
+/* 打开菜单后，整个 body 滑向左边 */
 html.show-menu body {
   @apply translate-x-[calc(6.25rem-100vw)];
 }
 
+/* 按钮和输入框统一样式 */
 input,
 button,
 textarea {
   @apply rounded;
-  @apply focus-visible:outline focus-visible:outline-amber-500;
+  @apply focus-visible:outline focus-visible:outline-1 focus-visible:outline-amber-500;
 }
-
 button {
   @apply w-10 h-10 m-2 p-[0.625rem];
 }
-
 input[type='button'],
 input[type='submit'],
 button {
   @apply cursor-pointer;
 }
 
-/** 用于 fixed 宽度设置 */
+/* 用于 fixed 宽度设置 */
 .w-inherit {
   width: inherit;
 }
 
+/* chatgpt-message 内部样式 */
 .chatgpt-message p {
   @apply mt-6 first:mt-0;
 }

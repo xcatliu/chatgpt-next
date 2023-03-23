@@ -1,5 +1,6 @@
 import classNames from 'classnames';
-import { FC, FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import type { FC, FormEvent, KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { isMobile } from '@/utils/device';
 import { isDomChild } from '@/utils/isDomChildren';

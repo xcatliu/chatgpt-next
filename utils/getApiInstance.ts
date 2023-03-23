@@ -1,6 +1,7 @@
 import { env } from 'process';
 
-import { ChatGPTAPI, ChatGPTAPIOptions } from 'chatgpt';
+import type { ChatGPTAPIOptions } from 'chatgpt';
+import { ChatGPTAPI } from 'chatgpt';
 
 import { serializeObject } from './serializeObject';
 

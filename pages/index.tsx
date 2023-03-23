@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import { getCookie } from 'cookies-next';
-import { NextPageContext } from 'next';
+import type { NextPageContext } from 'next';
 import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Menu } from '@/components/Menu';
-import { Message, MessageProps, SystemMessage } from '@/components/Message';
+import type { MessageProps } from '@/components/Message';
+import { Message, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
 import { isMobile, isWeChat as utilsIsWeChat } from '@/utils/device';

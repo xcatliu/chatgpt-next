@@ -11,6 +11,8 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
+      // 768 + 768*(1-0.618) + 16*4 + 1
+      // 对话框 + 菜单栏 + 间隔 + 1px区分
       md: '1126px',
     },
   },

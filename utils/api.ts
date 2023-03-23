@@ -1,4 +1,4 @@
-import { ChatReq, ChatRes } from '@/pages/api/chat';
+import type { ChatReq, ChatRes } from '@/pages/api/chat';
 
 /** 请求 /api/chat 接口 */
 export const fetchChat = async ({ text, parentMessageId, completionParams }: ChatReq): Promise<ChatRes> => {
