@@ -58,7 +58,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
     const newHeight = Math.min(textareaElement.scrollHeight, 260);
     textareaElement.style.height = `${newHeight}px`;
     if (placeholderRef.current) {
-      placeholderRef.current.style.height = `${newHeight + 20}px`;
+      placeholderRef.current.style.height = `${newHeight}px`;
     }
   }, []);
   /** 输入内容触发 */
@@ -118,14 +118,14 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
 
   return (
     <>
-      <div className="pb-[env(safe-area-inset-bottom)]">
-        <div className="h-[3.75rem] mb-[env(safe-area-inset-bottom)]" ref={placeholderRef} />
+      <div className="pb-[env(safe-area-inset-bottom)] pt-5 md:pt-8">
+        <div className="h-10 md:h-16 mb-[env(safe-area-inset-bottom)]" ref={placeholderRef} />
       </div>
-      <div className="w-inherit fixed bottom-0 z-10 bg-gray-100 md:px-[1.75rem] px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
+      <div className="w-inherit fixed bottom-0 z-10 bg-gray-100 px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] md:px-[1.75rem] md:py-4 md:-mx-4">
         <form ref={formRef} className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
             ref={textareaRef}
-            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed"
+            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]"
             disabled={!logged}
             placeholder={logged ? undefined : '请点击右上角设置密钥'}
             // onFocus={onFocus}

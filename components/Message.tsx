@@ -75,7 +75,7 @@ interface SystemMessageProps {
 export const SystemMessage: FC<SystemMessageProps> = ({ text }) => {
   return (
     <div
-      className="px-16 my-5 text-center text-gray-400 text-sm"
+      className="px-16 my-4 text-center text-gray-400 text-sm"
       dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, '<br />') }}
     />
   );

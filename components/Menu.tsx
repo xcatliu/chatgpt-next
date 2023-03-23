@@ -74,9 +74,9 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
         }}
       />
       <div
-        // 293px 是 768px 的黄金分割点
+        // 293px 是 768px 的黄金分割点，239 + 16 * 2 = 325
         className={classNames(
-          'fixed top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen md:relative md:block md:left-0 md:w-[293px] md:bg-gray-100 md:border-r md:border-gray-300',
+          'fixed flex flex-col top-0 left-[100vw] w-[calc(100vw-6.25rem)] h-screen bg-gray-100 md:flex md:relative md:left-0 md:w-[325px] md:px-4 md:border-r md:border-gray-300',
           {
             hidden: !isMenuShow,
           },
@@ -183,7 +183,7 @@ const MenuContent: FC<any> = ({
 }) => {
   return (
     <>
-      <menu className="flex w-inherit md:w-auto justify-end md:flex-row-reverse md:px-4 md:pt-4 z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px]">
+      <menu className="flex w-inherit justify-end z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px] md:w-auto md:flex-row-reverse md:-mx-4 md:px-4 md:pt-2">
         <button onClick={() => setCurrentTab('InboxStack')}>
           <InboxStackIcon className={classNames({ 'text-gray-400': currentTab !== 'InboxStack' })} />
         </button>
@@ -202,11 +202,11 @@ const MenuContent: FC<any> = ({
           />
         </button>
       </menu>
-      <div className="p-2">
+      <div className="grow">
         {currentTab === 'InboxStack' && <div className="m-2">聊天记录功能开发中...</div>}
         {currentTab === 'AdjustmentsHorizontal' && (
-          <div className="m-2">
-            模型：
+          <div className="m-4">
+            model:{' '}
             <select
               value={completionParams?.model}
               onChange={(e) =>
@@ -225,6 +225,17 @@ const MenuContent: FC<any> = ({
             </select>
           </div>
         )}
+      </div>
+      <div className="m-4 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
+        由{' '}
+        <a
+          className="underline decoration hover:text-gray-500"
+          href="https://github.com/xcatliu/chatgpt-next"
+          target="_blank"
+        >
+          ChatGPT Next
+        </a>{' '}
+        驱动
       </div>
     </>
   );

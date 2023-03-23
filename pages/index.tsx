@@ -73,7 +73,7 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
         <link rel="icon" href="/chatgpt-green-icon.png" />
         <link rel="apple-touch-icon" type="image/png" href="/chatgpt-green-icon.png" />
       </Head>
-      <div className="mx-auto md:w-[1061px] md:min-h-screen md:flex">
+      <div className="mx-auto md:w-[1125px] md:min-h-screen md:flex">
         <Menu
           logged={logged}
           setLogged={setLogged}
@@ -81,8 +81,11 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
           setCompletionParams={setCompletionParams}
         />
         {/* <main className="w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col"> */}
-        <main className="w-full md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
-          <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
+        <main className="w-full md:bg-[#ededed] md:w-[50rem] md:px-4 md:flex md:flex-col">
+          <h1 className="hidden text-center -mx-4 mt-2 py-3.5 text-lg border-b-[0.5px] border-gray-300 md:block">
+            ChatGPT
+          </h1>
+          <div className="md:grow" style={{ display: 'flow-root' }}>
             <SystemMessage text={SYSTEM_MESSAGE} />
             <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
             {/* <Message align="right" chatMessage={userMessage} />

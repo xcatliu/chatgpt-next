@@ -1,5 +1,5 @@
 export function isMobile() {
-  return document.body.offsetWidth < 769;
+  return document.body.offsetWidth < 1126;
 }
 
 /**
