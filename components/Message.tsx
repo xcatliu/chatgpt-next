@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import type { FC } from 'react';
 
-import { formatMessage, formatMessageMode } from '@/utils/formatMessage';
+import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
 
 export interface MessageProps {
   avatar?: 'ChatGPT' | string;
@@ -47,7 +47,7 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
         dangerouslySetInnerHTML={{
           __html:
             error?.message ??
-            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? formatMessageMode.partial : formatMessageMode.zero),
+            formatMessage(chatMessage?.text, avatar === 'ChatGPT' ? FormatMessageMode.partial : FormatMessageMode.zero),
         }}
       />
       {/* 三角箭头 */}

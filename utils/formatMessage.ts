@@ -11,7 +11,7 @@ const markdownItMap = {
     .enable(['autolink', 'backticks', 'image', 'link', 'newline']),
 };
 
-export enum formatMessageMode {
+export enum FormatMessageMode {
   /** 只处理换行符、空格、html 转义 */
   zero = 'zero',
   /** 只处理一部分 md 语法，如 link、image、code 等 */
@@ -20,7 +20,10 @@ export enum formatMessageMode {
   // full = 'full',
 }
 
-export function formatMessage(message?: string, mode = formatMessageMode.zero) {
+/**
+ * 格式化消息
+ */
+export function formatMessage(message?: string, mode = FormatMessageMode.zero) {
   let result = message?.trim();
 
   if (!result) {

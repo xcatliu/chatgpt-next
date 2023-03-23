@@ -22,6 +22,7 @@
     "commonmark",
     "DOCKERHUB",
     "endregion",
+    "firstkey",
     "GPTAPI",
     "heroicons",
     "linkify",
@@ -29,6 +30,7 @@
     "nextjs",
     "OPENAI",
     "pnpm",
+    "secondkey",
     "tailwindcss",
     "xcatliu",
     "zeabur"

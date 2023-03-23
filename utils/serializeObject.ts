@@ -1,3 +1,6 @@
+/**
+ * ChatGPT 写的代码，序列化一个对象，按照字母排序，保证相同对象的到同样的值
+ */
 export function serializeObject(obj?: Record<string, any>) {
   if (obj === undefined) {
     return '';
