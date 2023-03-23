@@ -7,7 +7,7 @@ import { Menu } from '@/components/Menu';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
-import { isWeChat as utilsIsWeChat } from '@/utils/device';
+import { isMobile, isWeChat as utilsIsWeChat } from '@/utils/device';
 // import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
@@ -73,27 +73,30 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
         <link rel="icon" href="/chatgpt-green-icon.png" />
         <link rel="apple-touch-icon" type="image/png" href="/chatgpt-green-icon.png" />
       </Head>
-      <Menu
-        logged={logged}
-        setLogged={setLogged}
-        completionParams={completionParams}
-        setCompletionParams={setCompletionParams}
-      />
-      <main className="mx-auto w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
-        <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
-          <SystemMessage text={SYSTEM_MESSAGE} />
-          <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
-          {/* <Message align="right" chatMessage={userMessage} />
-          <Message avatar="ChatGPT" chatMessage={regexpNumberMessage} />
-          <Message align="right" chatMessage={userMessage} />
-          <Message avatar="ChatGPT" chatMessage={htmlMessage} /> */}
-          {messages.map((messageProps, index) => (
-            <Message key={index} {...messageProps} />
-          ))}
-          {loading && <Message avatar="ChatGPT" chatMessage={{ text: LOADING_MESSAGE }} />}
-        </div>
-        <TextareaForm logged={logged} onSubmit={onSubmit} />
-      </main>
+      <div className="mx-auto md:w-[1061px] md:min-h-screen md:flex">
+        <Menu
+          logged={logged}
+          setLogged={setLogged}
+          completionParams={completionParams}
+          setCompletionParams={setCompletionParams}
+        />
+        {/* <main className="w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col"> */}
+        <main className="w-full md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col">
+          <div className="md:grow md:px-4" style={{ display: 'flow-root' }}>
+            <SystemMessage text={SYSTEM_MESSAGE} />
+            <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
+            {/* <Message align="right" chatMessage={userMessage} />
+            <Message avatar="ChatGPT" chatMessage={regexpNumberMessage} />
+            <Message align="right" chatMessage={userMessage} />
+            <Message avatar="ChatGPT" chatMessage={htmlMessage} /> */}
+            {messages.map((messageProps, index) => (
+              <Message key={index} {...messageProps} />
+            ))}
+            {loading && <Message avatar="ChatGPT" chatMessage={{ text: LOADING_MESSAGE }} />}
+          </div>
+          <TextareaForm logged={logged} onSubmit={onSubmit} />
+        </main>
+      </div>
     </>
   );
 }
