@@ -69,8 +69,8 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
           backgroundColor: 'rgba(0, 0, 0, 0.4)',
         }}
         onClick={() => {
-          setIsMenuShow(false);
           document.documentElement.classList.remove('show-menu');
+          setIsMenuShow(false);
         }}
       />
       <div

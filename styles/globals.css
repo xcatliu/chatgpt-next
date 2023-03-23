@@ -7,8 +7,7 @@ html {
   @apply md:bg-white;
 }
 body {
-  @apply min-h-screen;
-  @apply transition;
+  @apply transition-transform;
 }
 html.show-menu {
   @apply overflow-hidden;

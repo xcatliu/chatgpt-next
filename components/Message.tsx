@@ -68,15 +68,10 @@ export const Message: FC<MessageProps> = ({ avatar, chatMessage, align = 'left',
 };
 
 interface SystemMessageProps {
-  text: string;
+  children: React.ReactNode;
 }
 
 /** 系统消息 */
-export const SystemMessage: FC<SystemMessageProps> = ({ text }) => {
-  return (
-    <div
-      className="px-16 my-4 text-center text-gray-400 text-sm"
-      dangerouslySetInnerHTML={{ __html: text.replace(/\n/g, '<br />') }}
-    />
-  );
+export const SystemMessage: FC<SystemMessageProps> = ({ children }) => {
+  return <div className="px-16 my-4 text-center text-gray-400 text-sm">{children}</div>;
 };

@@ -1,19 +1,18 @@
+import classNames from 'classnames';
 import { getCookie } from 'cookies-next';
 import { NextPageContext } from 'next';
 import Head from 'next/head';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Menu } from '@/components/Menu';
 import { Message, MessageProps, SystemMessage } from '@/components/Message';
 import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
-import { isMobile, isWeChat as utilsIsWeChat } from '@/utils/device';
+import { isWeChat as utilsIsWeChat } from '@/utils/device';
 // import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
 import { scrollToBottom } from '@/utils/scrollToBottom';
 import { sleep } from '@/utils/sleep';
 
-const SYSTEM_MESSAGE = `本页面会将数据发送给 OpenAI
-请注意隐私风险，禁止发送违法内容`;
 const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
 const LOADING_MESSAGE = '正在努力思考...';
 
@@ -35,6 +34,11 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
   const [completionParams, setCompletionParams] = useState<CompletionParams>(undefined);
 
   const isWeChat = utilsIsWeChat(userAgent);
+
+  useEffect(() => {
+    // https://stackoverflow.com/a/52936500/2777142
+    document.body.style.minHeight = `${window.innerHeight}px`;
+  }, []);
 
   /** 提交回调 */
   const onSubmit = useCallback(
@@ -82,11 +86,22 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
         />
         {/* <main className="w-full md:min-h-screen md:bg-[#ededed] md:w-[48rem] md:flex md:flex-col"> */}
         <main className="w-full md:bg-[#ededed] md:w-[50rem] md:px-4 md:flex md:flex-col">
-          <h1 className="hidden text-center -mx-4 mt-2 py-3.5 text-lg border-b-[0.5px] border-gray-300 md:block">
+          <h1
+            className={classNames(
+              'text-center py-3.5 text-lg border-b-[0.5px] border-gray-300 md:-mx-4 md:mt-2 md:block',
+              {
+                hidden: isWeChat,
+              },
+            )}
+          >
             ChatGPT
           </h1>
           <div className="md:grow" style={{ display: 'flow-root' }}>
-            <SystemMessage text={SYSTEM_MESSAGE} />
+            <SystemMessage>
+              本页面会将数据发送给 OpenAI
+              <br />
+              请注意隐私风险，禁止发送违法内容
+            </SystemMessage>
             <Message avatar="ChatGPT" chatMessage={{ text: WELCOME_MESSAGE }} />
             {/* <Message align="right" chatMessage={userMessage} />
             <Message avatar="ChatGPT" chatMessage={regexpNumberMessage} />
