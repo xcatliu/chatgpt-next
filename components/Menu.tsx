@@ -186,12 +186,11 @@ const MenuContent: FC<any> = ({
                   <option key={model}>{model}</option>
                 ),
               )}
-              <option />
             </select>
           </div>
         )}
       </div>
-      <div className="mx-4 my-6 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
+      <div className="mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
         由{' '}
         <a
           className="underline decoration hover:text-gray-500"
