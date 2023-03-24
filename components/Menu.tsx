@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { CompletionParams } from '@/pages';
 import { login, logout } from '@/utils/login';
 import { sleep } from '@/utils/sleep';
+import { scrollToTop } from '@/utils/scroll';
 
 interface MenuProps {
   logged: boolean;
@@ -52,7 +53,7 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
   return (
     <>
       <div
-        className={classNames('absolute top-0 right-0 md:hidden', {
+        className={classNames('fixed top-0 right-0 z-20 md:hidden', {
           hidden: isMenuShow,
         })}
       >
@@ -74,27 +75,32 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
           document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
         }}
+        onClick={() => {
+          document.documentElement.classList.remove('show-menu');
+          setIsMenuShow(false);
+        }}
       />
       <div
         // 293px 是 768px 的黄金分割点，239 + 16 * 2 = 325
-        className={classNames(
-          'fixed flex flex-col top-0 left-[100vw] w-[calc(100vw-6.25rem)] bg-gray-100 md:h-screen md:flex md:relative md:left-0 md:w-[325px] md:px-4 md:border-r md:border-gray-300',
-          {
-            hidden: !isMenuShow,
-          },
-        )}
-        style={{
-          height: windowHeight,
-        }}
+        className={classNames('fixed left-[100vw] w-[calc(100vw-6.25rem)] md:block md:static md:w-[325px]', {
+          hidden: !isMenuShow,
+        })}
       >
-        <MenuContent
-          logged={logged}
-          currentTab={currentTab}
-          setCurrentTab={setCurrentTab}
-          completionParams={completionParams}
-          setCompletionParams={setCompletionParams}
-          onKeyIconClick={onKeyIconClick}
-        />
+        <div
+          className="fixed w-inherit flex flex-col md:h-screen bg-gray-100 md:border-r md:border-gray-300"
+          style={{
+            height: windowHeight,
+          }}
+        >
+          <MenuContent
+            logged={logged}
+            currentTab={currentTab}
+            setCurrentTab={setCurrentTab}
+            completionParams={completionParams}
+            setCompletionParams={setCompletionParams}
+            onKeyIconClick={onKeyIconClick}
+          />
+        </div>
       </div>
     </>
   );
@@ -106,6 +112,7 @@ const MenuEntryButton: FC<any> = ({ logged, onKeyIconClick, setIsMenuShow, setCu
       className="text-gray-400"
       onClick={() => {
         if (logged) {
+          scrollToTop();
           setCurrentTab('AdjustmentsHorizontal');
           setIsMenuShow(true);
           document.documentElement.classList.add('show-menu');
@@ -141,7 +148,7 @@ const MenuContent: FC<any> = ({
 }) => {
   return (
     <>
-      <menu className="flex w-inherit justify-end z-10 bg-[#ededed] border-gray-300 text-center border-b-[0.5px] md:w-auto md:flex-row-reverse md:-mx-4 md:px-4 md:pt-2">
+      <menu className="flex w-inherit justify-end z-10 bg-gray-wx border-b-[0.5px] border-gray-300 md:flex-row-reverse md:px-4 md:pt-2 md:border-r">
         <button onClick={() => setCurrentTab('InboxStack')}>
           <InboxStackIcon className={classNames({ 'text-gray-400': currentTab !== 'InboxStack' })} />
         </button>
@@ -160,7 +167,7 @@ const MenuContent: FC<any> = ({
           />
         </button>
       </menu>
-      <div className="grow">
+      <div className="grow mx-4 my-2">
         {currentTab === 'InboxStack' && <div className="m-2">聊天记录功能开发中...</div>}
         {currentTab === 'AdjustmentsHorizontal' && (
           <div className="m-4">
@@ -184,7 +191,7 @@ const MenuContent: FC<any> = ({
           </div>
         )}
       </div>
-      <div className="m-4 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
+      <div className="mx-4 my-6 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
         由{' '}
         <a
           className="underline decoration hover:text-gray-500"

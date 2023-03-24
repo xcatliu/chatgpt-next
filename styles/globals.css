@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* 微信灰色背景 */
-.wx-bg-gray {
+.bg-gray-wx {
   @apply bg-[#ededed];
 }
 

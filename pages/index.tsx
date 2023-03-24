@@ -11,7 +11,7 @@ import { TextareaForm } from '@/components/TextareaForm';
 import { fetchChat } from '@/utils/api';
 import { isMobile, isWeChat as utilsIsWeChat } from '@/utils/device';
 // import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
-import { scrollToBottom } from '@/utils/scrollToBottom';
+import { scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
 const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
@@ -94,9 +94,14 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
           windowHeight={windowHeight}
         />
         <main className="w-full md:bg-[#ededed] md:w-[50rem] md:px-4 md:flex md:flex-col">
+          <div
+            className={classNames('h-14 md:h-16', {
+              hidden: isWeChat,
+            })}
+          ></div>
           <h1
             className={classNames(
-              'text-center py-3.5 text-lg border-b-[0.5px] border-gray-300 md:-mx-4 md:mt-2 md:block',
+              'fixed top-0 w-inherit text-center py-3.5 text-lg bg-gray-wx z-10 border-b-[0.5px] border-gray-300 md:-mx-4 md:pt-[1.375rem]',
               {
                 hidden: isWeChat,
               },
