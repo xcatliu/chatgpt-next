@@ -167,7 +167,7 @@ const MenuContent: FC<any> = ({
           />
         </button>
       </menu>
-      <div className="grow mx-4 my-2">
+      <div className="grow md:mx-4 md:my-2">
         {currentTab === 'InboxStack' && <div className="m-2">聊天记录功能开发中...</div>}
         {currentTab === 'AdjustmentsHorizontal' && (
           <div className="m-4">
