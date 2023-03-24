@@ -128,7 +128,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
             ref={textareaRef}
             className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]"
             disabled={!logged}
-            placeholder={logged ? undefined : '请点击右上角设置密钥'}
+            placeholder={logged ? undefined : '请点击左上角设置密钥'}
             // onFocus={onFocus}
             onChange={onChange}
             onKeyDown={onKeyDone}
