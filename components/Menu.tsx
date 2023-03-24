@@ -5,8 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { CompletionParams } from '@/pages';
 import { login, logout } from '@/utils/login';
-import { sleep } from '@/utils/sleep';
 import { scrollToTop } from '@/utils/scroll';
+import { sleep } from '@/utils/sleep';
 
 interface MenuProps {
   logged: boolean;

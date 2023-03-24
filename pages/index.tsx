@@ -98,7 +98,7 @@ export default function Home({ apiKey, userAgent }: HomeProps) {
             className={classNames('h-14 md:h-16', {
               hidden: isWeChat,
             })}
-          ></div>
+          />
           <h1
             className={classNames(
               'fixed top-0 w-inherit text-center py-3.5 text-lg bg-gray-wx z-10 border-b-[0.5px] border-gray-300 md:-mx-4 md:pt-[1.375rem]',
