@@ -11,7 +11,9 @@ module.exports = {
   theme: {
     extend: {},
     screens: {
-      md: '769px',
+      // 768 + 768*(1-0.618) + 16*4 + 1 = 1126
+      // 对话框 + 菜单栏 + 间隔 + 1px区分
+      md: '1126px',
     },
   },
   plugins: [],

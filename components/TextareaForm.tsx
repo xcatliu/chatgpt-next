@@ -1,20 +1,21 @@
 import classNames from 'classnames';
-import { FC, FormEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import type { FC, FormEvent, KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { isMobile } from '@/utils/device';
 import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
 interface TextareaFormProps {
-  logged: boolean;
+  isLogged: boolean;
   onSubmit: (text: string) => Promise<void>;
 }
 
-export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
-  // 是否正在编辑
-  const [composing, setComposing] = useState(false);
+export const TextareaForm: FC<TextareaFormProps> = ({ isLogged, onSubmit }) => {
+  // 是否正在中文输入
+  const [isComposing, setIsComposing] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
-  const formRef = useRef<HTMLFormElement>(null);
+  const formContainerRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,7 +27,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
         return;
       }
       // 如果触碰的是 form 内，则跳过
-      if (isDomChild(formRef.current, targetElement)) {
+      if (isDomChild(formContainerRef.current, targetElement)) {
         return;
       }
       // 如果触碰的是 form 外，则 blur textarea
@@ -55,10 +56,11 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
     }
     // https://stackoverflow.com/a/24676492/2777142
     textareaElement.style.height = '5px';
+    // 260 是十行半的高度，8 + 24 * 10.5 = 260
     const newHeight = Math.min(textareaElement.scrollHeight, 260);
     textareaElement.style.height = `${newHeight}px`;
     if (placeholderRef.current) {
-      placeholderRef.current.style.height = `${newHeight + 20}px`;
+      placeholderRef.current.style.height = `${newHeight}px`;
     }
   }, []);
   /** 输入内容触发 */
@@ -67,14 +69,16 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
     // 保持滚动到最底下，bug 太多，先关闭
     // scrollToBottom();
     updateSubmitDisabled();
-  }, [updateTextareaHeight, updateSubmitDisabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   /** 中文输入法控制 */
-  const onCompositionStart = useCallback(() => setComposing(true), []);
+  const onCompositionStart = useCallback(() => setIsComposing(true), []);
   const onCompositionEnd = useCallback(() => {
-    setComposing(false);
+    setIsComposing(false);
     // 由于 onChange 和 onCompositionEnd 的时序问题，这里也需要调用 updateSubmitDisabled
     updateSubmitDisabled();
-  }, [updateSubmitDisabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   /** 提交表单处理 */
   const formOnSubmit = useCallback(
     async (e?: FormEvent<HTMLFormElement>) => {
@@ -91,13 +95,14 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
       updateSubmitDisabled();
       await onSubmit(value);
     },
-    [onSubmit, updateTextareaHeight, updateSubmitDisabled],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onSubmit],
   );
   /** 修改回车默认行为 */
   const onKeyDone = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       // 如果正在中文输入，则跳过 keyDone 事件
-      if (composing) {
+      if (isComposing) {
         return;
       }
       // [Ctrl/Cmd + Enter] 发送消息
@@ -113,21 +118,26 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
         return;
       }
     },
-    [composing, formOnSubmit],
+    [isComposing, formOnSubmit],
   );
 
   return (
     <>
-      <div className="pb-[env(safe-area-inset-bottom)]">
-        <div className="h-[3.75rem] mb-[env(safe-area-inset-bottom)]" ref={placeholderRef} />
+      <div className="pb-[env(safe-area-inset-bottom)] pt-5 md:pt-8">
+        <div placeholder="" className="h-10 md:h-16" ref={placeholderRef} />
       </div>
-      <div className="w-inherit fixed bottom-0 z-10 bg-gray-100 md:px-[1.75rem] px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
-        <form ref={formRef} className="flex space-x-3" onSubmit={formOnSubmit}>
+      <div
+        className={`w-inherit fixed z-10 bottom-0 px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] bg-gray-100
+                   md:px-[1.75rem] md:-mx-4 md:py-4`}
+        ref={formContainerRef}
+        id="form-container"
+      >
+        <form className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
+            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]"
             ref={textareaRef}
-            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed"
-            disabled={!logged}
-            placeholder={logged ? undefined : '请点击右上角设置密钥'}
+            disabled={!isLogged}
+            placeholder={isLogged ? '' : '请点击右上角设置密钥'}
             // onFocus={onFocus}
             onChange={onChange}
             onKeyDown={onKeyDone}
@@ -137,11 +147,7 @@ export const TextareaForm: FC<TextareaFormProps> = ({ logged, onSubmit }) => {
           />
           <div className="flex items-center">
             <input
-              className={classNames('px-3 py-2 h-full max-h-16 w-14 active:bg-gray-200 disabled:cursor-not-allowed', {
-                'bg-white': !submitDisabled,
-                'bg-gray-200': submitDisabled,
-                'text-gray-400': submitDisabled,
-              })}
+              className="px-3 py-2 h-full max-h-16 bg-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
               type="submit"
               disabled={submitDisabled}
               value="发送"

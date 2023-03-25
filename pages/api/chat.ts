@@ -1,14 +1,17 @@
 import { env } from 'process';
 
-import { ChatGPTError, ChatMessage, SendMessageOptions } from 'chatgpt';
+import type { ChatMessage, SendMessageOptions } from 'chatgpt';
+import { ChatGPTError } from 'chatgpt';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import type { CompletionParams } from '@/utils/completionParams';
 import { HttpMethod, HttpStatusCode } from '@/utils/constants';
 import { getAPIInstance } from '@/utils/getApiInstance';
 
 export type ChatReq = SendMessageOptions & {
   text: string;
+  completionParams?: CompletionParams;
 };
 
 export type ChatRes = ChatMessage;
@@ -31,22 +34,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  if (!req.cookies.OPENAI_API_KEY) {
+  if (!req.cookies.apiKey) {
     res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '密钥未设置' });
     return;
   }
 
-  const { OPENAI_API_KEY } = req.cookies;
-  const { text, parentMessageId } = req.body as ChatReq;
+  const { apiKey } = req.cookies;
+  const { text, parentMessageId, completionParams } = req.body as ChatReq;
 
   if (!text) {
     res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '缺少 text 参数' });
     return;
   }
 
-  const api = getAPIInstance(OPENAI_API_KEY);
+  const api = getAPIInstance(apiKey, completionParams);
 
-  // 删除下一行的 // 可以注释整个 if 判断
+  // 删除下一行开头的 // 可以注释整个 if 判断
   // /**
   if (env.NODE_ENV === 'development') {
     res.status(HttpStatusCode.OK).json({
@@ -101,6 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       res.json(errorJSON);
       return;
     } catch (JSONParseError) {
+      // 如果 JSON.parse 解析失败了，则直接返回错误
       res.json({ code, message: e.message });
       return;
     }
