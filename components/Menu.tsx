@@ -3,28 +3,30 @@ import classNames from 'classnames';
 import type { FC } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { CompletionParams } from '@/pages';
+import type { CompletionParams } from '@/utils/completionParams';
+import { CompletionParamsModel } from '@/utils/completionParams';
 import { login, logout } from '@/utils/login';
 import { scrollToTop } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
 interface MenuProps {
-  logged: boolean;
-  setLogged: (logged: boolean) => void;
+  isLogged: boolean;
+  setIsLogged: (isLogged: boolean) => void;
   completionParams: CompletionParams;
   setCompletionParams: (completionParams: CompletionParams) => void;
   windowHeight: string | number;
 }
 
-export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCompletionParams, windowHeight }) => {
+export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, setCompletionParams, windowHeight }) => {
+  // TODO 默认值需要改成 !isMobile()
   const [isMenuShow, setIsMenuShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
 
   useEffect(() => {
     (async () => {
       // 最开始如果未登录，则弹窗登录
-      if (!logged) {
-        setLogged(await login());
+      if (!isLogged) {
+        setIsLogged(await login());
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,51 +35,61 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
   /** 点击钥匙按钮，弹出重新登录框 */
   const onKeyIconClick = useCallback(async () => {
     // 如果未登录，则弹窗登录
-    if (!logged) {
-      setLogged(await login());
+    if (!isLogged) {
+      setIsLogged(await login());
       return;
     }
-
     // 如果已登录，则弹窗登出
     const logoutResult = await logout();
-    setLogged(!logoutResult);
-
+    setIsLogged(!logoutResult);
     // 如果登出成功，则继续弹窗要求用户登录
     if (logoutResult) {
       await sleep(100);
       const loginResult = await login();
-      setLogged(loginResult);
+      setIsLogged(loginResult);
     }
-  }, [logged, setLogged]);
+  }, [isLogged, setIsLogged]);
 
   return (
     <>
       <div
-        className={classNames('fixed top-0 right-0 z-20 md:hidden', {
+        className={classNames('fixed z-20 top-0 right-0 md:hidden', {
           hidden: isMenuShow,
         })}
       >
         <MenuEntryButton
-          logged={logged}
+          isLogged={isLogged}
           onKeyIconClick={onKeyIconClick}
           setIsMenuShow={setIsMenuShow}
           setCurrentTab={setCurrentTab}
         />
       </div>
       <div
-        className={classNames('fixed z-20 top-0 left-0 w-screen bg-[rgba(0,0,0,0.4)] md:h-screen', {
+        className={classNames('fixed z-20 top-0 left-0 w-screen bg-[rgba(0,0,0,0.4)] md:hidden', {
           hidden: !isMenuShow,
         })}
         style={{
           height: windowHeight,
         }}
-        onTouchStart={() => {
+        onTouchStart={async () => {
           document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
+          // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
+          await sleep(300);
+          const formContainer = document.getElementById('form-container');
+          if (formContainer) {
+            formContainer.style.top = 'unset';
+          }
         }}
-        onClick={() => {
+        onClick={async () => {
           document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
+          // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
+          await sleep(300);
+          const formContainer = document.getElementById('form-container');
+          if (formContainer) {
+            formContainer.style.top = 'unset';
+          }
         }}
       />
       <div
@@ -87,13 +99,13 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
         })}
       >
         <div
-          className="fixed w-inherit flex flex-col md:h-screen bg-gray-100 md:border-r md:border-gray-300"
+          className="w-inherit fixed flex flex-col bg-gray-100 md:h-screen md:border-r md:border-gray-300"
           style={{
             height: windowHeight,
           }}
         >
           <MenuContent
-            logged={logged}
+            isLogged={isLogged}
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
             completionParams={completionParams}
@@ -106,28 +118,33 @@ export const Menu: FC<MenuProps> = ({ logged, setLogged, completionParams, setCo
   );
 };
 
-const MenuEntryButton: FC<any> = ({ logged, onKeyIconClick, setIsMenuShow, setCurrentTab }) => {
+const MenuEntryButton: FC<any> = ({ isLogged, onKeyIconClick, setIsMenuShow, setCurrentTab }) => {
   return (
     <button
       className="text-gray-400"
       onClick={() => {
-        if (logged) {
+        if (isLogged) {
           scrollToTop();
           setCurrentTab('AdjustmentsHorizontal');
           setIsMenuShow(true);
+          // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
+          const formContainer = document.getElementById('form-container');
+          if (formContainer) {
+            formContainer.style.top = `${formContainer.offsetTop}px`;
+          }
           document.documentElement.classList.add('show-menu');
         } else {
           onKeyIconClick();
         }
       }}
     >
-      {logged ? (
+      {isLogged ? (
         <AdjustmentsHorizontalIcon />
       ) : (
         <KeyIcon
           className={classNames({
-            'text-green-600': logged,
-            'text-red-500': !logged,
+            'text-green-600': isLogged,
+            'text-red-500': !isLogged,
           })}
         />
       )}
@@ -139,7 +156,7 @@ const MenuEntryButton: FC<any> = ({ logged, onKeyIconClick, setIsMenuShow, setCu
  * 侧边菜单栏
  */
 const MenuContent: FC<any> = ({
-  logged,
+  isLogged,
   currentTab,
   setCurrentTab,
   completionParams,
@@ -148,7 +165,10 @@ const MenuContent: FC<any> = ({
 }) => {
   return (
     <>
-      <menu className="flex w-inherit justify-end z-10 bg-gray-wx border-b-[0.5px] border-gray-300 md:flex-row-reverse md:px-4 md:pt-2 md:border-r">
+      <menu
+        className={`w-inherit flex z-10 justify-end bg-gray-wx border-b-[0.5px] border-gray-300
+                   md:flex-row-reverse md:px-4 md:pt-2 md:border-r`}
+      >
         <button onClick={() => setCurrentTab('InboxStack')}>
           <InboxStackIcon className={classNames({ 'text-gray-400': currentTab !== 'InboxStack' })} />
         </button>
@@ -161,31 +181,29 @@ const MenuContent: FC<any> = ({
         <button onClick={onKeyIconClick}>
           <KeyIcon
             className={classNames({
-              'text-green-600': logged,
-              'text-red-500': !logged,
+              'text-green-600': isLogged,
+              'text-red-500': !isLogged,
             })}
           />
         </button>
       </menu>
       <div className="grow md:mx-4 md:my-2">
-        {currentTab === 'InboxStack' && <div className="m-2">聊天记录功能开发中...</div>}
+        {currentTab === 'InboxStack' && <div className="m-4">聊天记录功能开发中...</div>}
         {currentTab === 'AdjustmentsHorizontal' && (
           <div className="m-4">
-            model:{' '}
+            模型：
             <select
-              value={completionParams?.model}
+              value={completionParams.model}
               onChange={(e) =>
                 setCompletionParams({
                   ...completionParams,
-                  model: e.target.value as any,
+                  model: e.target.value,
                 })
               }
             >
-              {['gpt-3.5-turbo-0301', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-0314', 'gpt-4-32k', 'gpt-4-32k-0314'].map(
-                (model) => (
-                  <option key={model}>{model}</option>
-                ),
-              )}
+              {Object.values(CompletionParamsModel).map((model) => (
+                <option key={model}>{model}</option>
+              ))}
             </select>
           </div>
         )}

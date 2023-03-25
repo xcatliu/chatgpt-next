@@ -1,5 +1,7 @@
 import type { ChatReq, ChatRes } from '@/pages/api/chat';
 
+import { serializeObject } from './object';
+
 /** 请求 /api/chat 接口 */
 export const fetchChat = async ({ text, parentMessageId, completionParams }: ChatReq): Promise<ChatRes> => {
   const res = await fetch('/api/chat', {
@@ -8,7 +10,7 @@ export const fetchChat = async ({ text, parentMessageId, completionParams }: Cha
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ text, parentMessageId, completionParams }),
+    body: serializeObject({ text, parentMessageId, completionParams }),
   });
 
   const resContentType = res.headers.get('Content-Type');

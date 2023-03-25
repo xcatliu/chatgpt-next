@@ -1,16 +1,16 @@
 import { env } from 'process';
 
-import type { ChatGPTAPIOptions } from 'chatgpt';
 import { ChatGPTAPI } from 'chatgpt';
 
-import { serializeObject } from './serializeObject';
+import type { CompletionParams } from './completionParams';
+import { serializeObject } from './object';
 
 const apiInstanceMap = new Map();
 
 /**
  * 根据传入的 apiKey 和 completionParams 返回缓存的 ChatGPTAPI 实例
  */
-export function getAPIInstance(apiKey: string, completionParams: ChatGPTAPIOptions['completionParams']): ChatGPTAPI {
+export function getAPIInstance(apiKey: string, completionParams?: CompletionParams): ChatGPTAPI {
   // 将 apiKey 和序列化为字符串的 completionParams 拼接起来，作为缓存的 key
   const apiKeyWithParams = `${apiKey}${serializeObject(completionParams)}`;
 
