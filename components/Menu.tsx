@@ -1,34 +1,28 @@
 import { AdjustmentsHorizontalIcon, InboxStackIcon, KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import type { FC } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
-import type { CompletionParams } from '@/utils/completionParams';
+import { ChatMessageContext } from '@/context/ChatMessageContext';
+import { LoginContext } from '@/context/LoginContext';
+import { WindowSizeContext } from '@/context/WindowSizeContext';
 import { CompletionParamsModel } from '@/utils/completionParams';
-import { login, logout } from '@/utils/login';
 import { scrollToTop } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
-interface MenuProps {
-  isLogged: boolean;
-  setIsLogged: (isLogged: boolean) => void;
-  completionParams: CompletionParams;
-  setCompletionParams: (completionParams: CompletionParams) => void;
-  windowHeight: string | number;
-}
+export const Menu: FC = () => {
+  const { windowHeight } = useContext(WindowSizeContext)!;
+  const { isLogged, login, logout } = useContext(LoginContext)!;
 
-export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, setCompletionParams, windowHeight }) => {
   // TODO 默认值需要改成 !isMobile()
   const [isMenuShow, setIsMenuShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
 
   useEffect(() => {
-    (async () => {
-      // 最开始如果未登录，则弹窗登录
-      if (!isLogged) {
-        setIsLogged(await login());
-      }
-    })();
+    // 最开始如果未登录，则弹窗登录
+    if (!isLogged) {
+      login();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -36,19 +30,18 @@ export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, s
   const onKeyIconClick = useCallback(async () => {
     // 如果未登录，则弹窗登录
     if (!isLogged) {
-      setIsLogged(await login());
+      await login();
       return;
     }
     // 如果已登录，则弹窗登出
     const logoutResult = await logout();
-    setIsLogged(!logoutResult);
     // 如果登出成功，则继续弹窗要求用户登录
     if (logoutResult) {
       await sleep(100);
-      const loginResult = await login();
-      setIsLogged(loginResult);
+      await login();
     }
-  }, [isLogged, setIsLogged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLogged]);
 
   return (
     <>
@@ -57,12 +50,7 @@ export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, s
           hidden: isMenuShow,
         })}
       >
-        <MenuEntryButton
-          isLogged={isLogged}
-          onKeyIconClick={onKeyIconClick}
-          setIsMenuShow={setIsMenuShow}
-          setCurrentTab={setCurrentTab}
-        />
+        <MenuEntryButton onKeyIconClick={onKeyIconClick} setIsMenuShow={setIsMenuShow} setCurrentTab={setCurrentTab} />
       </div>
       <div
         className={classNames('fixed z-20 top-0 left-0 w-screen bg-[rgba(0,0,0,0.4)] md:hidden', {
@@ -108,8 +96,6 @@ export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, s
             isLogged={isLogged}
             currentTab={currentTab}
             setCurrentTab={setCurrentTab}
-            completionParams={completionParams}
-            setCompletionParams={setCompletionParams}
             onKeyIconClick={onKeyIconClick}
           />
         </div>
@@ -118,7 +104,9 @@ export const Menu: FC<MenuProps> = ({ isLogged, setIsLogged, completionParams, s
   );
 };
 
-const MenuEntryButton: FC<any> = ({ isLogged, onKeyIconClick, setIsMenuShow, setCurrentTab }) => {
+const MenuEntryButton: FC<any> = ({ onKeyIconClick, setIsMenuShow, setCurrentTab }) => {
+  const { isLogged } = useContext(LoginContext)!;
+
   return (
     <button
       className="text-gray-400"
@@ -155,14 +143,10 @@ const MenuEntryButton: FC<any> = ({ isLogged, onKeyIconClick, setIsMenuShow, set
 /**
  * 侧边菜单栏
  */
-const MenuContent: FC<any> = ({
-  isLogged,
-  currentTab,
-  setCurrentTab,
-  completionParams,
-  setCompletionParams,
-  onKeyIconClick,
-}) => {
+const MenuContent: FC<any> = ({ currentTab, setCurrentTab, onKeyIconClick }) => {
+  const { isLogged } = useContext(LoginContext)!;
+  const { completionParams, setCompletionParams } = useContext(ChatMessageContext)!;
+
   return (
     <>
       <menu
@@ -197,7 +181,7 @@ const MenuContent: FC<any> = ({
               onChange={(e) =>
                 setCompletionParams({
                   ...completionParams,
-                  model: e.target.value,
+                  model: e.target.value as CompletionParamsModel,
                 })
               }
             >

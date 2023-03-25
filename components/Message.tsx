@@ -1,7 +1,7 @@
 import type { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
 import Image from 'next/image';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
 
@@ -60,10 +60,10 @@ export const Message: FC<MessageProps> = ({ avatar = 'ChatGPT', chatMessage, err
 };
 
 interface SystemMessageProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /** 系统消息 */
 export const SystemMessage: FC<SystemMessageProps> = ({ children }) => {
-  return <div className="px-16 my-4 text-center text-gray-400 text-sm">{children}</div>;
+  return <div className="px-14 my-4 text-center text-gray-400 text-sm">{children}</div>;
 };

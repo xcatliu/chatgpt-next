@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import type { FC, FormEvent, KeyboardEvent } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
+import { ChatMessageContext } from '@/context/ChatMessageContext';
+import { LoginContext } from '@/context/LoginContext';
 import { isMobile } from '@/utils/device';
 import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
-interface TextareaFormProps {
-  isLogged: boolean;
-  onSubmit: (text: string) => Promise<void>;
-}
+export const TextareaForm: FC = () => {
+  const { isLogged } = useContext(LoginContext)!;
+  const { sendMessage } = useContext(ChatMessageContext)!;
 
-export const TextareaForm: FC<TextareaFormProps> = ({ isLogged, onSubmit }) => {
   // 是否正在中文输入
   const [isComposing, setIsComposing] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
@@ -93,10 +93,10 @@ export const TextareaForm: FC<TextareaFormProps> = ({ isLogged, onSubmit }) => {
       }
       updateTextareaHeight();
       updateSubmitDisabled();
-      await onSubmit(value);
+      await sendMessage(value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onSubmit],
+    [sendMessage],
   );
   /** 修改回车默认行为 */
   const onKeyDone = useCallback(

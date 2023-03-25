@@ -21,6 +21,7 @@ module.exports = {
         pathGroupsExcludedImportTypes: [],
       },
     ],
+    'import/no-duplicates': 'warn',
     // sort-imports 只用开启 memberSort，因为其他的功能都由 import/order 规则实现
     'sort-imports': [
       'warn',
