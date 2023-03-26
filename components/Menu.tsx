@@ -14,7 +14,6 @@ export const Menu: FC = () => {
   const { windowHeight } = useContext(WindowSizeContext)!;
   const { isLogged, login, logout } = useContext(LoginContext)!;
 
-  // TODO 默认值需要改成 !isMobile()
   const [isMenuShow, setIsMenuShow] = useState(false);
   const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
 

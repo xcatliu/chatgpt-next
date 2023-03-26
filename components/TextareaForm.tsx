@@ -1,14 +1,14 @@
-import classNames from 'classnames';
 import type { FC, FormEvent, KeyboardEvent } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ChatMessageContext } from '@/context/ChatMessageContext';
 import { LoginContext } from '@/context/LoginContext';
-import { isMobile } from '@/utils/device';
+import { WindowSizeContext } from '@/context/WindowSizeContext';
 import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
 export const TextareaForm: FC = () => {
+  const { isMobile } = useContext(WindowSizeContext)!;
   const { isLogged } = useContext(LoginContext)!;
   const { sendMessage } = useContext(ChatMessageContext)!;
 
@@ -112,13 +112,13 @@ export const TextareaForm: FC = () => {
         return;
       }
       // PC 端，回车发送消息
-      if (!isMobile() && e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+      if (!isMobile && e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         formOnSubmit();
         return;
       }
     },
-    [isComposing, formOnSubmit],
+    [isMobile, isComposing, formOnSubmit],
   );
 
   return (
@@ -137,7 +137,7 @@ export const TextareaForm: FC = () => {
             className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]"
             ref={textareaRef}
             disabled={!isLogged}
-            placeholder={isLogged ? '' : '请点击右上角设置密钥'}
+            placeholder={isLogged ? '' : isMobile ? '请点击右上角设置密钥' : '请点击左上角钥匙按钮设置密钥'}
             // onFocus={onFocus}
             onChange={onChange}
             onKeyDown={onKeyDone}

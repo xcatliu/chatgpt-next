@@ -39,6 +39,7 @@
     "eslint-config-next": "13.2.3",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
+    "is-mobile": "^4.0.0",
     "markdown-it": "^13.0.1",
     "next": "13.2.3",
     "postcss": "^8.4.21",

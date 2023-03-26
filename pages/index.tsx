@@ -1,4 +1,5 @@
 import { getCookies } from 'cookies-next';
+import npmIsMobile from 'is-mobile';
 import type { NextPageContext } from 'next';
 import Head from 'next/head';
 
@@ -9,10 +10,11 @@ import { Title } from '@/components/Title';
 import { isWeChat } from '@/utils/device';
 
 interface HomeProps {
+  uaIsMobile: boolean;
   isLogged: boolean;
   isWeChat: boolean;
-  windowWidth: '100vw' | number;
-  windowHeight: '100vh' | number;
+  windowWidth: number | '100vw';
+  windowHeight: number | '100vh';
 }
 
 // This gets called on every request
@@ -22,6 +24,7 @@ export async function getServerSideProps(ctx: NextPageContext): Promise<{ props:
 
   return {
     props: {
+      uaIsMobile: isWeChat(userAgent) || npmIsMobile({ ua: userAgent }),
       isLogged: !!cookies?.apiKey,
       isWeChat: isWeChat(userAgent),
       windowWidth: cookies?.windowWidth ? Number(cookies?.windowWidth) : '100vw',

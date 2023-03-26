@@ -17,6 +17,7 @@ specifiers:
   eslint-config-prettier: ^8.8.0
   eslint-plugin-import: ^2.27.5
   husky: ^8.0.0
+  is-mobile: ^4.0.0
   lint-staged: ^13.2.0
   markdown-it: ^13.0.1
   next: 13.2.3
@@ -43,6 +44,7 @@ dependencies:
   eslint-config-next: 13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
   eslint-config-prettier: 8.8.0_eslint@8.35.0
   eslint-plugin-import: 2.27.5_y7zpuyzlcgdattfqerfl6zl2py
+  is-mobile: 4.0.0
   markdown-it: 13.0.1
   next: 13.2.3_biqbaboplfbrettd7655fr4n2y
   postcss: 8.4.21
@@ -2038,6 +2040,10 @@ packages:
 
   /is-map/2.0.2:
     resolution: {integrity: sha512-cOZFQQozTha1f4MxLFzlgKYPTyj26picdZTx82hbc/Xf4K/tZOOXSCkMvU4pKioRXGDLJRn0GM7Upe7kR721yg==}
+    dev: false
+
+  /is-mobile/4.0.0:
+    resolution: {integrity: sha512-mlcHZA84t1qLSuWkt2v0I2l61PYdyQDt4aG1mLIXF5FDMm4+haBCxCPYSr/uwqQNRk1MiTizn0ypEuRAOLRAew==}
     dev: false
 
   /is-negative-zero/2.0.2:

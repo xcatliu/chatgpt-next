@@ -7,7 +7,11 @@ import { WindowSizeProvider } from '@/context/WindowSizeContext';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WindowSizeProvider windowWidth={pageProps.windowWidth} windowHeight={pageProps.windowHeight}>
+    <WindowSizeProvider
+      windowWidth={pageProps.windowWidth}
+      windowHeight={pageProps.windowHeight}
+      uaIsMobile={pageProps.uaIsMobile}
+    >
       <LoginProvider isLogged={pageProps.isLogged}>
         <ChatMessageProvider>
           <Component {...pageProps} />
