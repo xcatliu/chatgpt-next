@@ -44,7 +44,7 @@ export const History: FC = () => {
       {history.length > 0 && (
         <>
           <div className="my-4 text-center text-gray-400 text-sm">
-            历史记录仅会保存在浏览器缓存
+            聊天记录仅会保存在浏览器缓存
             <br />
             为避免丢失，请尽快
             <a
