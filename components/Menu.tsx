@@ -10,12 +10,12 @@ import { CompletionParamsModel } from '@/utils/completionParams';
 import { scrollToTop } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
+import { History } from './History';
+
 export const Menu: FC = () => {
   const { windowHeight } = useContext(WindowSizeContext)!;
   const { isLogged, login, logout } = useContext(LoginContext)!;
-
-  const [isMenuShow, setIsMenuShow] = useState(false);
-  const [currentTab, setCurrentTab] = useState<'InboxStack' | 'AdjustmentsHorizontal'>('AdjustmentsHorizontal');
+  const { isMenuShow, setIsMenuShow } = useContext(ChatMessageContext)!;
 
   useEffect(() => {
     // 最开始如果未登录，则弹窗登录
@@ -49,7 +49,7 @@ export const Menu: FC = () => {
           hidden: isMenuShow,
         })}
       >
-        <MenuEntryButton onKeyIconClick={onKeyIconClick} setIsMenuShow={setIsMenuShow} setCurrentTab={setCurrentTab} />
+        <MenuEntryButton onKeyIconClick={onKeyIconClick} />
       </div>
       <div
         className={classNames('fixed z-20 top-0 left-0 w-screen bg-[rgba(0,0,0,0.4)] md:hidden', {
@@ -59,7 +59,6 @@ export const Menu: FC = () => {
           height: windowHeight,
         }}
         onTouchStart={async () => {
-          document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
           // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
           await sleep(300);
@@ -69,7 +68,6 @@ export const Menu: FC = () => {
           }
         }}
         onClick={async () => {
-          document.documentElement.classList.remove('show-menu');
           setIsMenuShow(false);
           // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
           await sleep(300);
@@ -91,49 +89,45 @@ export const Menu: FC = () => {
             height: windowHeight,
           }}
         >
-          <MenuContent
-            isLogged={isLogged}
-            currentTab={currentTab}
-            setCurrentTab={setCurrentTab}
-            onKeyIconClick={onKeyIconClick}
-          />
+          <MenuContent isLogged={isLogged} onKeyIconClick={onKeyIconClick} />
         </div>
       </div>
     </>
   );
 };
 
-const MenuEntryButton: FC<any> = ({ onKeyIconClick, setIsMenuShow, setCurrentTab }) => {
+const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
+  const { setIsMenuShow, history, setCurrentMenu } = useContext(ChatMessageContext)!;
 
   return (
     <button
       className="text-gray-400"
       onClick={() => {
-        if (isLogged) {
-          scrollToTop();
-          setCurrentTab('AdjustmentsHorizontal');
-          setIsMenuShow(true);
-          // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
-          const formContainer = document.getElementById('form-container');
-          if (formContainer) {
-            formContainer.style.top = `${formContainer.offsetTop}px`;
-          }
-          document.documentElement.classList.add('show-menu');
-        } else {
+        if (!isLogged) {
           onKeyIconClick();
+        } else if (history && history.length > 0) {
+          scrollToTop();
+          setCurrentMenu('InboxStack');
+          setIsMenuShow(true);
+        } else {
+          scrollToTop();
+          setCurrentMenu('AdjustmentsHorizontal');
+          setIsMenuShow(true);
         }
       }}
     >
-      {isLogged ? (
-        <AdjustmentsHorizontalIcon />
-      ) : (
+      {!isLogged ? (
         <KeyIcon
           className={classNames({
             'text-green-600': isLogged,
             'text-red-500': !isLogged,
           })}
         />
+      ) : history === undefined ? null : history.length > 0 ? (
+        <InboxStackIcon />
+      ) : (
+        <AdjustmentsHorizontalIcon />
       )}
     </button>
   );
@@ -142,9 +136,9 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick, setIsMenuShow, setCurrentTab
 /**
  * 侧边菜单栏
  */
-const MenuContent: FC<any> = ({ currentTab, setCurrentTab, onKeyIconClick }) => {
+const MenuContent: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
-  const { completionParams, setCompletionParams } = useContext(ChatMessageContext)!;
+  const { completionParams, setCompletionParams, currentMenu, setCurrentMenu } = useContext(ChatMessageContext)!;
 
   return (
     <>
@@ -152,12 +146,12 @@ const MenuContent: FC<any> = ({ currentTab, setCurrentTab, onKeyIconClick }) => 
         className={`w-inherit flex z-10 justify-end bg-gray-wx border-b-[0.5px] border-gray-300
                    md:flex-row-reverse md:px-4 md:pt-2 md:border-r`}
       >
-        <button onClick={() => setCurrentTab('InboxStack')}>
-          <InboxStackIcon className={classNames({ 'text-gray-400': currentTab !== 'InboxStack' })} />
+        <button onClick={() => setCurrentMenu('InboxStack')}>
+          <InboxStackIcon className={classNames({ 'text-gray-400': currentMenu !== 'InboxStack' })} />
         </button>
-        <button onClick={() => setCurrentTab('AdjustmentsHorizontal')}>
+        <button onClick={() => setCurrentMenu('AdjustmentsHorizontal')}>
           <AdjustmentsHorizontalIcon
-            className={classNames({ 'text-gray-400': currentTab !== 'AdjustmentsHorizontal' })}
+            className={classNames({ 'text-gray-400': currentMenu !== 'AdjustmentsHorizontal' })}
           />
         </button>
         <div className="grow" />
@@ -170,9 +164,9 @@ const MenuContent: FC<any> = ({ currentTab, setCurrentTab, onKeyIconClick }) => 
           />
         </button>
       </menu>
-      <div className="grow md:mx-4 md:my-2">
-        {currentTab === 'InboxStack' && <div className="m-4">聊天记录功能开发中...</div>}
-        {currentTab === 'AdjustmentsHorizontal' && (
+      <div className="grow md:mx-4">
+        {currentMenu === 'InboxStack' && <History />}
+        {currentMenu === 'AdjustmentsHorizontal' && (
           <div className="m-4">
             模型：
             <select
@@ -193,11 +187,7 @@ const MenuContent: FC<any> = ({ currentTab, setCurrentTab, onKeyIconClick }) => 
       </div>
       <div className="mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
         由{' '}
-        <a
-          className="underline decoration hover:text-gray-500"
-          href="https://github.com/xcatliu/chatgpt-next"
-          target="_blank"
-        >
+        <a className="text-link-gray" href="https://github.com/xcatliu/chatgpt-next" target="_blank">
           ChatGPT Next
         </a>{' '}
         驱动

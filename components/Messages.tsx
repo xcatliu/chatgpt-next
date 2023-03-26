@@ -17,7 +17,11 @@ const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
 const LOADING_MESSAGE = '正在努力思考...';
 
 export const Messages: FC = () => {
-  const { isLoading, messages } = useContext(ChatMessageContext)!;
+  let { isLoading, messages, history, historyIndex, startNewChat } = useContext(ChatMessageContext)!;
+
+  if (history && typeof historyIndex === 'number') {
+    messages = history[historyIndex].messages;
+  }
 
   return (
     <div className="md:grow" style={{ display: 'flow-root' }}>
@@ -31,6 +35,14 @@ export const Messages: FC = () => {
         <Message key={index} {...messageProps} />
       ))}
       {isLoading && <Message chatMessage={{ text: LOADING_MESSAGE }} />}
+      {messages.length > 1 && (
+        <SystemMessage>
+          连续对话会消耗额外 tokens，
+          <a className="text-link-gray" onClick={startNewChat}>
+            开启新对话
+          </a>
+        </SystemMessage>
+      )}
     </div>
   );
 };

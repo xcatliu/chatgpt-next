@@ -12,6 +12,7 @@ specifiers:
   chatgpt: ^5.0.10
   classnames: ^2.3.2
   cookies-next: ^2.1.1
+  dayjs: ^1.11.7
   eslint: 8.35.0
   eslint-config-next: 13.2.3
   eslint-config-prettier: ^8.8.0
@@ -40,6 +41,7 @@ dependencies:
   chatgpt: 5.0.10
   classnames: 2.3.2
   cookies-next: 2.1.1
+  dayjs: 1.11.7
   eslint: 8.35.0
   eslint-config-next: 13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
   eslint-config-prettier: 8.8.0_eslint@8.35.0
@@ -975,6 +977,10 @@ packages:
 
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
+    dev: false
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
     dev: false
 
   /debounce-fn/5.1.2:

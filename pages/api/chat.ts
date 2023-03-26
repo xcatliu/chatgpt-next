@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // /**
   if (env.NODE_ENV === 'development') {
     res.status(HttpStatusCode.OK).json({
-      id: 'dev',
+      id: `dev${Math.random()}`,
       role: 'assistant',
       text: '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 pages/api/chat.ts 文件中的相关代码注释掉。',
     });
