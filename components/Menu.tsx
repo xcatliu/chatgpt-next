@@ -1,11 +1,11 @@
 import { AdjustmentsHorizontalIcon, InboxStackIcon, KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import type { FC } from 'react';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
 import { ChatMessageContext } from '@/context/ChatMessageContext';
+import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
-import { WindowSizeContext } from '@/context/WindowSizeContext';
 import { CompletionParamsModel } from '@/utils/completionParams';
 import { scrollToTop } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
@@ -13,7 +13,7 @@ import { sleep } from '@/utils/sleep';
 import { History } from './History';
 
 export const Menu: FC = () => {
-  const { windowHeight } = useContext(WindowSizeContext)!;
+  const { windowHeight, isWeChat } = useContext(DeviceContext)!;
   const { isLogged, login, logout } = useContext(LoginContext)!;
   const { isMenuShow, setIsMenuShow } = useContext(ChatMessageContext)!;
 
@@ -46,6 +46,7 @@ export const Menu: FC = () => {
     <>
       <div
         className={classNames('fixed z-20 top-0 right-0 md:hidden', {
+          absolute: isWeChat,
           hidden: isMenuShow,
         })}
       >

@@ -21,10 +21,6 @@ interface ErrorResponse {
   message: string;
 }
 
-/**
- * @TODO 参考这个实现 Server-Sent Events
- * https://github.com/vercel/next.js/issues/9965#issuecomment-587355489
- */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ChatRes | ErrorResponse>) {
   // https://stackoverflow.com/a/66740097/2777142
   if (req.method !== HttpMethod.POST) {

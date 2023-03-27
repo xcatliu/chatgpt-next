@@ -159,8 +159,11 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
 
   /** 清空聊天记录 */
   const clearHistory = useCallback(() => {
-    removeCache('history');
     setHistory([]);
+    setCache('history', []);
+    setMessages([]);
+    setCache('messages', []);
+    setHistoryIndex('empty');
   }, []);
 
   /** 开启新对话 */

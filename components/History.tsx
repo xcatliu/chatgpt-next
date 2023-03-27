@@ -41,6 +41,7 @@ export const History: FC = () => {
           </li>
         ))}
       </ul>
+      {history.length === 0 && <div className="my-4 text-center text-gray-400 text-sm">暂无聊天记录</div>}
       {history.length > 0 && (
         <>
           <div className="my-4 text-center text-gray-400 text-sm">

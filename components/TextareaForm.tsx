@@ -2,13 +2,13 @@ import type { FC, FormEvent, KeyboardEvent } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { ChatMessageContext } from '@/context/ChatMessageContext';
+import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
-import { WindowSizeContext } from '@/context/WindowSizeContext';
 import { isDomChild } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
 export const TextareaForm: FC = () => {
-  const { isMobile } = useContext(WindowSizeContext)!;
+  const { isMobile } = useContext(DeviceContext)!;
   const { isLogged } = useContext(LoginContext)!;
   const { sendMessage } = useContext(ChatMessageContext)!;
 
