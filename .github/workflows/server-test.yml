@@ -1,0 +1,19 @@
+name: Server deploy https://test.chatgpt-next.com
+on:
+  push:
+    branches:
+      - test
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            ${{ vars.CD_PROJECT_TEST }}
+            git fetch origin test && git checkout origin/test && pnpm i && pnpm build && pm2 restart test.chatgpt-next.com
