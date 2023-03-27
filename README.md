@@ -7,6 +7,7 @@ https://chatgpt-next.com
 备份网址：
 
 - https://chatgpt-next-xcatliu.vercel.app
+- https://chatgpt-next-xcatliu.netlify.app
 - https://chatgpt-next.zeabur.app
 
 如果你也部署了一个站点并且愿意公开出来，欢迎 pr！
