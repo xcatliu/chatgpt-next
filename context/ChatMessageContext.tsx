@@ -113,6 +113,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
           let message = '';
           chatSseRes.addEventListener('message', (e) => {
             message += e.data;
+            console.log(message);
             setMessages([...newMessages, { chatMessage: { text: message } }]);
           });
           chatSseRes.addEventListener('finish', (e) => {
