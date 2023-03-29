@@ -107,16 +107,22 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       await sleep(16);
       scrollToBottom();
       try {
-        // 再请求 /api/chat 接口获取回复
         const parentMessageId = last(messages)?.chatMessage?.id;
         if (completionParams.stream) {
           const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatStreamRes;
           const chatSseRes = new EventSource(`/api/chat-sse?taskId=${chatRes.taskId}`);
           setIsLoading(false);
+          let message = '';
           chatSseRes.addEventListener('message', (e) => {
-            console.log(e.data);
+            message += e.data;
+            setMessages((messages) => {
+              const newMessages = [...messages, { chatMessage: { text: message } }];
+              setCache('messages', newMessages);
+              return newMessages;
+            });
           });
           chatSseRes.addEventListener('finish', (e) => {
+            chatSseRes.close();
             setMessages((messages) => {
               const newMessages = [...messages, { chatMessage: JSON.parse(e.data) }];
               setCache('messages', newMessages);
@@ -124,6 +130,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
             });
           });
         } else {
+          // 请求 /api/chat 接口获取回复
           const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatMessage;
           setIsLoading(false);
           setMessages((messages) => {
