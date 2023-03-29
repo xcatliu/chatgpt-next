@@ -39,7 +39,9 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
-  const [completionParams, setCompletionParams] = useState<CompletionParams>({});
+  const [completionParams, setCompletionParams] = useState<CompletionParams>({
+    stream: true,
+  });
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<number | 'empty' | 'current'>('empty');
 
