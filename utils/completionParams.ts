@@ -9,4 +9,5 @@ export enum CompletionParamsModel {
 
 export interface CompletionParams {
   model?: CompletionParamsModel;
+  stream?: boolean;
 }

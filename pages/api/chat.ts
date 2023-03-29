@@ -8,13 +8,18 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { CompletionParams } from '@/utils/completionParams';
 import { HttpMethod, HttpStatusCode } from '@/utils/constants';
 import { getAPIInstance } from '@/utils/getApiInstance';
+import { createTask } from '@/utils/task';
 
 export type ChatReq = SendMessageOptions & {
   text: string;
   completionParams?: CompletionParams;
 };
 
-export type ChatRes = ChatMessage;
+export type ChatRes = ChatMessage | ChatStreamRes;
+
+export type ChatStreamRes = {
+  taskId: string;
+};
 
 interface ErrorResponse {
   code: HttpStatusCode;
@@ -45,20 +50,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const api = getAPIInstance(apiKey, completionParams);
 
-  // 删除下一行开头的 // 可以注释整个 if 判断
-  // /**
-  if (env.NODE_ENV === 'development') {
-    res.status(HttpStatusCode.OK).json({
-      id: `dev${Math.random()}`,
-      role: 'assistant',
-      text: '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 pages/api/chat.ts 文件中的相关代码注释掉。',
-    });
-
-    return;
-  }
-  // */
-
   try {
+    if (completionParams?.stream) {
+      const task = createTask((onProgress) => {
+        return api.sendMessage(text, {
+          parentMessageId,
+          onProgress,
+        });
+      });
+
+      res.status(HttpStatusCode.OK).json({
+        taskId: task.id,
+      });
+      return;
+    }
+
+    // 删除下一行开头的 // 可以注释整个 if 判断
+    // /**
+    if (env.NODE_ENV === 'development') {
+      res.status(HttpStatusCode.OK).json({
+        id: `dev${Math.random()}`,
+        role: 'assistant',
+        text: '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 pages/api/chat.ts 文件中的相关代码注释掉。',
+      });
+
+      return;
+    }
+    // */
+
     const chatGptRes = await api.sendMessage(text, {
       parentMessageId,
     });

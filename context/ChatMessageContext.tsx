@@ -1,7 +1,9 @@
+import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import type { MessageProps } from '@/components/Message';
+import type { ChatStreamRes } from '@/pages/api/chat';
 import { fetchChat } from '@/utils/api';
 import { getCache, removeCache, setCache } from '@/utils/cache';
 import type { CompletionParams } from '@/utils/completionParams';
@@ -37,7 +39,9 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
-  const [completionParams, setCompletionParams] = useState<CompletionParams>({});
+  const [completionParams, setCompletionParams] = useState<CompletionParams>({
+    stream: true,
+  });
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<number | 'empty' | 'current'>('empty');
 
@@ -93,34 +97,47 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       }
 
       // 先插入一条用户消息
-      setMessages((messages) => {
-        const newMessages = [...messages, { avatar: 'user', chatMessage: { text } }];
-        setCache('messages', newMessages);
-        return newMessages;
-      });
+      let newMessages = [...messages, { avatar: 'user', chatMessage: { text } }];
+      setMessages(newMessages);
+      setCache('messages', newMessages);
       setIsLoading(true);
       setHistoryIndex('current');
       await sleep(16);
       scrollToBottom();
       try {
-        // 再请求 /api/chat 接口获取回复
         const parentMessageId = last(messages)?.chatMessage?.id;
-        const chatRes = await fetchChat({ text, parentMessageId, completionParams });
-        setIsLoading(false);
-        setMessages((messages) => {
-          const newMessages = [...messages, { chatMessage: chatRes }];
+        if (completionParams.stream) {
+          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatStreamRes;
+          const chatSseRes = new EventSource(`/api/chat-sse?taskId=${chatRes.taskId}`);
+          let message = '';
+          chatSseRes.addEventListener('message', (e) => {
+            if (message === '') {
+              setIsLoading(false);
+            }
+            message += e.data.replace(/==BREAK=PLACEHOLDER==/g, '\n');
+            setMessages([...newMessages, { chatMessage: { text: message } }]);
+          });
+          chatSseRes.addEventListener('finish', (e) => {
+            chatSseRes.close();
+            newMessages = [...newMessages, { chatMessage: JSON.parse(e.data) }];
+            setMessages(newMessages);
+            setCache('messages', newMessages);
+          });
+        } else {
+          // 请求 /api/chat 接口获取回复
+          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatMessage;
+          setIsLoading(false);
+          newMessages = [...newMessages, { chatMessage: chatRes }];
+          setMessages(newMessages);
           setCache('messages', newMessages);
-          return newMessages;
-        });
-        await sleep(16);
-        scrollToBottom();
+          await sleep(16);
+          scrollToBottom();
+        }
       } catch (e: any) {
         setIsLoading(false);
-        setMessages((messages) => {
-          const newMessages = [...messages, { error: e }];
-          setCache('messages', newMessages);
-          return newMessages;
-        });
+        newMessages = [...newMessages, { error: e }];
+        setMessages(newMessages);
+        setCache('messages', newMessages);
         await sleep(16);
         scrollToBottom();
       }

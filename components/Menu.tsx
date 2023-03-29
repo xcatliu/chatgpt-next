@@ -168,22 +168,39 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
       <div className="grow md:mx-4">
         {currentMenu === 'InboxStack' && <History />}
         {currentMenu === 'AdjustmentsHorizontal' && (
-          <div className="m-4">
-            模型：
-            <select
-              value={completionParams.model}
-              onChange={(e) =>
-                setCompletionParams({
-                  ...completionParams,
-                  model: e.target.value as CompletionParamsModel,
-                })
-              }
-            >
-              {Object.values(CompletionParamsModel).map((model) => (
-                <option key={model}>{model}</option>
-              ))}
-            </select>
-          </div>
+          <>
+            <div className="m-4">
+              模型：
+              <select
+                value={completionParams.model}
+                onChange={(e) =>
+                  setCompletionParams({
+                    ...completionParams,
+                    model: e.target.value as CompletionParamsModel,
+                  })
+                }
+              >
+                {Object.values(CompletionParamsModel).map((model) => (
+                  <option key={model}>{model}</option>
+                ))}
+              </select>
+            </div>
+            <div className="m-4">
+              <label>
+                流式响应：
+                <input
+                  defaultChecked={completionParams.stream}
+                  type="checkbox"
+                  onChange={(e) =>
+                    setCompletionParams({
+                      ...completionParams,
+                      stream: e.target.checked,
+                    })
+                  }
+                />
+              </label>
+            </div>
+          </>
         )}
       </div>
       <div className="mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
