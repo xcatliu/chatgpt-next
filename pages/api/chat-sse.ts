@@ -64,7 +64,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // */
 
   const chatMessage = await task.run((partialResponse: ChatMessage) => {
-    res.write(`data: ${partialResponse.delta}\n\n`);
+    if (partialResponse.delta !== undefined) {
+      res.write(`data: ${partialResponse.delta}\n\n`);
+    }
   });
 
   res.write(`event: finish\ndata: ${JSON.stringify(chatMessage)}\n\n`);
