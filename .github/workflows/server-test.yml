@@ -1,4 +1,4 @@
-name: Server deploy https://test.chatgpt-next.com
+name: Test server deploy
 on:
   push:
     branches:

@@ -8,7 +8,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { CompletionParams } from '@/utils/completionParams';
 import { HttpMethod, HttpStatusCode } from '@/utils/constants';
 import { getAPIInstance } from '@/utils/getApiInstance';
-import { createSseTask } from '@/utils/sseTask';
+import { createTask } from '@/utils/task';
 
 export type ChatReq = SendMessageOptions & {
   text: string;
@@ -18,7 +18,7 @@ export type ChatReq = SendMessageOptions & {
 export type ChatRes = ChatMessage;
 
 export type ChatSseRes = {
-  sseTaskId: string;
+  taskId: string;
 };
 
 interface ErrorResponse {
@@ -65,21 +65,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     if (completionParams?.stream) {
-      const sseTask = createSseTask();
-
-      api
-        .sendMessage(text, {
+      const task = createTask((onProgress) => {
+        return api.sendMessage(text, {
           parentMessageId,
-          onProgress(partialResponse) {
-            sseTask.appendText(partialResponse.text);
-          },
-        })
-        .then((chatGptRes) => {
-          sseTask.setChatMessage(chatGptRes);
+          onProgress,
         });
+      });
 
       res.status(HttpStatusCode.OK).json({
-        sseTaskId: sseTask.id,
+        taskId: task.id,
       });
       return;
     }

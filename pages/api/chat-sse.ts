@@ -5,7 +5,7 @@ import type { ChatMessage, SendMessageOptions } from 'chatgpt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { HttpMethod, HttpStatusCode } from '@/utils/constants';
-import { getSseTask } from '@/utils/sseTask';
+import { getTask } from '@/utils/task';
 
 export type ChatReq = SendMessageOptions & {
   text: string;
@@ -29,17 +29,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  const id = req.query.id as string;
+  const taskId = req.query.taskId as string;
 
-  if (!id) {
-    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: 'sse id 未设置' });
+  if (!taskId) {
+    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: 'taskId 未设置' });
     return;
   }
 
-  const sseTask = getSseTask(id);
+  const task = getTask(taskId);
 
-  if (!sseTask) {
-    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '不存在此 id 的 sse' });
+  if (!task) {
+    res.status(HttpStatusCode.BadRequest).send({ code: HttpStatusCode.BadRequest, message: '不存在此 task' });
     return;
   }
 
@@ -48,11 +48,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('X-Accel-Buffering', 'no');
 
-  for await (const partialText of sseTask?.streamTextGenerator()) {
-    res.write(`data: ${partialText}\n\n`);
-  }
+  const chatMessage = await task.run((partialResponse: ChatMessage) => {
+    res.write(`data: ${partialResponse.delta}\n\n`);
+  });
 
-  res.write(`data: ${JSON.stringify(sseTask.chatMessage)}\n\n`);
+  res.write(`data: ${JSON.stringify(chatMessage)}\n\n`);
   res.end('data: [DONE]\n');
   return;
 }
