@@ -72,7 +72,7 @@ class SseTask {
     }
 
     // 一直循环直到 chatMessage 存在，表示流式请求结束
-    while (this.chatMessage) {
+    while (!this.chatMessage) {
       // 先等待 appendText 被调用
       await this.waitForAppendText;
       // appendText 被调用后，输出之前积攒的 partialText
