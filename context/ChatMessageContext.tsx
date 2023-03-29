@@ -114,7 +114,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
             if (message === '') {
               setIsLoading(false);
             }
-            message += e.data.replace(/==BREAK=PLACEHOLDER==/g, '<br>');
+            message += e.data.replace(/==BREAK=PLACEHOLDER==/g, '\n');
             setMessages([...newMessages, { chatMessage: { text: message } }]);
           });
           chatSseRes.addEventListener('finish', (e) => {
