@@ -97,11 +97,9 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       }
 
       // 先插入一条用户消息
-      setMessages((messages) => {
-        const newMessages = [...messages, { avatar: 'user', chatMessage: { text } }];
-        setCache('messages', newMessages);
-        return newMessages;
-      });
+      let newMessages = [...messages, { avatar: 'user', chatMessage: { text } }];
+      setMessages(newMessages);
+      setCache('messages', newMessages);
       setIsLoading(true);
       setHistoryIndex('current');
       await sleep(16);
@@ -115,35 +113,29 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
           let message = '';
           chatSseRes.addEventListener('message', (e) => {
             message += e.data;
-            setMessages([...messages, { chatMessage: { text: message } }]);
+            setMessages([...newMessages, { chatMessage: { text: message } }]);
           });
           chatSseRes.addEventListener('finish', (e) => {
             chatSseRes.close();
-            setMessages((messages) => {
-              const newMessages = [...messages, { chatMessage: JSON.parse(e.data) }];
-              setCache('messages', newMessages);
-              return newMessages;
-            });
+            newMessages = [...newMessages, { chatMessage: JSON.parse(e.data) }];
+            setMessages(newMessages);
+            setCache('messages', newMessages);
           });
         } else {
           // 请求 /api/chat 接口获取回复
           const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatMessage;
           setIsLoading(false);
-          setMessages((messages) => {
-            const newMessages = [...messages, { chatMessage: chatRes }];
-            setCache('messages', newMessages);
-            return newMessages;
-          });
+          newMessages = [...newMessages, { chatMessage: chatRes }];
+          setMessages(newMessages);
+          setCache('messages', newMessages);
           await sleep(16);
           scrollToBottom();
         }
       } catch (e: any) {
         setIsLoading(false);
-        setMessages((messages) => {
-          const newMessages = [...messages, { error: e }];
-          setCache('messages', newMessages);
-          return newMessages;
-        });
+        newMessages = [...newMessages, { error: e }];
+        setMessages(newMessages);
+        setCache('messages', newMessages);
         await sleep(16);
         scrollToBottom();
       }
