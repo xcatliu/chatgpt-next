@@ -37,7 +37,7 @@ export const Messages: FC = () => {
       {isLoading && <Message chatMessage={{ text: LOADING_MESSAGE }} />}
       {messages.length > 1 && (
         <SystemMessage>
-          连续对话会消耗额外 tokens，
+          连续对话会加倍消耗 tokens，
           <a className="text-link-gray" onClick={startNewChat}>
             开启新对话
           </a>

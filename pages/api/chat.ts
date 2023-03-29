@@ -8,6 +8,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { CompletionParams } from '@/utils/completionParams';
 import { HttpMethod, HttpStatusCode } from '@/utils/constants';
 import { getAPIInstance } from '@/utils/getApiInstance';
+import { createSseTask } from '@/utils/sseTask';
 
 export type ChatReq = SendMessageOptions & {
   text: string;
@@ -16,12 +17,16 @@ export type ChatReq = SendMessageOptions & {
 
 export type ChatRes = ChatMessage;
 
+export type ChatSseRes = {
+  sseTaskId: string;
+};
+
 interface ErrorResponse {
   code: HttpStatusCode;
   message: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ChatRes | ErrorResponse>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ChatRes | ChatSseRes | ErrorResponse>) {
   // https://stackoverflow.com/a/66740097/2777142
   if (req.method !== HttpMethod.POST) {
     res
@@ -59,6 +64,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   // */
 
   try {
+    if (completionParams?.stream) {
+      const sseTask = createSseTask();
+
+      api
+        .sendMessage(text, {
+          parentMessageId,
+          onProgress(partialResponse) {
+            sseTask.appendText(partialResponse.text);
+          },
+        })
+        .then((chatGptRes) => {
+          sseTask.setChatMessage(chatGptRes);
+        });
+
+      res.status(HttpStatusCode.OK).json({
+        sseTaskId: sseTask.id,
+      });
+      return;
+    }
+
     const chatGptRes = await api.sendMessage(text, {
       parentMessageId,
     });
