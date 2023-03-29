@@ -109,11 +109,12 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
         if (completionParams.stream) {
           const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatStreamRes;
           const chatSseRes = new EventSource(`/api/chat-sse?taskId=${chatRes.taskId}`);
-          setIsLoading(false);
           let message = '';
           chatSseRes.addEventListener('message', (e) => {
-            message += e.data;
-            console.log(message);
+            if (message === '') {
+              setIsLoading(false);
+            }
+            message += e.data.replace(/==BREAK=PLACEHOLDER==/g, '<br>');
             setMessages([...newMessages, { chatMessage: { text: message } }]);
           });
           chatSseRes.addEventListener('finish', (e) => {
