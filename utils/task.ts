@@ -42,6 +42,11 @@ export class Task {
    * 执行此任务
    */
   public run(...args: any[]) {
-    return this.callback(...args);
+    const runResult = this.callback(...args);
+
+    // 执行完成后，销毁此任务，避免重复请求
+    taskMap.delete(this.id);
+
+    return runResult;
   }
 }

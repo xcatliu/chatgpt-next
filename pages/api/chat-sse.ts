@@ -52,7 +52,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     res.write(`data: ${partialResponse.delta}\n\n`);
   });
 
-  res.write(`data: ${JSON.stringify(chatMessage)}\n\n`);
-  res.end('data: [DONE]\n');
+  res.write(`event: finish\ndata: ${JSON.stringify(chatMessage)}\n\n`);
   return;
 }

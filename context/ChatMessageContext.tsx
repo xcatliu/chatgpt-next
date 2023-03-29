@@ -1,7 +1,9 @@
+import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
 import type { MessageProps } from '@/components/Message';
+import type { ChatStreamRes } from '@/pages/api/chat';
 import { fetchChat } from '@/utils/api';
 import { getCache, removeCache, setCache } from '@/utils/cache';
 import type { CompletionParams } from '@/utils/completionParams';
@@ -105,15 +107,31 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       try {
         // 再请求 /api/chat 接口获取回复
         const parentMessageId = last(messages)?.chatMessage?.id;
-        const chatRes = await fetchChat({ text, parentMessageId, completionParams });
-        setIsLoading(false);
-        setMessages((messages) => {
-          const newMessages = [...messages, { chatMessage: chatRes }];
-          setCache('messages', newMessages);
-          return newMessages;
-        });
-        await sleep(16);
-        scrollToBottom();
+        if (completionParams.stream) {
+          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatStreamRes;
+          const chatSseRes = new EventSource(`/api/chat-sse?taskId=${chatRes.taskId}`);
+          setIsLoading(false);
+          chatSseRes.addEventListener('message', (e) => {
+            console.log(e.data);
+          });
+          chatSseRes.addEventListener('finish', (e) => {
+            setMessages((messages) => {
+              const newMessages = [...messages, { chatMessage: JSON.parse(e.data) }];
+              setCache('messages', newMessages);
+              return newMessages;
+            });
+          });
+        } else {
+          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatMessage;
+          setIsLoading(false);
+          setMessages((messages) => {
+            const newMessages = [...messages, { chatMessage: chatRes }];
+            setCache('messages', newMessages);
+            return newMessages;
+          });
+          await sleep(16);
+          scrollToBottom();
+        }
       } catch (e: any) {
         setIsLoading(false);
         setMessages((messages) => {

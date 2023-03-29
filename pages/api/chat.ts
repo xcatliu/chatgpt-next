@@ -15,9 +15,9 @@ export type ChatReq = SendMessageOptions & {
   completionParams?: CompletionParams;
 };
 
-export type ChatRes = ChatMessage;
+export type ChatRes = ChatMessage | ChatStreamRes;
 
-export type ChatSseRes = {
+export type ChatStreamRes = {
   taskId: string;
 };
 
@@ -26,7 +26,7 @@ interface ErrorResponse {
   message: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ChatRes | ChatSseRes | ErrorResponse>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ChatRes | ErrorResponse>) {
   // https://stackoverflow.com/a/66740097/2777142
   if (req.method !== HttpMethod.POST) {
     res
