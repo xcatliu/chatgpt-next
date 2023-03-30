@@ -31,6 +31,7 @@ export const ChatMessageContext = createContext<{
   loadHistory: (historyIndex: number) => void;
   clearHistory: () => void;
   startNewChat: () => void;
+  deleteChatHistory: (historyIndex: number) => void;
 } | null>(null);
 
 export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -183,6 +184,16 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
     setHistoryIndex('empty');
   }, []);
 
+  /** 删除当前单条聊天记录 */
+  const deleteChatHistory = useCallback(
+    (chatIndex: number) => {
+      setHistoryIndex('empty');
+      const newHistory = history?.filter((_, index) => index !== chatIndex) ?? [];
+      setHistory(newHistory);
+    },
+    [history],
+  );
+
   /** 开启新对话 */
   const startNewChat = useCallback(() => {
     let newHistory = [...(history ?? [])];
@@ -214,6 +225,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
         loadHistory,
         clearHistory,
         startNewChat,
+        deleteChatHistory,
       }}
     >
       {children}
