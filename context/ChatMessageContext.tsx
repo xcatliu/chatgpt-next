@@ -190,6 +190,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       setHistoryIndex('empty');
       const newHistory = history?.filter((_, index) => index !== chatIndex) ?? [];
       setHistory(newHistory);
+      setCache('history', newHistory);
     },
     [history],
   );
