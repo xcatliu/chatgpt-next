@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import type { FC, ReactNode } from 'react';
 
-import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
+import { formatMessage, FormatMessageMode } from '@/app/utils/formatMessage';
 
 export interface MessageProps {
   avatar?: 'ChatGPT' | 'user' | string;

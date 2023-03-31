@@ -3,12 +3,12 @@ import classNames from 'classnames';
 import type { FC } from 'react';
 import { useCallback, useContext, useEffect } from 'react';
 
-import { ChatMessageContext } from '@/context/ChatMessageContext';
-import { DeviceContext } from '@/context/DeviceContext';
-import { LoginContext } from '@/context/LoginContext';
-import { CompletionParamsModel } from '@/utils/completionParams';
-import { scrollToTop } from '@/utils/scroll';
-import { sleep } from '@/utils/sleep';
+import { ChatMessageContext } from '@/app/context/ChatMessageContext';
+import { DeviceContext } from '@/app/context/DeviceContext';
+import { LoginContext } from '@/app/context/LoginContext';
+import { CompletionParamsModel } from '@/app/utils/completionParams';
+import { scrollToTop } from '@/app/utils/scroll';
+import { sleep } from '@/app/utils/sleep';
 
 import { History } from './History';
 

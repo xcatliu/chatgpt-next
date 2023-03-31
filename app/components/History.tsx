@@ -3,9 +3,9 @@ import dayjs from 'dayjs';
 import type { FC } from 'react';
 import { useContext } from 'react';
 
-import { ChatMessageContext } from '@/context/ChatMessageContext';
-import { exportJSON } from '@/utils/export';
-import { last } from '@/utils/last';
+import { ChatMessageContext } from '@/app/context/ChatMessageContext';
+import { exportJSON } from '@/app/utils/export';
+import { last } from '@/app/utils/last';
 
 export const History: FC = () => {
   let { messages, history, clearHistory, historyIndex, loadHistory } = useContext(ChatMessageContext)!;

@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { useContext } from 'react';
 
-import { ChatMessageContext } from '@/context/ChatMessageContext';
-// import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/utils/exampleChatMessage';
+import { ChatMessageContext } from '@/app/context/ChatMessageContext';
+// import { exampleChatMessage, htmlMessage, regexpNumberMessage, userMessage } from '@/app/utils/exampleChatMessage';
 
 import { Message, SystemMessage } from './Message';
 

@@ -4,17 +4,19 @@ import { cookies, headers } from 'next/headers';
 import type { FC, ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
 
-import { isWeChat } from '../utils/device';
+import { isWeChat as utilIsWeChat } from '../utils/device';
 
 export const DeviceContext = createContext<{
   windowWidth: number | '100vw';
   windowHeight: number | '100vh';
   isMobile: boolean;
+  isWeChat: boolean;
 } | null>(null);
 
 export const DeviceProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const userAgent = headers().get('user-agent') ?? '';
-  const uaIsMobile = isWeChat() || npmIsMobile({ ua: userAgent });
+  const isWeChat = utilIsWeChat();
+  const uaIsMobile = isWeChat || npmIsMobile({ ua: userAgent });
 
   const cookieWindowWidth = cookies().get('windowWidth');
   const cookieWindowHeight = cookies().get('windowHeight');
@@ -49,5 +51,9 @@ export const DeviceProvider: FC<{ children: ReactNode }> = ({ children }) => {
     });
   }, []);
 
-  return <DeviceContext.Provider value={{ windowWidth, windowHeight, isMobile }}>{children}</DeviceContext.Provider>;
+  return (
+    <DeviceContext.Provider value={{ windowWidth, windowHeight, isMobile, isWeChat }}>
+      {children}
+    </DeviceContext.Provider>
+  );
 };
