@@ -30,7 +30,7 @@ export const History: FC = () => {
       <ul>
         {history.map((historyItem, index) => (
           <li
-            className={classNames('p-4 border-b-[0.5px] cursor-pointer border-gray-300 md:-mx-4 md:px-8 relative', {
+            className={classNames('p-4 border-b-[0.5px] cursor-default border-gray-300 md:-mx-4 md:px-8 relative', {
               'bg-gray-300': activeHistoryIndex === index,
             })}
             key={index}

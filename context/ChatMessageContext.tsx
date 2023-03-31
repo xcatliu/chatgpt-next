@@ -156,6 +156,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       }
 
       if (typeof historyIndex === 'number') {
+        if (historyIndex === index) return;
         setHistoryIndex(index);
         setIsMenuShow(false);
         return;
@@ -187,12 +188,16 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
   /** 删除当前单条聊天记录 */
   const deleteChatHistory = useCallback(
     (chatIndex: number) => {
-      setHistoryIndex('empty');
-      const newHistory = history?.filter((_, index) => index !== chatIndex) ?? [];
-      setHistory(newHistory);
-      setCache('history', newHistory);
+      const newHistory = [...(history ?? [])];
+      const currHistory = newHistory.filter((_, index) => index !== chatIndex) ?? [];
+
+      setHistory(currHistory);
+      setCache('history', currHistory);
+
+      // 选择最近的一条聊天记录展示
+      setHistoryIndex(currHistory.length === 0 ? 'empty' : chatIndex > 0 ? chatIndex - 1 : 0);
     },
-    [history],
+    [history, historyIndex],
   );
 
   /** 开启新对话 */
