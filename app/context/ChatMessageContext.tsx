@@ -2,14 +2,14 @@ import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
-import type { MessageProps } from '@/components/Message';
-import type { ChatStreamRes } from '@/pages/api/chat';
-import { fetchChat } from '@/utils/api';
-import { getCache, removeCache, setCache } from '@/utils/cache';
-import type { CompletionParams } from '@/utils/completionParams';
-import { last } from '@/utils/last';
-import { scrollToBottom } from '@/utils/scroll';
-import { sleep } from '@/utils/sleep';
+import type { MessageProps } from '@/app/components/Message';
+import type { ChatStreamRes } from '@/app/pages/api/chat';
+import { fetchChat } from '@/app/utils/api';
+import { getCache, removeCache, setCache } from '@/app/utils/cache';
+import type { CompletionParams } from '@/app/utils/completionParams';
+import { last } from '@/app/utils/last';
+import { scrollToBottom } from '@/app/utils/scroll';
+import { sleep } from '@/app/utils/sleep';
 
 export interface HistoryItem {
   topic?: string;

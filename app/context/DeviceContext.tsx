@@ -1,24 +1,31 @@
 import { setCookie } from 'cookies-next';
+import npmIsMobile from 'is-mobile';
+import { cookies, headers } from 'next/headers';
 import type { FC, ReactNode } from 'react';
 import { createContext, useEffect, useState } from 'react';
+
+import { isWeChat } from '../utils/device';
 
 export const DeviceContext = createContext<{
   windowWidth: number | '100vw';
   windowHeight: number | '100vh';
   isMobile: boolean;
-  isWeChat: boolean;
 } | null>(null);
 
-export const DeviceProvider: FC<{
-  windowWidth: number | '100vw';
-  windowHeight: number | '100vh';
-  uaIsMobile: boolean;
-  isWeChat: boolean;
-  children: ReactNode;
-}> = ({ windowWidth: propsWindowWidth, windowHeight: propsWindowHeight, uaIsMobile, isWeChat, children }) => {
-  const [windowWidth, setWindowWidth] = useState<number | '100vw'>(propsWindowWidth);
+export const DeviceProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const userAgent = headers().get('user-agent') ?? '';
+  const uaIsMobile = isWeChat() || npmIsMobile({ ua: userAgent });
+
+  const cookieWindowWidth = cookies().get('windowWidth');
+  const cookieWindowHeight = cookies().get('windowHeight');
+
+  const [windowWidth, setWindowWidth] = useState<number | '100vw'>(
+    cookieWindowWidth ? Number(cookieWindowWidth) : '100vw',
+  );
   // 由于移动端的 height:100vh 不靠谱，故需要精确的数值用于设置高度
-  const [windowHeight, setWindowHeight] = useState<number | '100vh'>(propsWindowHeight);
+  const [windowHeight, setWindowHeight] = useState<number | '100vh'>(
+    cookieWindowHeight ? Number(cookieWindowHeight) : '100vh',
+  );
 
   const isMobile = typeof windowWidth === 'number' ? windowWidth < 1126 : uaIsMobile;
 
@@ -42,9 +49,5 @@ export const DeviceProvider: FC<{
     });
   }, []);
 
-  return (
-    <DeviceContext.Provider value={{ windowWidth, windowHeight, isMobile, isWeChat }}>
-      {children}
-    </DeviceContext.Provider>
-  );
+  return <DeviceContext.Provider value={{ windowWidth, windowHeight, isMobile }}>{children}</DeviceContext.Provider>;
 };
