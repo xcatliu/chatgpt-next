@@ -2,8 +2,8 @@ import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
+import type { ChatStreamRes } from '@/app/api/chat/route';
 import type { MessageProps } from '@/app/components/Message';
-import type { ChatStreamRes } from '@/app/pages/api/chat';
 import { fetchChat } from '@/app/utils/api';
 import { getCache, removeCache, setCache } from '@/app/utils/cache';
 import type { CompletionParams } from '@/app/utils/completionParams';

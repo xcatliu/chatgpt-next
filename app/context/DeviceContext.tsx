@@ -18,8 +18,8 @@ export const DeviceProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const isWeChat = utilIsWeChat();
   const uaIsMobile = isWeChat || npmIsMobile({ ua: userAgent });
 
-  const cookieWindowWidth = cookies().get('windowWidth');
-  const cookieWindowHeight = cookies().get('windowHeight');
+  const cookieWindowWidth = cookies().get('windowWidth')?.value;
+  const cookieWindowHeight = cookies().get('windowHeight')?.value;
 
   const [windowWidth, setWindowWidth] = useState<number | '100vw'>(
     cookieWindowWidth ? Number(cookieWindowWidth) : '100vw',

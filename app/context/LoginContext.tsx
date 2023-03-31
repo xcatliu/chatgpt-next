@@ -11,7 +11,7 @@ export const LoginContext = createContext<{
 } | null>(null);
 
 export const LoginProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLogged, setIsLogged] = useState(!!cookies().get('apiKey'));
+  const [isLogged, setIsLogged] = useState(!!cookies().get('apiKey')?.value);
 
   const login = useCallback(async () => {
     const loginResult = await utilsLogin();
