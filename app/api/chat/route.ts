@@ -1,13 +1,11 @@
 import { env } from 'process';
 
 import type { ChatMessage, SendMessageOptions } from 'chatgpt';
-import { ChatGPTError } from 'chatgpt';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import type { CompletionParams } from '@/app/utils/completionParams';
-import { HttpStatusCode } from '@/app/utils/constants';
-import { getAPIInstance } from '@/app/utils/getApiInstance';
+import { HttpMethod, HttpStatusCode } from '@/app/utils/constants';
 import { createTask } from '@/app/utils/task';
 
 export type ChatReq = SendMessageOptions & {
@@ -31,31 +29,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const { text, parentMessageId, completionParams } = (await request.json()) as ChatReq;
-
-  if (!text) {
-    return NextResponse.json(
-      { code: HttpStatusCode.BadRequest, message: '缺少 text 参数' },
-      { status: HttpStatusCode.BadRequest },
-    );
-  }
-
-  const api = getAPIInstance(apiKey, completionParams);
-
-  try {
-    if (completionParams?.stream) {
-      const task = createTask((onProgress) => {
-        // return api.sendMessage(text, {
-        //   parentMessageId,
-        //   onProgress,
-        // });
-      });
-
-      return NextResponse.json({ taskId: task.id }, { status: HttpStatusCode.OK });
-    }
-
+  const task = createTask(() => {
     // 删除下一行开头的 // 可以注释整个 if 判断
-    // /**
+    /**
     if (env.NODE_ENV === 'development') {
       return NextResponse.json(
         {
@@ -68,48 +44,15 @@ export async function POST(request: Request) {
     }
     // */
 
-    const chatGptRes = await api.sendMessage(text, {
-      parentMessageId,
+    return fetch('https://api.openai.com/v1/chat/completions', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      method: HttpMethod.POST,
+      body: request.body,
     });
+  });
 
-    return NextResponse.json(chatGptRes, { status: HttpStatusCode.OK });
-  } catch (e: any) {
-    // 如果不是 ChatGPTError，则返回通用错误
-    if (!(e instanceof ChatGPTError)) {
-      return NextResponse.json(
-        {
-          code: HttpStatusCode.BadRequest,
-          message: e.message,
-        },
-        { status: HttpStatusCode.BadRequest },
-      );
-    }
-
-    // 如果是 ChatGPTError，则提取 json 返回错误信息
-    const status = e.statusCode ?? HttpStatusCode.BadRequest;
-
-    // 如果不是 } 结尾，则直接返回错误
-    if (!e.message.trim().endsWith('}')) {
-      return NextResponse.json({ code: status, message: e.message }, { status });
-    }
-
-    try {
-      // 如果是 } 结尾，则认为是字符串 json
-      let errorJSON = JSON.parse(e.message.trim().replace(/^.*?{/, '{'));
-      // 尝试提取 error 字段
-      if (errorJSON.error) {
-        errorJSON = errorJSON.error;
-      }
-      // 保证 errorJSON 中包含 code 和 message 字段
-      errorJSON = {
-        code: status,
-        message: e.message,
-        ...errorJSON,
-      };
-      return NextResponse.json(errorJSON, { status });
-    } catch (JSONParseError) {
-      // 如果 JSON.parse 解析失败了，则直接返回错误
-      return NextResponse.json({ code: status, message: e.message }, { status });
-    }
-  }
+  return NextResponse.json({ taskId: task.id }, { status: HttpStatusCode.OK });
 }
