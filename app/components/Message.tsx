@@ -1,3 +1,5 @@
+'use client';
+
 import type { ChatMessage } from 'chatgpt';
 import classNames from 'classnames';
 import Image from 'next/image';

@@ -1,3 +1,5 @@
+'use client';
+
 import { AdjustmentsHorizontalIcon, InboxStackIcon, KeyIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import type { FC } from 'react';
@@ -134,9 +136,6 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
   );
 };
 
-/**
- * 侧边菜单栏
- */
 const MenuContent: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
   const { completionParams, setCompletionParams, currentMenu, setCurrentMenu } = useContext(ChatMessageContext)!;

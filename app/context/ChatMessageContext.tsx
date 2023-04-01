@@ -1,3 +1,5 @@
+'use client';
+
 import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';

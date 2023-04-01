@@ -1,4 +1,5 @@
-import { cookies } from 'next/headers';
+'use client';
+
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useState } from 'react';
 
@@ -10,8 +11,11 @@ export const LoginContext = createContext<{
   logout: () => Promise<boolean>;
 } | null>(null);
 
-export const LoginProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLogged, setIsLogged] = useState(!!cookies().get('apiKey')?.value);
+export const LoginProvider: FC<{ children: ReactNode; isLogged: boolean }> = ({
+  children,
+  isLogged: propsIsLogged,
+}) => {
+  const [isLogged, setIsLogged] = useState(propsIsLogged);
 
   const login = useCallback(async () => {
     const loginResult = await utilsLogin();

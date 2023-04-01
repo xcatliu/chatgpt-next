@@ -1,4 +1,4 @@
-import type { ChatReq, ChatRes } from '@/pages/api/chat';
+import type { ChatReq, ChatRes } from '@/app/api/chat/route';
 
 import { serializeObject } from './object';
 
