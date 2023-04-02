@@ -41,7 +41,9 @@ export async function GET(request: Request) {
         return;
       }
 
-      writer.write(encoder.encode(`data: ${value}\n\n`));
+      writer.write(encoder.encode('data: '));
+      writer.write(value);
+      writer.write(encoder.encode('\n\n'));
 
       // 继续读取下一个数据
       read();
