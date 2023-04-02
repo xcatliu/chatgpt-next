@@ -41,9 +41,7 @@ export async function GET(request: Request) {
         return;
       }
 
-      writer.write(encoder.encode('data: '));
-      writer.write(value);
-      writer.write(encoder.encode('\n\n'));
+      writer.write(Uint8Array.from([...encoder.encode('data: '), ...value, ...encoder.encode('\n\n')]));
 
       // 继续读取下一个数据
       read();
