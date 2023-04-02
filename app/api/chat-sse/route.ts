@@ -29,6 +29,7 @@ export async function GET(request: Request) {
   const responseStream = new TransformStream();
   const writer = responseStream.writable.getWriter();
   const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
 
   const fetchResult: Response = await task.run();
   const reader = fetchResult.body?.getReader();
@@ -41,7 +42,8 @@ export async function GET(request: Request) {
         return;
       }
 
-      writer.write(Uint8Array.from([...encoder.encode('data: '), ...value, ...encoder.encode('\n\n')]));
+      writer.write(encoder.encode(`data: ${decoder.decode(value)}\n\n`));
+      writer.write(encoder.encode('\n\n'));
 
       // 继续读取下一个数据
       read();
