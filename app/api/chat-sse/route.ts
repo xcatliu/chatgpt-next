@@ -42,8 +42,12 @@ export async function GET(request: Request) {
         return;
       }
 
-      writer.write(encoder.encode(`data: ${decoder.decode(value)}\n\n`));
-      writer.write(encoder.encode('\n\n'));
+      decoder
+        .decode(value)
+        .split('\n')
+        .map((trunk) => {
+          writer.write(encoder.encode(`data: ${trunk}\n\n`));
+        });
 
       // 继续读取下一个数据
       read();
