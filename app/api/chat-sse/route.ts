@@ -41,13 +41,15 @@ export async function GET(request: Request) {
         writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
         return;
       }
-
-      decoder
-        .decode(value)
-        .split('\n')
-        .map((trunk) => {
-          writer.write(encoder.encode(`data: ${trunk}\n\n`));
-        });
+      writer.write(
+        encoder.encode(
+          `${decoder
+            .decode(value)
+            .split('\n')
+            .map((trunk) => `data: ${trunk}`)
+            .join('\n')}\n\n`,
+        ),
+      );
 
       // 继续读取下一个数据
       read();
