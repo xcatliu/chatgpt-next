@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { HttpStatusCode } from '@/app/utils/constants';
+import { sleep } from '@/app/utils/sleep';
 import { getTask } from '@/app/utils/task';
 
 export const runtime = 'nodejs';
@@ -31,21 +32,25 @@ export async function GET(request: Request) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
-  const fetchResult: Response = await task.run();
+  // const fetchResult: Response = await task.run();
 
   (async () => {
-    for await (const trunkUint8Array of fetchResult.body as any as IterableIterator<Uint8Array>) {
-      writer.write(encoder.encode('data: hello\n\n'));
-      writer.write(
-        encoder.encode(
-          `${decoder
-            .decode(trunkUint8Array)
-            .split('\n')
-            .map((trunk) => `data: ${trunk}`)
-            .join('\n')}\n\n`,
-        ),
-      );
+    for (let i = 0; i < 8; i++) {
+      writer.write(encoder.encode(`data: hello ${i}\n\n`));
+      await sleep(100);
     }
+    // for await (const trunkUint8Array of fetchResult.body as any as IterableIterator<Uint8Array>) {
+    //   writer.write(encoder.encode('data: hello\n\n'));
+    //   writer.write(
+    //     encoder.encode(
+    //       `${decoder
+    //         .decode(trunkUint8Array)
+    //         .split('\n')
+    //         .map((trunk) => `data: ${trunk}`)
+    //         .join('\n')}\n\n`,
+    //     ),
+    //   );
+    // }
     writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
   })();
 
