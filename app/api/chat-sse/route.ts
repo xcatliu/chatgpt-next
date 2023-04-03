@@ -71,9 +71,8 @@ export async function GET(request: Request) {
     }
   });
 
-  const fetchResult: Response = await task.run();
-
   (async () => {
+    const fetchResult: Response = await task.run();
     for await (const chunkUint8Array of streamAsyncIterable(fetchResult.body!)) {
       const chunkString = decoder.decode(chunkUint8Array);
       parser.feed(chunkString);
