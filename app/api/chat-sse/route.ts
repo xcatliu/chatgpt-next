@@ -35,6 +35,7 @@ export async function GET(request: Request) {
 
   (async () => {
     for await (const trunkUint8Array of fetchResult.body as any as IterableIterator<Uint8Array>) {
+      writer.write(encoder.encode('data: hello\n\n'));
       writer.write(
         encoder.encode(
           `${decoder
