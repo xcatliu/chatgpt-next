@@ -1,83 +1,40 @@
-// app/api/route.ts
-// import { Configuration, OpenAIApi } from 'openai';
+import { cookies } from 'next/headers';
 
-import { sleep } from '@/app/utils/sleep';
+import { getApiKey } from '@/app/utils/getApiKey';
 
 export const runtime = 'nodejs';
-// This is required to enable streaming
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // const { searchParams } = new URL(request.url);
-  // const apiKey = searchParams.get('apiKey') ?? '';
+  const { searchParams } = new URL(request.url);
+  const content = searchParams.get('content');
 
-  // const configuration = new Configuration({
-  //   apiKey,
-  // });
-  // const openai = new OpenAIApi(configuration);
-
-  let responseStream = new TransformStream();
+  const responseStream = new TransformStream();
   const writer = responseStream.writable.getWriter();
   const encoder = new TextEncoder();
 
-  writer.write(encoder.encode('data: Vercel is a platform for....\n\n'));
-
   (async () => {
-    let i = 0;
-    while (i < 10) {
-      i += 1;
-      writer.write(encoder.encode(`data: i = ${i}\n\n`));
-      await sleep(1000);
+    const apiKey = cookies().get('apiKey')?.value;
+    const decoder = new TextDecoder();
+    const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getApiKey(apiKey!)}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content }],
+        stream: true,
+      }),
+    });
+
+    for await (const chunkUint8Array of fetchResult.body as any) {
+      const chunkString = decoder.decode(chunkUint8Array);
+      console.log(chunkString);
+      writer.write(encoder.encode(`data: ${chunkString}\n\n`));
     }
-    writer.write(encoder.encode(`event: close\ndata: i = ${i}\n\n`));
-    writer.close();
   })();
-
-  // try {
-  //   const openaiRes = await openai.createChatCompletion(
-  //     {
-  //       model: 'gpt-3.5-turbo-0301',
-  //       messages: [
-  //         {
-  //           role: 'user',
-  //           content: 'Vercel is a platform for',
-  //         },
-  //       ],
-  //       max_tokens: 100,
-  //       temperature: 0,
-  //       stream: true,
-  //     },
-  //     {
-  //       responseType: 'stream',
-  //     },
-  //   );
-
-  //   // @ts-ignore
-  //   openaiRes.data.on('data', async (data: Buffer) => {
-  //     const lines = data
-  //       .toString()
-  //       .split('\n')
-  //       .filter((line: string) => line.trim() !== '');
-  //     for (const line of lines) {
-  //       const message = line.replace(/^data: /, '');
-  //       if (message === '[DONE]') {
-  //         console.log('Stream completed');
-  //         writer.close();
-  //         return;
-  //       }
-  //       try {
-  //         const parsed = JSON.parse(message);
-  //         await writer.write(encoder.encode(`${parsed.choices[0].text}`));
-  //       } catch (error) {
-  //         console.error('Could not JSON parse stream message', message, error);
-  //       }
-  //     }
-  //   });
-  // } catch (error) {
-  //   console.error('An error occurred during OpenAI request', error);
-  //   writer.write(encoder.encode('An error occurred during OpenAI request'));
-  //   writer.close();
-  // }
 
   return new Response(responseStream.readable, {
     headers: {
