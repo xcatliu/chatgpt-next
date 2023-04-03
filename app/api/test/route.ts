@@ -48,3 +48,7 @@ export async function GET(request: Request) {
     },
   });
 }
+
+export const config = {
+  runtime: 'edge',
+};
