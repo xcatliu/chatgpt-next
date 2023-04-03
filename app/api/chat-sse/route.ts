@@ -75,10 +75,10 @@ export async function GET(request: Request) {
     writer.write(encoder.encode(`data: before await task.run()\n\n`));
     const fetchResult: Response = await task.run();
     writer.write(encoder.encode(`data: after await task.run()\n\n`));
-    for await (const chunkUint8Array of streamAsyncIterable(fetchResult.body!)) {
-      const chunkString = decoder.decode(chunkUint8Array);
-      parser.feed(chunkString);
-    }
+    // for await (const chunkUint8Array of streamAsyncIterable(fetchResult.body!)) {
+    //   const chunkString = decoder.decode(chunkUint8Array);
+    //   parser.feed(chunkString);
+    // }
   })();
 
   return new Response(responseStream.readable, {
