@@ -34,9 +34,16 @@ export async function GET(request: Request) {
   const fetchResult: Response = await task.run();
 
   (async () => {
-    for await (const trunk of fetchResult.body as any as IterableIterator<Uint8Array>) {
-      const data = decoder.decode(trunk);
-      writer.write(encoder.encode(`data: ${data}\n\n`));
+    for await (const trunkUint8Array of fetchResult.body as any as IterableIterator<Uint8Array>) {
+      writer.write(
+        encoder.encode(
+          `${decoder
+            .decode(trunkUint8Array)
+            .split('\n')
+            .map((trunk) => `data: ${trunk}`)
+            .join('\n')}\n\n`,
+        ),
+      );
     }
     writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
   })();
@@ -48,15 +55,15 @@ export async function GET(request: Request) {
   //       writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
   //       return;
   //     }
-  //     writer.write(
-  //       encoder.encode(
-  //         `${decoder
-  //           .decode(value)
-  //           .split('\n')
-  //           .map((trunk) => `data: ${trunk}`)
-  //           .join('\n')}\n\n`,
-  //       ),
-  //     );
+  // writer.write(
+  //   encoder.encode(
+  //     `${decoder
+  //       .decode(value)
+  //       .split('\n')
+  //       .map((trunk) => `data: ${trunk}`)
+  //       .join('\n')}\n\n`,
+  //   ),
+  // );
 
   //     // 继续读取下一个数据
   //     read();
