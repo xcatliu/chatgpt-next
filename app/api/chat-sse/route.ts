@@ -2,6 +2,7 @@ import { createParser } from 'eventsource-parser';
 import { NextResponse } from 'next/server';
 
 import { HttpStatusCode } from '@/app/utils/constants';
+import { sleep } from '@/app/utils/sleep';
 import { getTask } from '@/app/utils/task';
 
 export const runtime = 'nodejs';
@@ -32,6 +33,13 @@ export async function GET(request: Request) {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
 
+  (async () => {
+    for (let i = 0; i < 8; i++) {
+      writer.write(encoder.encode(`data: hello ${i}\n\n`));
+      await sleep(100);
+    }
+  })();
+
   const parser = createParser((event) => {
     // const demoData = {
     //   id: 'chatcmpl-715ELjGRoZ7XNzdUQSjoy5L9lB3iP',
@@ -43,7 +51,7 @@ export async function GET(request: Request) {
 
     if (event.type === 'event') {
       if (event.data === '[DONE]') {
-        writer.write(encoder.encode(`event: done\ndata: 完成`));
+        writer.write(encoder.encode(`event: done\ndata: 完成\n\n`));
         return;
       }
 
