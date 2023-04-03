@@ -33,17 +33,34 @@ export async function GET(request: Request) {
   const decoder = new TextDecoder();
 
   const parser = createParser((event) => {
+    // const demoData = {
+    //   id: 'chatcmpl-715ELjGRoZ7XNzdUQSjoy5L9lB3iP',
+    //   object: 'chat.completion.chunk',
+    //   created: 1680492789,
+    //   model: 'gpt-3.5-turbo-0301',
+    //   choices: [{ delta: { content: '去' }, index: 0, finish_reason: null }],
+    // };
+
     if (event.type === 'event') {
-      writer.write(
-        encoder.encode(
-          `${event.data
-            .split('\n')
-            .map((trunk) => `data: ${trunk}`)
-            .join('\n')}\n\n`,
-        ),
-      );
+      if (event.data === '[DONE]') {
+        writer.write(encoder.encode(`event: done\ndata: 完成`));
+        return;
+      }
+
+      const partialData = JSON.parse(event.data);
+      const delta = partialData.choices[0].delta.content;
+
+      writer.write(encoder.encode(`data: ${delta}\n\n`));
+
+      // writer.write(
+      //   encoder.encode(
+      //     `${event.data
+      //       .split('\n')
+      //       .map((trunk) => `data: ${trunk}`)
+      //       .join('\n')}\n\n`,
+      //   ),
+      // );
     }
-    writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
   });
 
   const fetchResult: Response = await task.run();
