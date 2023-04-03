@@ -41,6 +41,7 @@
     "eslint-config-next": "13.2.4",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
+    "eventsource-parser": "^1.0.0",
     "is-mobile": "4.0.0",
     "markdown-it": "13.0.1",
     "next": "13.2.4",
