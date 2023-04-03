@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 
 import type { CompletionParams } from '@/app/utils/completionParams';
 import { HttpMethod, HttpStatusCode } from '@/app/utils/constants';
+import { getApiKey } from '@/app/utils/getApiKey';
 import { createTask } from '@/app/utils/task';
 
 export type ChatReq = SendMessageOptions & {
@@ -19,6 +20,10 @@ export type ChatStreamRes = {
   taskId: string;
 };
 
+/**
+ * POST 请求发送消息，返回 taskId
+ * 然后请求 new EventSource('/api/chat-sse?task-id=xxx') 来获取 server-sent event
+ */
 export async function POST(request: Request) {
   const apiKey = cookies().get('apiKey')?.value;
 
@@ -47,7 +52,7 @@ export async function POST(request: Request) {
     return fetch('https://api.openai.com/v1/chat/completions', {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${getApiKey(apiKey)}`,
       },
       method: HttpMethod.POST,
       body: request.body,

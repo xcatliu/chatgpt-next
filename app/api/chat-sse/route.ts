@@ -32,32 +32,39 @@ export async function GET(request: Request) {
   const decoder = new TextDecoder();
 
   const fetchResult: Response = await task.run();
-  const reader = fetchResult.body?.getReader();
 
-  // 读取数据
-  function read() {
-    reader?.read().then(({ value, done }) => {
-      if (done) {
-        writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
-        return;
-      }
-      writer.write(
-        encoder.encode(
-          `${decoder
-            .decode(value)
-            .split('\n')
-            .map((trunk) => `data: ${trunk}`)
-            .join('\n')}\n\n`,
-        ),
-      );
+  (async () => {
+    for await (const trunk of fetchResult.body as any as IterableIterator<Uint8Array>) {
+      const data = decoder.decode(trunk);
+      writer.write(encoder.encode(`data: ${data}\n\n`));
+    }
+    writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
+  })();
 
-      // 继续读取下一个数据
-      read();
-    });
-  }
+  // // 读取数据
+  // function read() {
+  //   reader?.read().then(({ value, done }) => {
+  //     if (done) {
+  //       writer.write(encoder.encode(`event: finish\ndata: 已读取完毕\n\n`));
+  //       return;
+  //     }
+  //     writer.write(
+  //       encoder.encode(
+  //         `${decoder
+  //           .decode(value)
+  //           .split('\n')
+  //           .map((trunk) => `data: ${trunk}`)
+  //           .join('\n')}\n\n`,
+  //       ),
+  //     );
+
+  //     // 继续读取下一个数据
+  //     read();
+  //   });
+  // }
 
   // 开始读取
-  read();
+  // read();
 
   return new Response(responseStream.readable, {
     headers: {
