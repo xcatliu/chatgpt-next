@@ -16,6 +16,8 @@ export async function GET(request: Request) {
   (async () => {
     const apiKey = cookies().get('apiKey')?.value;
     const decoder = new TextDecoder();
+    console.log('before fetch');
+
     const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
       headers: {
         'Content-Type': 'application/json',
@@ -29,10 +31,12 @@ export async function GET(request: Request) {
       }),
     });
 
+    console.log('after fetch');
+
     for await (const chunkUint8Array of fetchResult.body as any) {
       const chunkString = decoder.decode(chunkUint8Array);
       console.log(chunkString);
-      writer.write(encoder.encode(`data: ${chunkString}\n\n`));
+      // writer.write(encoder.encode(`data: ${chunkString}\n\n`));
     }
   })();
 
