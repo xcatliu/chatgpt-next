@@ -1,7 +1,9 @@
 import { createParser } from 'eventsource-parser';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { HttpStatusCode } from '@/app/utils/constants';
+import { HttpMethod, HttpStatusCode } from '@/app/utils/constants';
+import { getApiKey } from '@/app/utils/getApiKey';
 import { sleep } from '@/app/utils/sleep';
 import { getTask } from '@/app/utils/task';
 
@@ -73,12 +75,24 @@ export async function GET(request: Request) {
 
   (async () => {
     writer.write(encoder.encode(`data: before await task.run()\n\n`));
-    const fetchResult: Response = await task.run();
+    const apiKey = cookies().get('apiKey')?.value;
+    const fetchResult: Response = await fetch('https://api.openai.com/v1/chat/completions', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getApiKey(apiKey!)}`,
+      },
+      method: HttpMethod.POST,
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: '写一篇200字的作文，描写四季' }],
+        stream: true,
+      }),
+    });
     writer.write(encoder.encode(`data: after await task.run()\n\n`));
-    // for await (const chunkUint8Array of streamAsyncIterable(fetchResult.body!)) {
-    //   const chunkString = decoder.decode(chunkUint8Array);
-    //   parser.feed(chunkString);
-    // }
+    for await (const chunkUint8Array of streamAsyncIterable(fetchResult.body!)) {
+      const chunkString = decoder.decode(chunkUint8Array);
+      parser.feed(chunkString);
+    }
   })();
 
   return new Response(responseStream.readable, {
