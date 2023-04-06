@@ -172,10 +172,12 @@ export function isMessage(message: Message | ChatResponse): message is Message {
 }
 
 export function getContent(message: Message | ChatResponse) {
+  console.log(message);
   return isMessage(message) ? message.content : message.choices[0].message.content;
 }
 
 export function getRole(message: Message | ChatResponse) {
+  console.log(message);
   return isMessage(message) ? message.role : message.choices[0].message.role;
 }
 
