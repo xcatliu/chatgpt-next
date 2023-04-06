@@ -1,8 +1,8 @@
-import { Menu } from '@/app/components/Menu';
-import { Messages } from '@/app/components/Messages';
-import { TextareaForm } from '@/app/components/TextareaForm';
-import { Title } from '@/app/components/Title';
-import { isWeChat } from '@/app/utils/device';
+import { Menu } from '@/components/Menu';
+import { Messages } from '@/components/Messages';
+import { TextareaForm } from '@/components/TextareaForm';
+import { Title } from '@/components/Title';
+import { isWeChat } from '@/utils/device';
 
 export default function Home() {
   return (

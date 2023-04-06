@@ -4,10 +4,10 @@ import npmIsMobile from 'is-mobile';
 import type { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
 
-import { ChatMessageProvider } from '@/app/context/ChatMessageContext';
-import { DeviceProvider } from '@/app/context/DeviceContext';
-import { LoginProvider } from '@/app/context/LoginContext';
-import { isWeChat as utilIsWeChat } from '@/app/utils/device';
+import { ChatProvider } from '@/context/ChatContext';
+import { DeviceProvider } from '@/context/DeviceContext';
+import { LoginProvider } from '@/context/LoginContext';
+import { isWeChat as utilIsWeChat } from '@/utils/device';
 
 export const metadata: Metadata = {
   title: 'ChatGPT Next',
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           windowHeight={windowHeight}
         >
           <LoginProvider isLogged={isLogged}>
-            <ChatMessageProvider>{children}</ChatMessageProvider>
+            <ChatProvider>{children}</ChatProvider>
           </LoginProvider>
         </DeviceProvider>
       </body>

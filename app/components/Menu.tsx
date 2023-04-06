@@ -5,19 +5,18 @@ import classNames from 'classnames';
 import type { FC } from 'react';
 import { useCallback, useContext, useEffect } from 'react';
 
-import { ChatMessageContext } from '@/app/context/ChatMessageContext';
-import { DeviceContext } from '@/app/context/DeviceContext';
-import { LoginContext } from '@/app/context/LoginContext';
-import { CompletionParamsModel } from '@/app/utils/completionParams';
-import { scrollToTop } from '@/app/utils/scroll';
-import { sleep } from '@/app/utils/sleep';
+import { ChatContext } from '@/context/ChatContext';
+import { DeviceContext } from '@/context/DeviceContext';
+import { LoginContext } from '@/context/LoginContext';
+import { scrollToTop } from '@/utils/scroll';
+import { sleep } from '@/utils/sleep';
 
 import { History } from './History';
 
 export const Menu: FC = () => {
   const { windowHeight, isWeChat } = useContext(DeviceContext)!;
   const { isLogged, login, logout } = useContext(LoginContext)!;
-  const { isMenuShow, setIsMenuShow } = useContext(ChatMessageContext)!;
+  const { isMenuShow, setIsMenuShow } = useContext(ChatContext)!;
 
   useEffect(() => {
     // 最开始如果未登录，则弹窗登录
@@ -101,7 +100,7 @@ export const Menu: FC = () => {
 
 const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
-  const { setIsMenuShow, history, setCurrentMenu } = useContext(ChatMessageContext)!;
+  const { setIsMenuShow, history, setCurrentMenu } = useContext(ChatContext)!;
 
   return (
     <button
@@ -138,7 +137,7 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
 
 const MenuContent: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
-  const { completionParams, setCompletionParams, currentMenu, setCurrentMenu } = useContext(ChatMessageContext)!;
+  const { currentMenu, setCurrentMenu } = useContext(ChatContext)!;
 
   return (
     <>
@@ -168,14 +167,14 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
         {currentMenu === 'InboxStack' && <History />}
         {currentMenu === 'AdjustmentsHorizontal' && (
           <>
-            <div className="m-4">
+            {/* <div className="m-4">
               模型：
               <select
                 value={completionParams.model}
                 onChange={(e) =>
                   setCompletionParams({
                     ...completionParams,
-                    model: e.target.value as CompletionParamsModel,
+                    model: e.target.value as Model,
                   })
                 }
               >
@@ -198,7 +197,7 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
                   }
                 />
               </label>
-            </div>
+            </div> */}
           </>
         )}
       </div>

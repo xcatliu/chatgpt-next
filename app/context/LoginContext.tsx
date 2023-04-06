@@ -3,7 +3,7 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useState } from 'react';
 
-import { login as utilsLogin, logout as utilsLogout } from '@/app/utils/login';
+import { login as utilsLogin, logout as utilsLogout } from '@/utils/login';
 
 export const LoginContext = createContext<{
   isLogged: boolean;

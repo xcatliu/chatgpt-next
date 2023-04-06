@@ -3,16 +3,16 @@
 import type { FC, FormEvent, KeyboardEvent } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { ChatMessageContext } from '@/app/context/ChatMessageContext';
-import { DeviceContext } from '@/app/context/DeviceContext';
-import { LoginContext } from '@/app/context/LoginContext';
-import { isDomChild } from '@/app/utils/isDomChildren';
-// import { scrollToBottom } from '@/app/utils/scrollToBottom';
+import { ChatContext } from '@/context/ChatContext';
+import { DeviceContext } from '@/context/DeviceContext';
+import { LoginContext } from '@/context/LoginContext';
+import { isDomChild } from '@/utils/isDomChildren';
+// import { scrollToBottom } from '@/utils/scrollToBottom';
 
 export const TextareaForm: FC = () => {
   const { isMobile } = useContext(DeviceContext)!;
   const { isLogged } = useContext(LoginContext)!;
-  const { sendMessage } = useContext(ChatMessageContext)!;
+  const { sendMessage } = useContext(ChatContext)!;
 
   // 是否正在中文输入
   const [isComposing, setIsComposing] = useState(false);

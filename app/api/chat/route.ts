@@ -1,63 +1,90 @@
-import { env } from 'process';
-
-import type { ChatMessage, SendMessageOptions } from 'chatgpt';
+import { createParser } from 'eventsource-parser';
 import { cookies } from 'next/headers';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import type { CompletionParams } from '@/app/utils/completionParams';
-import { HttpMethod, HttpStatusCode } from '@/app/utils/constants';
-import { getApiKey } from '@/app/utils/getApiKey';
-import { createTask } from '@/app/utils/task';
+import type { ChatResponse, ChatResponseChunk, ChatResponseError } from '@/utils/api';
+import { Role } from '@/utils/api';
+import { HttpStatusCode } from '@/utils/constants';
+import { getApiKey } from '@/utils/getApiKey';
 
-export type ChatReq = SendMessageOptions & {
-  text: string;
-  completionParams?: CompletionParams;
-};
+export async function POST(req: NextRequest) {
+  const apiKey = getApiKey(cookies().get('apiKey')?.value ?? '');
 
-export type ChatRes = ChatMessage | ChatStreamRes;
+  const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    // 直接透传，组装逻辑完全由前端实现
+    body: await req.text(),
+  });
 
-export type ChatStreamRes = {
-  taskId: string;
-};
+  if (!fetchResult.ok) {
+    const fetchResultJSON: ChatResponseError = await fetchResult.json();
 
-/**
- * POST 请求发送消息，返回 taskId
- * 然后请求 new EventSource('/api/chat-sse?task-id=xxx') 来获取 server-sent event
- */
-export async function POST(request: Request) {
-  const apiKey = cookies().get('apiKey')?.value;
-
-  if (!apiKey) {
     return NextResponse.json(
-      { code: HttpStatusCode.BadRequest, message: '密钥未设置' },
-      { status: HttpStatusCode.BadRequest },
+      {
+        code: HttpStatusCode.BadRequest,
+        message: 'fetch /v1/chat/completions 错误',
+        ...fetchResultJSON.error,
+        ...fetchResultJSON,
+      },
+      {
+        status: HttpStatusCode.BadRequest,
+      },
     );
   }
 
-  const task = createTask(() => {
-    // 删除下一行开头的 // 可以注释整个 if 判断
-    /**
-    if (env.NODE_ENV === 'development') {
-      return NextResponse.json(
-        {
-          id: `dev${Math.random()}`,
-          role: 'assistant',
-          text: '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 pages/api/chat.ts 文件中的相关代码注释掉。',
-        },
-        { status: HttpStatusCode.OK },
-      );
-    }
-    // */
-
-    return fetch('https://api.openai.com/v1/chat/completions', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getApiKey(apiKey)}`,
-      },
-      method: HttpMethod.POST,
-      body: request.body,
-    });
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      const decoder = new TextDecoder();
+      let responseBody: ChatResponse;
+      let fullContent = '';
+      const parser = createParser((event) => {
+        if (event.type === 'event') {
+          const data = event.data;
+          if (data === '[DONE]') {
+            responseBody.choices = [
+              { index: 0, message: { role: Role.assistant, content: fullContent }, finish_reason: 'stop' },
+            ];
+            controller.enqueue(encoder.encode(JSON.stringify(responseBody)));
+            controller.close();
+            return;
+          }
+          try {
+            const json: ChatResponseChunk = JSON.parse(data);
+            // 第一次获取到 data 时，赋值给 responseBody
+            if (!responseBody) {
+              responseBody = {
+                ...json,
+                object: 'chat.completion',
+                choices: [],
+                usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+              };
+            }
+            // 获取 delta.content
+            const content = (json.choices[0].delta as { content: string }).content;
+            if (content) {
+              fullContent += content;
+              controller.enqueue(encoder.encode(content));
+            }
+          } catch (e) {
+            controller.error(e);
+          }
+        }
+      });
+      for await (const chunk of fetchResult.body as any as IterableIterator<Uint8Array>) {
+        parser.feed(decoder.decode(chunk));
+      }
+    },
   });
 
-  return NextResponse.json({ taskId: task.id }, { status: HttpStatusCode.OK });
+  return new Response(stream);
 }
+
+export const config = {
+  runtime: 'edge',
+};

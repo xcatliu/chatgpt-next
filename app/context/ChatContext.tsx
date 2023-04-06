@@ -1,33 +1,26 @@
 'use client';
 
-import type { ChatMessage } from 'chatgpt';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useEffect, useState } from 'react';
 
-import type { ChatStreamRes } from '@/app/api/chat/route';
-import type { MessageProps } from '@/app/components/Message';
-import { fetchChat } from '@/app/utils/api';
-import { getCache, removeCache, setCache } from '@/app/utils/cache';
-import type { CompletionParams } from '@/app/utils/completionParams';
-import { last } from '@/app/utils/last';
-import { scrollToBottom } from '@/app/utils/scroll';
-import { sleep } from '@/app/utils/sleep';
+import type { ChatResponse, Message } from '@/utils/api';
+import { fetchApiChat, isMessage, Model, Role } from '@/utils/api';
+import { getCache, setCache } from '@/utils/cache';
+import { scrollToBottom } from '@/utils/scroll';
+import { sleep } from '@/utils/sleep';
 
 export interface HistoryItem {
-  topic?: string;
-  messages: MessageProps[];
+  messages: (Message | ChatResponse)[];
 }
 
-export const ChatMessageContext = createContext<{
+export const ChatContext = createContext<{
   isMenuShow: boolean;
   setIsMenuShow: (isMenuShow: boolean) => void;
   currentMenu: 'InboxStack' | 'AdjustmentsHorizontal' | undefined;
   setCurrentMenu: (currentMenu: 'InboxStack' | 'AdjustmentsHorizontal' | undefined) => void;
-  completionParams: CompletionParams;
-  setCompletionParams: (completionParams: CompletionParams) => void;
-  sendMessage: (text: string) => Promise<void>;
+  sendMessage: (content: string) => Promise<void>;
   isLoading: boolean;
-  messages: MessageProps[];
+  messages: (Message | ChatResponse)[];
   history: HistoryItem[] | undefined;
   historyIndex: number | 'empty' | 'current';
   loadHistory: (historyIndex: number) => void;
@@ -35,21 +28,18 @@ export const ChatMessageContext = createContext<{
   startNewChat: () => void;
 } | null>(null);
 
-export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [isMenuShow, setStateIsMenuShow] = useState(false);
   const [currentMenu, setCurrentMenu] = useState<'InboxStack' | 'AdjustmentsHorizontal' | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<MessageProps[]>([]);
+  const [messages, setMessages] = useState<(Message | ChatResponse)[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
-  const [completionParams, setCompletionParams] = useState<CompletionParams>({
-    stream: true,
-  });
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<number | 'empty' | 'current'>('empty');
 
   useEffect(() => {
     let history = getCache<HistoryItem[]>('history');
-    const messages = getCache<MessageProps[]>('messages');
+    const messages = getCache<(Message | ChatResponse)[]>('messages');
 
     // 如果检测到缓存中有上次还未存储到 cache 的 message，则加入到 history 中
     if (messages && messages.length > 0) {
@@ -87,7 +77,7 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
   }, []);
 
   const sendMessage = useCallback(
-    async (text: string) => {
+    async (content: string) => {
       // 如果当前是在浏览历史消息，则激活历史消息
       if (typeof historyIndex === 'number') {
         const newHistory = [...(history ?? [])];
@@ -99,52 +89,34 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       }
 
       // 先插入一条用户消息
-      let newMessages = [...messages, { avatar: 'user', chatMessage: { text } }];
+      let newMessages: (Message | ChatResponse)[] = [...messages, { role: Role.user, content }];
       setMessages(newMessages);
       setCache('messages', newMessages);
       setIsLoading(true);
       setHistoryIndex('current');
       await sleep(16);
       scrollToBottom();
+
       try {
-        const parentMessageId = last(messages)?.chatMessage?.id;
-        if (completionParams.stream) {
-          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatStreamRes;
-          const chatSseRes = new EventSource(`/api/chat-sse?taskId=${chatRes.taskId}`);
-          let message = '';
-          chatSseRes.addEventListener('message', (e) => {
-            if (message === '') {
-              setIsLoading(false);
+        await fetchApiChat({
+          model: Model['gpt-3.5-turbo-0301'],
+          messages: newMessages.map((message) => {
+            if (isMessage(message)) {
+              return message;
             }
-            message += e.data.replace(/==BREAK=PLACEHOLDER==/g, '\n');
-            setMessages([...newMessages, { chatMessage: { text: message } }]);
-          });
-          chatSseRes.addEventListener('finish', (e) => {
-            chatSseRes.close();
-            newMessages = [...newMessages, { chatMessage: JSON.parse(e.data) }];
-            setMessages(newMessages);
-            setCache('messages', newMessages);
-          });
-        } else {
-          // 请求 /api/chat 接口获取回复
-          const chatRes = (await fetchChat({ text, parentMessageId, completionParams })) as ChatMessage;
-          setIsLoading(false);
-          newMessages = [...newMessages, { chatMessage: chatRes }];
-          setMessages(newMessages);
-          setCache('messages', newMessages);
-          await sleep(16);
-          scrollToBottom();
-        }
-      } catch (e: any) {
+            return message.choices[0].message;
+          }),
+          stream: true,
+          onMessage: (content) => {
+            setMessages([...newMessages, { role: Role.assistant, content }]);
+          },
+        });
+      } catch (e) {
         setIsLoading(false);
-        newMessages = [...newMessages, { error: e }];
-        setMessages(newMessages);
-        setCache('messages', newMessages);
-        await sleep(16);
-        scrollToBottom();
+        setMessages([...newMessages, { isError: true, role: Role.assistant, content: (e as Error).message }]);
       }
     },
-    [completionParams, messages, history, historyIndex],
+    [messages, history, historyIndex],
   );
 
   /** 加载历史消息 */
@@ -200,14 +172,12 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
   }, [messages, history]);
 
   return (
-    <ChatMessageContext.Provider
+    <ChatContext.Provider
       value={{
         isMenuShow,
         setIsMenuShow,
         currentMenu,
         setCurrentMenu,
-        completionParams,
-        setCompletionParams,
         sendMessage,
         isLoading,
         messages,
@@ -219,6 +189,6 @@ export const ChatMessageProvider: FC<{ children: ReactNode }> = ({ children }) =
       }}
     >
       {children}
-    </ChatMessageContext.Provider>
+    </ChatContext.Provider>
   );
 };

@@ -5,12 +5,13 @@ import dayjs from 'dayjs';
 import type { FC } from 'react';
 import { useContext } from 'react';
 
-import { ChatMessageContext } from '@/app/context/ChatMessageContext';
-import { exportJSON } from '@/app/utils/export';
-import { last } from '@/app/utils/last';
+import { ChatContext } from '@/context/ChatContext';
+import { getContent } from '@/utils/api';
+import { exportJSON } from '@/utils/export';
+import { last } from '@/utils/last';
 
 export const History: FC = () => {
-  let { messages, history, clearHistory, historyIndex, loadHistory } = useContext(ChatMessageContext)!;
+  let { messages, history, clearHistory, historyIndex, loadHistory } = useContext(ChatContext)!;
 
   history = history ?? [];
   if (messages.length > 0) {
@@ -36,9 +37,9 @@ export const History: FC = () => {
             key={index}
             onClick={() => loadHistory(index)}
           >
-            <h3 className="overflow-hidden whitespace-nowrap truncate">{historyItem.messages[0].chatMessage?.text}</h3>
+            <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
             <p className="mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate">
-              {last(historyItem.messages)?.chatMessage?.text}
+              {getContent(last(historyItem.messages))}
             </p>
           </li>
         ))}
