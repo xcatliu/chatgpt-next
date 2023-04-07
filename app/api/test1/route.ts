@@ -7,12 +7,6 @@ import { getApiKey } from '@/utils/getApiKey';
 async function createStream(req: NextRequest) {
   const apiKey = getApiKey(cookies().get('apiKey')?.value ?? '');
 
-  const reqJSON = await req.json();
-  console.log(reqJSON);
-
-  const reqText = await req.text();
-  console.log(reqText);
-
   const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -20,7 +14,7 @@ async function createStream(req: NextRequest) {
       Authorization: `Bearer ${apiKey}`,
     },
     // 直接透传，组装逻辑完全由前端实现
-    body: reqText,
+    body: req.body,
   });
 
   const encoder = new TextEncoder();

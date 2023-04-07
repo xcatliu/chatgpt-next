@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       Authorization: `Bearer ${apiKey}`,
     },
     // 直接透传，组装逻辑完全由前端实现
-    body: await req.text(),
+    body: req.body,
   });
 
   if (!fetchResult.ok) {
