@@ -5,32 +5,20 @@ import type { NextRequest } from 'next/server';
 import { getApiKey } from '@/utils/getApiKey';
 
 async function createStream(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const content = searchParams.get('content');
+  const apiKey = getApiKey(cookies().get('apiKey')?.value ?? '');
+
+  const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    // 直接透传，组装逻辑完全由前端实现
+    body: await req.text(),
+  });
 
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
-  const apiKey = cookies().get('apiKey')?.value;
-
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getApiKey(apiKey!)}`,
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content }],
-      stream: true,
-    }),
-  });
-
-  const contentType = res.headers.get('Content-Type') ?? '';
-  if (!contentType.includes('stream')) {
-    const content = await (await res.text()).replace(/provided:.*. You/, 'provided: ***. You');
-    console.log('[Stream] error ', content);
-    return '```json\n' + content + '```';
-  }
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -54,7 +42,7 @@ async function createStream(req: NextRequest) {
       }
 
       const parser = createParser(onParse);
-      for await (const chunk of res.body as any) {
+      for await (const chunk of fetchResult.body as any) {
         parser.feed(decoder.decode(chunk));
       }
     },
