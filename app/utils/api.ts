@@ -209,6 +209,7 @@ export const fetchApiChat = async ({
     while (true) {
       const readResult = await reader?.read();
       const content = decoder.decode(readResult?.value);
+      console.log(readResult);
       onMessage?.(content);
       // responseText += content;
 

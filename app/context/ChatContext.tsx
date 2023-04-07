@@ -108,7 +108,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           }),
           stream: true,
           onMessage: (content) => {
-            console.log(content);
             setMessages([...newMessages, { role: Role.assistant, content }]);
           },
         });
