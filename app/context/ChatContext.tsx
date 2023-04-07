@@ -78,10 +78,11 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const sendMessage = useCallback(
     async (content: string) => {
+      let newMessages = [...messages];
       // 如果当前是在浏览历史消息，则激活历史消息
       if (typeof historyIndex === 'number') {
         const newHistory = [...(history ?? [])];
-        const newMessages = newHistory.splice(historyIndex, 1)[0].messages;
+        newMessages = [...newHistory.splice(historyIndex, 1)[0].messages];
         setHistory(newHistory);
         setCache('history', newHistory);
         setMessages(newMessages);
@@ -89,7 +90,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       }
 
       // 先插入一条用户消息
-      let newMessages: (Message | ChatResponse)[] = [...messages, { role: Role.user, content }];
+      newMessages = [...newMessages, { role: Role.user, content }];
       setMessages(newMessages);
       setCache('messages', newMessages);
       setIsLoading(true);
@@ -110,6 +111,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           stream: true,
           onMessage: (content) => {
             fullContent += content;
+            setIsLoading(false);
             setMessages([...newMessages, { role: Role.assistant, content: fullContent }]);
           },
         });
