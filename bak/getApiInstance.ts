@@ -19,7 +19,7 @@ export function getAPIInstance(apiKey: string, completionParams?: CompletionPara
     return apiInstanceMap.get(apiKeyWithParams);
   }
 
-  // 从 getOpenaiApiKeyAliasMap 中拿去真实的 apiKey
+  // 从 getOpenaiApiKeyAliasMap 中拿取真实的 apiKey
   let realApiKey = apiKey;
   const openaiApiKeyAliasMap = getOpenaiApiKeyAliasMap();
   // 如果 getOpenaiApiKeyAliasMap 中存在这个 alias，则获取其中真实的 apiKey

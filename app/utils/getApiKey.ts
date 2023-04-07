@@ -4,7 +4,7 @@ import { env } from 'process';
  * 传入的 apiKey 可能是 alias，这个函数会返回真正的 apiKey
  */
 export function getApiKey(apiKey: string): string {
-  // 从 getOpenaiApiKeyAliasMap 中拿去真实的 apiKey
+  // 从 getOpenaiApiKeyAliasMap 中拿取真实的 apiKey
   let realApiKey = apiKey;
   const openaiApiKeyAliasMap = getOpenaiApiKeyAliasMap();
   // 如果 getOpenaiApiKeyAliasMap 中存在这个 alias，则获取其中真实的 apiKey

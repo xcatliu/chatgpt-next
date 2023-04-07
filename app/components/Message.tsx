@@ -4,11 +4,14 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import type { FC, ReactNode } from 'react';
 
-import type { ChatResponse, Message as MessageType } from '@/utils/api';
-import { getContent, getRole, Role } from '@/utils/api';
+import { Role } from '@/utils/constants';
+import type { ChatResponse, Message as MessageType } from '@/utils/constants';
 import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
+import { getContent, getRole } from '@/utils/message';
 
-/** 单个消息气泡 */
+/**
+ * 单个消息气泡
+ */
 export const Message: FC<MessageType | ChatResponse> = (props) => {
   const role = getRole(props);
   const content = getContent(props);
@@ -28,7 +31,7 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
           'p-1.5': isUser,
           'bg-white': isUser,
         })}
-        src={isAssistant ? '/chatgpt-green-icon.png' : isUser ? '/heroicons-user.svg' : 'TODO'}
+        src={isAssistant ? '/chatgpt-icon-green.png' : isUser ? '/heroicons-user.svg' : 'TODO'}
         alt={`${role} avatar`}
         width={40}
         height={40}
@@ -61,7 +64,9 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
   );
 };
 
-/** 系统消息 */
+/**
+ * 系统消息
+ */
 export const SystemMessage: FC<{ children: ReactNode }> = ({ children }) => {
   return <div className="px-14 my-4 text-center text-gray-400 text-sm">{children}</div>;
 };

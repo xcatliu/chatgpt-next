@@ -1,23 +1,29 @@
 'use client';
 
 import type { FC, ReactNode } from 'react';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
-import type { ChatResponse, Message } from '@/utils/api';
-import { fetchApiChat, isMessage, Model, Role } from '@/utils/api';
+import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
+import type { ChatResponse, Message } from '@/utils/constants';
+import { Model, Role } from '@/utils/constants';
+import { isMessage } from '@/utils/message';
 import { scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
+import { MenuContext, MenuKey } from './MenuContext';
+
+/**
+ * 聊天记录
+ */
 export interface HistoryItem {
   messages: (Message | ChatResponse)[];
 }
 
+/**
+ * 对话相关的 Context
+ */
 export const ChatContext = createContext<{
-  isMenuShow: boolean;
-  setIsMenuShow: (isMenuShow: boolean) => void;
-  currentMenu: 'InboxStack' | 'AdjustmentsHorizontal' | undefined;
-  setCurrentMenu: (currentMenu: 'InboxStack' | 'AdjustmentsHorizontal' | undefined) => void;
   sendMessage: (content: string) => Promise<void>;
   isLoading: boolean;
   messages: (Message | ChatResponse)[];
@@ -29,14 +35,15 @@ export const ChatContext = createContext<{
 } | null>(null);
 
 export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [isMenuShow, setStateIsMenuShow] = useState(false);
-  const [currentMenu, setCurrentMenu] = useState<'InboxStack' | 'AdjustmentsHorizontal' | undefined>(undefined);
+  const { setIsMenuShow, setCurrentMenu } = useContext(MenuContext)!;
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<(Message | ChatResponse)[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<number | 'empty' | 'current'>('empty');
 
+  // 页面加载后从 cache 中读取 history 和 messages
+  // 如果 messages 不为空，则将最近的一条消息写入 history
   useEffect(() => {
     let history = getCache<HistoryItem[]>('history');
     const messages = getCache<(Message | ChatResponse)[]>('messages');
@@ -52,34 +59,25 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     // 根据 history 是否存在决定当前 menu tab 是什么
     if (history === undefined) {
+      // 如果不存在 history，则当前 menu 是参数配置 tab
       setHistory([]);
-      setCurrentMenu('AdjustmentsHorizontal');
+      setCurrentMenu(MenuKey.AdjustmentsHorizontal);
     } else {
+      // 如果存在 history，则当前 menu 是聊天记录 tab
       setHistory(history);
-      setCurrentMenu('InboxStack');
+      setCurrentMenu(MenuKey.InboxStack);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setIsMenuShow = useCallback((isMenuShow: boolean) => {
-    if (!isMenuShow) {
-      document.documentElement.classList.remove('show-menu');
-      setStateIsMenuShow(isMenuShow);
-      return;
-    }
-
-    setStateIsMenuShow(isMenuShow);
-    // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
-    const formContainer = document.getElementById('form-container');
-    if (formContainer) {
-      formContainer.style.top = `${formContainer.offsetTop}px`;
-    }
-    document.documentElement.classList.add('show-menu');
-  }, []);
-
+  /**
+   * 发送消息
+   */
   const sendMessage = useCallback(
     async (content: string) => {
+      // 先获取旧的 messages 的备份
       let newMessages = [...messages];
-      // 如果当前是在浏览历史消息，则激活历史消息
+      // 如果当前是在浏览聊天记录，则激活历史消息
       if (typeof historyIndex === 'number') {
         const newHistory = [...(history ?? [])];
         newMessages = [...newHistory.splice(historyIndex, 1)[0].messages];
@@ -99,23 +97,23 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       scrollToBottom();
 
       try {
+        // stream 模式下，由前端组装消息
         let fullContent = '';
         await fetchApiChat({
           model: Model['gpt-3.5-turbo-0301'],
           messages: newMessages.map((message) => {
-            if (isMessage(message)) {
-              return message;
-            }
-            return message.choices[0].message;
+            return isMessage(message) ? message : message.choices[0].message;
           }),
           stream: true,
           onMessage: (content) => {
+            // stream 模式下，由前端组装消息
             fullContent += content;
             setIsLoading(false);
             setMessages([...newMessages, { role: Role.assistant, content: fullContent }]);
           },
         });
       } catch (e) {
+        // 发生错误时，展示错误消息
         setIsLoading(false);
         setMessages([...newMessages, { isError: true, role: Role.assistant, content: (e as Error).message }]);
       }
@@ -123,7 +121,9 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     [messages, history, historyIndex],
   );
 
-  /** 加载历史消息 */
+  /**
+   * 加载聊天记录
+   */
   const loadHistory = useCallback(
     (index: number) => {
       if (historyIndex === 'empty') {
@@ -171,17 +171,13 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setCache('history', newHistory);
     setMessages([]);
     setCache('messages', []);
-    setCurrentMenu('InboxStack');
+    setCurrentMenu(MenuKey.InboxStack);
     setHistoryIndex('empty');
-  }, [messages, history]);
+  }, [messages, history, setCurrentMenu]);
 
   return (
     <ChatContext.Provider
       value={{
-        isMenuShow,
-        setIsMenuShow,
-        currentMenu,
-        setCurrentMenu,
         sendMessage,
         isLoading,
         messages,

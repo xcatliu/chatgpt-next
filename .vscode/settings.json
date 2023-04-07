@@ -14,6 +14,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "css.lint.unknownAtRules": "ignore",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "cSpell.words": [
@@ -23,16 +24,19 @@
     "commonmark",
     "DOCKERHUB",
     "endregion",
+    "eventsource",
     "firstkey",
     "GPTAPI",
     "heroicons",
     "linkify",
+    "logit",
     "micromessenger",
     "nextjs",
     "OPENAI",
     "pnpm",
     "secondkey",
     "tailwindcss",
+    "wechat",
     "xcatliu",
     "zeabur"
   ],

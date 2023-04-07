@@ -6,7 +6,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
-import { isDomChild } from '@/utils/isDomChildren';
+import { isDomChildren } from '@/utils/isDomChildren';
 // import { scrollToBottom } from '@/utils/scrollToBottom';
 
 export const TextareaForm: FC = () => {
@@ -21,6 +21,7 @@ export const TextareaForm: FC = () => {
   const placeholderRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // touchstart textarea 外部时，执行 blur
   useEffect(() => {
     document.addEventListener('touchstart', (e) => {
       const targetElement = e.target as HTMLElement;
@@ -29,7 +30,7 @@ export const TextareaForm: FC = () => {
         return;
       }
       // 如果触碰的是 form 内，则跳过
-      if (isDomChild(formContainerRef.current, targetElement)) {
+      if (isDomChildren(formContainerRef.current, targetElement)) {
         return;
       }
       // 如果触碰的是 form 外，则 blur textarea
@@ -41,7 +42,10 @@ export const TextareaForm: FC = () => {
   // const onFocus = useCallback(() => {
   //   scrollToBottom();
   // }, []);
-  /** 更新 submit 按钮的 disable 态 */
+
+  /**
+   * 更新 submit 按钮的 disable 态
+   */
   const updateSubmitDisabled = useCallback(() => {
     const value = textareaRef.current?.value?.trim();
     if (value) {
@@ -50,7 +54,10 @@ export const TextareaForm: FC = () => {
       setSubmitDisabled(true);
     }
   }, []);
-  /** 更新 textarea 的高度 */
+
+  /**
+   * 更新 textarea 的高度
+   */
   const updateTextareaHeight = useCallback(() => {
     const textareaElement = textareaRef.current;
     if (!textareaElement) {
@@ -65,23 +72,27 @@ export const TextareaForm: FC = () => {
       placeholderRef.current.style.height = `${newHeight}px`;
     }
   }, []);
-  /** 输入内容触发 */
+
+  /**
+   * 输入内容触发
+   */
   const onChange = useCallback(() => {
     updateTextareaHeight();
     // 保持滚动到最底下，bug 太多，先关闭
     // scrollToBottom();
     updateSubmitDisabled();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [updateTextareaHeight, updateSubmitDisabled]);
   /** 中文输入法控制 */
   const onCompositionStart = useCallback(() => setIsComposing(true), []);
   const onCompositionEnd = useCallback(() => {
     setIsComposing(false);
     // 由于 onChange 和 onCompositionEnd 的时序问题，这里也需要调用 updateSubmitDisabled
     updateSubmitDisabled();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  /** 提交表单处理 */
+  }, [updateSubmitDisabled]);
+
+  /**
+   * 提交表单处理
+   */
   const formOnSubmit = useCallback(
     async (e?: FormEvent<HTMLFormElement>) => {
       e?.preventDefault();
@@ -97,10 +108,12 @@ export const TextareaForm: FC = () => {
       updateSubmitDisabled();
       await sendMessage(value);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sendMessage],
+    [sendMessage, updateTextareaHeight, updateSubmitDisabled],
   );
-  /** 修改回车默认行为 */
+
+  /**
+   * 修改回车默认行为
+   */
   const onKeyDone = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
       // 如果正在中文输入，则跳过 keyDone 事件

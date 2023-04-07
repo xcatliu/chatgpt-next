@@ -6,20 +6,26 @@ import type { FC } from 'react';
 import { useContext } from 'react';
 
 import { ChatContext } from '@/context/ChatContext';
-import { getContent } from '@/utils/api';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
+import { getContent } from '@/utils/message';
 
+/**
+ * 聊天记录
+ */
 export const History: FC = () => {
   let { messages, history, clearHistory, historyIndex, loadHistory } = useContext(ChatContext)!;
 
   history = history ?? [];
+  // 如果当前有消息，则将当前消息放入聊天记录中
   if (messages.length > 0) {
     history = [{ messages }, ...history];
   }
 
+  /**
+   * 当前激活的历史消息
+   */
   let activeHistoryIndex: number;
-
   if (historyIndex === 'current') {
     activeHistoryIndex = 0;
   } else if (typeof historyIndex === 'number') {

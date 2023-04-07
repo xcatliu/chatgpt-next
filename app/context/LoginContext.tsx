@@ -5,6 +5,9 @@ import { createContext, useCallback, useState } from 'react';
 
 import { login as utilsLogin, logout as utilsLogout } from '@/utils/login';
 
+/**
+ * 登录相关的 Context
+ */
 export const LoginContext = createContext<{
   isLogged: boolean;
   login: () => Promise<boolean>;

@@ -8,15 +8,19 @@ import { useCallback, useContext, useEffect } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
+import { MenuContext, MenuKey } from '@/context/MenuContext';
 import { scrollToTop } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
 import { History } from './History';
 
+/**
+ * 菜单栏
+ */
 export const Menu: FC = () => {
   const { windowHeight, isWeChat } = useContext(DeviceContext)!;
   const { isLogged, login, logout } = useContext(LoginContext)!;
-  const { isMenuShow, setIsMenuShow } = useContext(ChatContext)!;
+  const { isMenuShow, setIsMenuShow } = useContext(MenuContext)!;
 
   useEffect(() => {
     // 最开始如果未登录，则弹窗登录
@@ -26,7 +30,9 @@ export const Menu: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** 点击钥匙按钮，弹出重新登录框 */
+  /**
+   * 点击钥匙按钮，弹出重新登录框
+   */
   const onKeyIconClick = useCallback(async () => {
     // 如果未登录，则弹窗登录
     if (!isLogged) {
@@ -98,9 +104,13 @@ export const Menu: FC = () => {
   );
 };
 
+/**
+ * 显示菜单栏的入口按钮，仅在移动端需要显示/隐藏菜单栏
+ */
 const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
-  const { setIsMenuShow, history, setCurrentMenu } = useContext(ChatContext)!;
+  const { history } = useContext(ChatContext)!;
+  const { setIsMenuShow, setCurrentMenu } = useContext(MenuContext)!;
 
   return (
     <button
@@ -110,11 +120,11 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
           onKeyIconClick();
         } else if (history && history.length > 0) {
           scrollToTop();
-          setCurrentMenu('InboxStack');
+          setCurrentMenu(MenuKey.InboxStack);
           setIsMenuShow(true);
         } else {
           scrollToTop();
-          setCurrentMenu('AdjustmentsHorizontal');
+          setCurrentMenu(MenuKey.AdjustmentsHorizontal);
           setIsMenuShow(true);
         }
       }}
@@ -135,9 +145,12 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
   );
 };
 
+/**
+ * 菜单栏内容
+ */
 const MenuContent: FC<any> = ({ onKeyIconClick }) => {
   const { isLogged } = useContext(LoginContext)!;
-  const { currentMenu, setCurrentMenu } = useContext(ChatContext)!;
+  const { currentMenu, setCurrentMenu } = useContext(MenuContext)!;
 
   return (
     <>
@@ -145,12 +158,12 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
         className={`w-inherit flex z-10 justify-end bg-gray-wx border-b-[0.5px] border-gray-300
                    md:flex-row-reverse md:px-4 md:pt-2 md:border-r`}
       >
-        <button onClick={() => setCurrentMenu('InboxStack')}>
-          <InboxStackIcon className={classNames({ 'text-gray-400': currentMenu !== 'InboxStack' })} />
+        <button onClick={() => setCurrentMenu(MenuKey.InboxStack)}>
+          <InboxStackIcon className={classNames({ 'text-gray-400': currentMenu !== MenuKey.InboxStack })} />
         </button>
-        <button onClick={() => setCurrentMenu('AdjustmentsHorizontal')}>
+        <button onClick={() => setCurrentMenu(MenuKey.AdjustmentsHorizontal)}>
           <AdjustmentsHorizontalIcon
-            className={classNames({ 'text-gray-400': currentMenu !== 'AdjustmentsHorizontal' })}
+            className={classNames({ 'text-gray-400': currentMenu !== MenuKey.AdjustmentsHorizontal })}
           />
         </button>
         <div className="grow" />
@@ -164,8 +177,8 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
         </button>
       </menu>
       <div className="grow md:mx-4">
-        {currentMenu === 'InboxStack' && <History />}
-        {currentMenu === 'AdjustmentsHorizontal' && (
+        {currentMenu === MenuKey.InboxStack && <History />}
+        {currentMenu === MenuKey.AdjustmentsHorizontal && (
           <>
             {/* <div className="m-4">
               模型：

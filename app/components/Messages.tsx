@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import { useContext } from 'react';
 
 import { ChatContext } from '@/context/ChatContext';
-import { Role } from '@/utils/api';
+import { Role } from '@/utils/constants';
 
 import { Message, SystemMessage } from './Message';
 
@@ -21,6 +21,7 @@ const LOADING_MESSAGE = '正在努力思考...';
 export const Messages: FC = () => {
   let { isLoading, messages, history, historyIndex, startNewChat } = useContext(ChatContext)!;
 
+  // 如果当前在浏览聊天记录，则展示该聊天记录的 messages
   if (history && typeof historyIndex === 'number') {
     messages = history[historyIndex].messages;
   }

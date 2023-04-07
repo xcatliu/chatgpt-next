@@ -1,9 +1,13 @@
 'use client';
 
 import { setCookie } from 'cookies-next';
+import throttle from 'lodash.throttle';
 import type { FC, ReactNode } from 'react';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
+/**
+ * 设备相关 Context
+ */
 export const DeviceContext = createContext<{
   isWeChat: boolean;
   isMobile: boolean;
@@ -24,7 +28,10 @@ export const DeviceProvider: FC<{
 
   const isMobile = typeof windowWidth === 'number' ? windowWidth < 1126 : uaIsMobile;
 
-  useEffect(() => {
+  /**
+   * 重置 window 宽高计算
+   */
+  const resetWindowWidthHeight = useCallback(() => {
     // 通过计算获取高度
     // https://stackoverflow.com/a/52936500/2777142
     setCookie('windowWidth', window.innerWidth);
@@ -33,16 +40,12 @@ export const DeviceProvider: FC<{
     setWindowHeight(window.innerHeight);
     // 设置精确的高度以控制滚动条
     document.body.style.minHeight = `${window.innerHeight}px`;
-
-    window.addEventListener('resize', () => {
-      setCookie('windowWidth', window.innerWidth);
-      setCookie('windowHeight', window.innerHeight);
-      setWindowWidth(window.innerWidth);
-      setWindowHeight(window.innerHeight);
-      // 设置精确的高度以控制滚动条
-      document.body.style.minHeight = `${window.innerHeight}px`;
-    });
   }, []);
+
+  useEffect(() => {
+    resetWindowWidthHeight();
+    window.addEventListener('resize', throttle(resetWindowWidthHeight, 100));
+  }, [resetWindowWidthHeight]);
 
   return (
     <DeviceContext.Provider value={{ windowWidth, windowHeight, isWeChat, isMobile }}>
