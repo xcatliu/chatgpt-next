@@ -172,12 +172,10 @@ export function isMessage(message: Message | ChatResponse): message is Message {
 }
 
 export function getContent(message: Message | ChatResponse) {
-  console.log(message);
   return isMessage(message) ? message.content : message.choices[0].message.content;
 }
 
 export function getRole(message: Message | ChatResponse) {
-  console.log(message);
   return isMessage(message) ? message.role : message.choices[0].message.role;
 }
 
@@ -211,7 +209,6 @@ export const fetchApiChat = async ({
     while (true) {
       const readResult = await reader?.read();
       const content = decoder.decode(readResult?.value);
-      console.log(content);
       onMessage?.(content);
       // responseText += content;
 
