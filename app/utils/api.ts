@@ -209,9 +209,9 @@ export const fetchApiChat = async ({
     while (true) {
       const readResult = await reader?.read();
       const content = decoder.decode(readResult?.value);
-      console.log(readResult);
-      onMessage?.(content);
-      // responseText += content;
+      if (readResult?.done === false) {
+        onMessage?.(content);
+      }
 
       const done = !readResult || readResult.done;
 
@@ -219,7 +219,5 @@ export const fetchApiChat = async ({
         break;
       }
     }
-
-    // finish();
   }
 };

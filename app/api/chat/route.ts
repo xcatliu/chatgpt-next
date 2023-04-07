@@ -3,8 +3,7 @@ import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import type { ChatResponse, ChatResponseChunk, ChatResponseError } from '@/utils/api';
-import { Role } from '@/utils/api';
+import type { ChatResponseChunk, ChatResponseError } from '@/utils/api';
 import { HttpStatusCode } from '@/utils/constants';
 import { getApiKey } from '@/utils/getApiKey';
 
@@ -41,34 +40,18 @@ export async function POST(req: NextRequest) {
     async start(controller) {
       const encoder = new TextEncoder();
       const decoder = new TextDecoder();
-      let responseBody: ChatResponse;
-      let fullContent = '';
       const parser = createParser((event) => {
         if (event.type === 'event') {
           const data = event.data;
           if (data === '[DONE]') {
-            responseBody.choices = [
-              { index: 0, message: { role: Role.assistant, content: fullContent }, finish_reason: 'stop' },
-            ];
-            controller.enqueue(encoder.encode(JSON.stringify(responseBody)));
             controller.close();
             return;
           }
           try {
             const json: ChatResponseChunk = JSON.parse(data);
-            // 第一次获取到 data 时，赋值给 responseBody
-            if (!responseBody) {
-              responseBody = {
-                ...json,
-                object: 'chat.completion',
-                choices: [],
-                usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
-              };
-            }
             // 获取 delta.content
             const content = (json.choices[0].delta as { content: string }).content;
             if (content) {
-              fullContent += content;
               controller.enqueue(encoder.encode(content));
             }
           } catch (e) {

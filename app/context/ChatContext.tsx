@@ -98,6 +98,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       scrollToBottom();
 
       try {
+        let fullContent = '';
         await fetchApiChat({
           model: Model['gpt-3.5-turbo-0301'],
           messages: newMessages.map((message) => {
@@ -108,7 +109,8 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           }),
           stream: true,
           onMessage: (content) => {
-            setMessages([...newMessages, { role: Role.assistant, content }]);
+            fullContent += content;
+            setMessages([...newMessages, { role: Role.assistant, content: fullContent }]);
           },
         });
       } catch (e) {
