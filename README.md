@@ -34,7 +34,7 @@ pnpm dev
 
 ### 重要提醒
 
-**中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 [pages/api/chat/route.ts](https://github.com/xcatliu/chatgpt-next/blob/main/pages/api/chat/route.ts) 文件中的相关代码注释掉。**
+**中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 [app/api/chat/route.ts](https://github.com/xcatliu/chatgpt-next/blob/main/app/api/chat/route.ts) 文件中的相关代码注释掉。**
 
 ## 配置
 
