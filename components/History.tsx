@@ -1,3 +1,4 @@
+import { TrashIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
@@ -8,7 +9,8 @@ import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
 
 export const History: FC = () => {
-  let { messages, history, clearHistory, historyIndex, loadHistory } = useContext(ChatMessageContext)!;
+  let { messages, history, clearHistory, historyIndex, loadHistory, deleteChatHistory } =
+    useContext(ChatMessageContext)!;
 
   history = history ?? [];
   if (messages.length > 0) {
@@ -28,7 +30,7 @@ export const History: FC = () => {
       <ul>
         {history.map((historyItem, index) => (
           <li
-            className={classNames('p-4 border-b-[0.5px] cursor-pointer border-gray-300 md:-mx-4 md:px-8', {
+            className={classNames('p-4 border-b-[0.5px] cursor-default border-gray-300 md:-mx-4 md:px-8 relative', {
               'bg-gray-300': activeHistoryIndex === index,
             })}
             key={index}
@@ -38,6 +40,16 @@ export const History: FC = () => {
             <p className="mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate">
               {last(historyItem.messages)?.chatMessage?.text}
             </p>
+            {activeHistoryIndex === index && (
+              <div
+                className="absolute top-0 right-0 h-8 w-8 my-6 mx-2 flex justify-center items-center text-gray-500 hover:text-gray-800 cursor-pointer"
+                onClick={() => {
+                  deleteChatHistory(activeHistoryIndex);
+                }}
+              >
+                <TrashIcon className="h-5 w-5" />
+              </div>
+            )}
           </li>
         ))}
       </ul>
