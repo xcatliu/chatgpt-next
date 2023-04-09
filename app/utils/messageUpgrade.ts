@@ -26,15 +26,18 @@ export function isOldMessage(message: any): message is MessageOld {
   if (message === undefined) {
     return false;
   }
-  if (message.avatar) {
+  if (message.chatMessage) {
     return true;
   }
   return false;
 }
 
 export function upgradeMessage(message: any): Message {
-  return {
-    role: message.avatar === 'user' ? Role.user : Role.assistant,
-    content: message.chatMessage.text,
-  };
+  if (isOldMessage(message)) {
+    return {
+      role: message.avatar === 'user' ? Role.user : Role.assistant,
+      content: message.chatMessage.text,
+    };
+  }
+  return message;
 }
