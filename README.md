@@ -16,7 +16,7 @@ https://chatgpt-next.com
 
 - 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
 - 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
-- 支持私有化部署，可以使用 Vercel/Zeabur/netlify 等一键部署
+- 支持私有化部署，使用 Vercel/Zeabur/netlify 等一键部署
 
 <img src="./public/screenshot-wechat.png" width="390">
 
