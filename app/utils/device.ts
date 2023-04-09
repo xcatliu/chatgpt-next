@@ -9,5 +9,6 @@ export function isWeChat(userAgent?: string) {
   if (typeof window !== 'undefined') {
     return /micromessenger/.test(window.navigator.userAgent.toLowerCase());
   }
+
   return false;
 }

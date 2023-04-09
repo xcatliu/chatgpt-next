@@ -1,24 +1,32 @@
+'use client';
+
 import { TrashIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
 import { useContext } from 'react';
 
-import { ChatMessageContext } from '@/context/ChatMessageContext';
+import { ChatContext } from '@/context/ChatContext';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
+import { getContent } from '@/utils/message';
 
+/**
+ * 聊天记录
+ */
 export const History: FC = () => {
-  let { messages, history, clearHistory, historyIndex, loadHistory, deleteChatHistory } =
-    useContext(ChatMessageContext)!;
+  let { messages, history, clearHistory, historyIndex, loadHistory, deleteHistory } = useContext(ChatContext)!;
 
   history = history ?? [];
+  // 如果当前有消息，则将当前消息放入聊天记录中
   if (messages.length > 0) {
     history = [{ messages }, ...history];
   }
 
+  /**
+   * 当前激活的历史消息
+   */
   let activeHistoryIndex: number;
-
   if (historyIndex === 'current') {
     activeHistoryIndex = 0;
   } else if (typeof historyIndex === 'number') {
@@ -30,21 +38,21 @@ export const History: FC = () => {
       <ul>
         {history.map((historyItem, index) => (
           <li
-            className={classNames('p-4 border-b-[0.5px] cursor-default border-gray-300 md:-mx-4 md:px-8 relative', {
+            className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray-300 md:-mx-4 md:px-8', {
               'bg-gray-300': activeHistoryIndex === index,
             })}
             key={index}
             onClick={() => loadHistory(index)}
           >
-            <h3 className="overflow-hidden whitespace-nowrap truncate">{historyItem.messages[0].chatMessage?.text}</h3>
+            <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
             <p className="mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate">
-              {last(historyItem.messages)?.chatMessage?.text}
+              {getContent(last(historyItem.messages))}
             </p>
             {activeHistoryIndex === index && (
               <div
-                className="absolute top-0 right-0 h-8 w-8 my-6 mx-2 flex justify-center items-center text-gray-500 hover:text-gray-800 cursor-pointer"
+                className="absolute top-0 right-0 h-8 w-8 my-6 mx-2 cursor-pointer flex justify-center items-center text-gray-500 hover:text-gray-800"
                 onClick={() => {
-                  deleteChatHistory(activeHistoryIndex);
+                  deleteHistory(activeHistoryIndex);
                 }}
               >
                 <TrashIcon className="h-5 w-5" />

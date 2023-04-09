@@ -1,3 +1,6 @@
+/**
+ * 导出 json
+ */
 export function exportJSON(data: any, filename: string) {
   const jsonData = JSON.stringify(data);
   const a = document.createElement('a');
