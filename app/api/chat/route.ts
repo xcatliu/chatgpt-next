@@ -14,6 +14,7 @@ export const config = {
 };
 
 export async function POST(req: NextRequest) {
+  console.log(env);
   if (env.NODE_ENV === 'development') {
     return NextResponse.json(
       {
