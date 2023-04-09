@@ -1,17 +1,8 @@
 'use client';
 
 import type { FC } from 'react';
-import { useContext } from 'react';
-
-import { DeviceContext } from '@/context/DeviceContext';
 
 export const Title: FC = () => {
-  const { isWeChat } = useContext(DeviceContext)!;
-
-  if (isWeChat) {
-    return null;
-  }
-
   return (
     <>
       <div placeholder="" className="h-14 md:h-16" />

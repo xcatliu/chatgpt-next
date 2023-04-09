@@ -1,6 +1,4 @@
 import type { ChatRequest } from './constants';
-import { ResError } from './error';
-import { stream2string } from './stream';
 
 /**
  * 请求 /api/chat 接口
@@ -27,16 +25,28 @@ export const fetchApiChat = async ({
   // 如果返回错误，则直接抛出错误
   // res.json() 应该是形如 { code: string | number; message: string; } 的形式
   if (!res.ok) {
-    const error = new ResError({
-      code: res.status,
-      message: res.statusText,
-    });
-    try {
-      Object.assign(error, await res.json());
-    } catch (e) {}
+    const error = new Error();
+    Object.assign(error, await res.json());
     throw error;
   }
 
-  // 如果 res.ok 为 true，则使用 stream2string 来读取内容
-  await stream2string(res.body, onMessage);
+  // 如果 res.ok 为 true，则使用 reader 来读取内容
+  const reader = res.body?.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const readResult = await reader?.read();
+    const content = decoder.decode(readResult?.value);
+
+    // 如果流式响应未结束，则调用 onMessage
+    if (readResult?.done === false) {
+      onMessage?.(content);
+    }
+
+    // 如果流式响应已结束，则 break
+    const done = !readResult || readResult.done;
+    if (done) {
+      break;
+    }
+  }
 };
