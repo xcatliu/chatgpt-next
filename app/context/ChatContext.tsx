@@ -8,6 +8,7 @@ import { getCache, setCache } from '@/utils/cache';
 import type { ChatResponse, Message } from '@/utils/constants';
 import { Model, Role } from '@/utils/constants';
 import { isMessage } from '@/utils/message';
+import { isOldMessage, upgradeMessage } from '@/utils/messageUpgrade';
 import { scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
@@ -31,6 +32,7 @@ export const ChatContext = createContext<{
   historyIndex: number | 'empty' | 'current';
   loadHistory: (historyIndex: number) => void;
   clearHistory: () => void;
+  deleteHistory: (historyIndex: number) => void;
   startNewChat: () => void;
 } | null>(null);
 
@@ -46,7 +48,17 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   // 如果 messages 不为空，则将最近的一条消息写入 history
   useEffect(() => {
     let history = getCache<HistoryItem[]>('history');
-    const messages = getCache<(Message | ChatResponse)[]>('messages');
+    // 读取的 history 有可能是旧版的格式，这里做一个转换
+    if (history !== undefined && isOldMessage(history[0].messages[0])) {
+      history = history.map((historyItem) => ({
+        messages: historyItem.messages.map(upgradeMessage),
+      }));
+    }
+    // 读取的 messages 有可能是旧版的格式，这里做一个转换
+    let messages = getCache<(Message | ChatResponse)[]>('messages');
+    if (messages !== undefined && isOldMessage(messages)) {
+      messages = messages.map(upgradeMessage);
+    }
 
     // 如果检测到缓存中有上次还未存储到 cache 的 message，则加入到 history 中
     if (messages && messages.length > 0) {
@@ -132,6 +144,10 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         return;
       }
 
+      if (historyIndex === index) {
+        return;
+      }
+
       if (typeof historyIndex === 'number') {
         setHistoryIndex(index);
         setIsMenuShow(false);
@@ -161,6 +177,21 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setHistoryIndex('empty');
   }, []);
 
+  /** 删除当前单条聊天记录 */
+  const deleteHistory = useCallback(
+    (chatIndex: number) => {
+      const newHistory = [...(history ?? [])];
+      const currHistory = newHistory.filter((_, index) => index !== chatIndex) ?? [];
+
+      setHistory(currHistory);
+      setCache('history', currHistory);
+
+      // 选择最近的一条聊天记录展示
+      setHistoryIndex(currHistory.length === 0 ? 'empty' : chatIndex > 0 ? chatIndex - 1 : 0);
+    },
+    [history],
+  );
+
   /** 开启新对话 */
   const startNewChat = useCallback(() => {
     let newHistory = [...(history ?? [])];
@@ -185,6 +216,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         historyIndex,
         loadHistory,
         clearHistory,
+        deleteHistory,
         startNewChat,
       }}
     >
