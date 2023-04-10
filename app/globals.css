@@ -38,7 +38,7 @@ button {
 input[type='button'],
 input[type='submit'],
 button {
-  @apply cursor-pointer;
+  @apply cursor-pointer text-gray-400 hover:text-gray-500;
 }
 
 /* 用于 fixed 宽度设置 */
@@ -57,5 +57,5 @@ button {
 }
 
 .text-link-gray {
-  @apply text-gray-400 hover:text-gray-500 underline cursor-pointer;
+  @apply underline cursor-pointer text-gray-400 hover:text-gray-500;
 }

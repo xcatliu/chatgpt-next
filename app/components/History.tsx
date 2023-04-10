@@ -45,18 +45,22 @@ export const History: FC = () => {
             onClick={() => loadHistory(index)}
           >
             <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
-            <p className="mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate">
+            <p
+              className={classNames('mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate', {
+                'pr-4': activeHistoryIndex === index,
+              })}
+            >
               {getContent(last(historyItem.messages))}
             </p>
             {activeHistoryIndex === index && (
-              <div
-                className="absolute top-0 right-0 h-8 w-8 my-6 mx-2 cursor-pointer flex justify-center items-center text-gray-500 hover:text-gray-800"
+              <button
+                className="absolute bottom-0 right-0"
                 onClick={() => {
                   deleteHistory(activeHistoryIndex);
                 }}
               >
-                <TrashIcon className="h-5 w-5" />
-              </div>
+                <TrashIcon />
+              </button>
             )}
           </li>
         ))}

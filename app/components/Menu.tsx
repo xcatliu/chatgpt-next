@@ -86,7 +86,7 @@ export const Menu: FC = () => {
         }}
       />
       <div
-        // 293px 是 768px 的黄金分割点，239 + 16 * 2 = 325
+        // 293px 是 768px 的黄金分割点，293 + 16 * 2 = 325
         className={classNames('fixed left-[100vw] w-[calc(100vw-6.25rem)] md:block md:static md:w-[325px]', {
           hidden: !isMenuShow,
         })}
@@ -114,7 +114,6 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
 
   return (
     <button
-      className="text-gray-400"
       onClick={() => {
         if (!isLogged) {
           onKeyIconClick();
@@ -132,8 +131,8 @@ const MenuEntryButton: FC<any> = ({ onKeyIconClick }) => {
       {!isLogged ? (
         <KeyIcon
           className={classNames({
-            'text-green-600': isLogged,
-            'text-red-500': !isLogged,
+            'text-green-600 hover:text-green-700': isLogged,
+            'text-red-500 hover:text-red-600': !isLogged,
           })}
         />
       ) : history === undefined ? null : history.length > 0 ? (
@@ -158,25 +157,34 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
         className={`w-inherit flex z-10 justify-end bg-gray-wx border-b-[0.5px] border-gray-300
                    md:flex-row-reverse md:px-4 md:pt-2 md:border-r`}
       >
-        <button onClick={() => setCurrentMenu(MenuKey.InboxStack)}>
-          <InboxStackIcon className={classNames({ 'text-gray-400': currentMenu !== MenuKey.InboxStack })} />
+        <button
+          className={classNames({
+            'text-gray-700 hover:text-gray-700': currentMenu === MenuKey.InboxStack,
+          })}
+          onClick={() => setCurrentMenu(MenuKey.InboxStack)}
+        >
+          <InboxStackIcon />
         </button>
-        <button onClick={() => setCurrentMenu(MenuKey.AdjustmentsHorizontal)}>
-          <AdjustmentsHorizontalIcon
-            className={classNames({ 'text-gray-400': currentMenu !== MenuKey.AdjustmentsHorizontal })}
-          />
+        <button
+          className={classNames({
+            'text-gray-700 hover:text-gray-700': currentMenu === MenuKey.AdjustmentsHorizontal,
+          })}
+          onClick={() => setCurrentMenu(MenuKey.AdjustmentsHorizontal)}
+        >
+          <AdjustmentsHorizontalIcon />
         </button>
         <div className="grow" />
-        <button onClick={onKeyIconClick}>
-          <KeyIcon
-            className={classNames({
-              'text-green-600': isLogged,
-              'text-red-500': !isLogged,
-            })}
-          />
+        <button
+          className={classNames({
+            'text-green-600 hover:text-green-700': isLogged,
+            'text-red-500 hover:text-red-600': !isLogged,
+          })}
+          onClick={onKeyIconClick}
+        >
+          <KeyIcon />
         </button>
       </menu>
-      <div className="grow md:mx-4">
+      <div className="grow overflow-y-scroll md:px-4">
         {currentMenu === MenuKey.InboxStack && <History />}
         {currentMenu === MenuKey.AdjustmentsHorizontal && (
           <>
@@ -214,7 +222,7 @@ const MenuContent: FC<any> = ({ onKeyIconClick }) => {
           </>
         )}
       </div>
-      <div className="mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
+      <div className="flex-none mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
         由{' '}
         <a className="text-link-gray" href="https://github.com/xcatliu/chatgpt-next" target="_blank">
           ChatGPT Next

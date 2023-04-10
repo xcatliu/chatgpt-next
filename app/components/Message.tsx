@@ -28,8 +28,7 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
     >
       <Image
         className={classNames('rounded w-10 h-10', {
-          'p-1.5': isUser,
-          'bg-white': isUser,
+          'p-1.5 bg-white': isUser,
         })}
         src={isAssistant ? '/chatgpt-icon-green.png' : isUser ? '/heroicons-user.svg' : 'TODO'}
         alt={`${role} avatar`}
@@ -38,9 +37,8 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
       />
       <div
         className={classNames('mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words', {
-          'chatgpt-message': isAssistant,
+          'chatgpt-message bg-white': isAssistant,
           'text-red-500': isError,
-          'bg-white': isAssistant,
           'bg-[#abe987]': isUser,
         })}
         dangerouslySetInnerHTML={{
@@ -50,14 +48,8 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
       {/* 三角箭头 */}
       <div
         className={classNames('absolute mx-2.5 my-3.5 border-solid border-y-transparent border-y-[6px]', {
-          'right-12': isUser,
-          'left-12': isAssistant,
-          'border-r-0': isUser,
-          'border-l-0': isAssistant,
-          'border-l-[6px]': isUser,
-          'border-r-[6px]': isAssistant,
-          'border-l-[#abe987]': isUser,
-          'border-r-white': isAssistant,
+          'right-12 border-r-0 border-l-[6px] border-l-[#abe987]': isUser,
+          'left-12 border-l-0 border-r-[6px] border-r-white': isAssistant,
         })}
       />
     </div>
