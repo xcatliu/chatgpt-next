@@ -47,7 +47,7 @@ export const History: FC = () => {
             <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
             <p
               className={classNames('mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate', {
-                'pr-4': activeHistoryIndex === index,
+                'pr-8 md:pr-4': activeHistoryIndex === index,
               })}
             >
               {getContent(last(historyItem.messages))}
