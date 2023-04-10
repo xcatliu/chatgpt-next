@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   title: 'ChatGPT Next',
   description: '微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！',
   icons: { icon: '/chatgpt-icon-green.png', apple: '/chatgpt-icon-green.png' },
+  viewport: { width: 'device-width', initialScale: 1, viewportFit: 'cover' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

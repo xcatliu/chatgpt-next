@@ -1,5 +1,3 @@
-import { env } from 'process';
-
 import { createParser } from 'eventsource-parser';
 import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
@@ -14,13 +12,12 @@ export const config = {
 };
 
 export async function POST(req: NextRequest) {
-  console.log(env);
-  if (env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     return NextResponse.json(
       {
         code: HttpStatus.BadRequest,
         message:
-          '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 pages/api/chat/route.ts 文件中的相关代码注释掉。',
+          '中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 app/api/chat/route.ts 文件中的相关代码注释掉。',
       },
       { status: HttpStatus.BadRequest },
     );

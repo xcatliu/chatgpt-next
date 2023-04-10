@@ -1,5 +1,3 @@
-import { env } from 'process';
-
 /**
  * 传入的 apiKey 可能是 alias，这个函数会返回真正的 apiKey
  */
@@ -19,7 +17,7 @@ export function getApiKey(apiKey: string): string {
  * 根据配置的环境变量 OPENAI_API_KEY_ALIAS，获取 alias 配置
  */
 function getOpenaiApiKeyAliasMap() {
-  const envValue = env.OPENAI_API_KEY_ALIAS;
+  const envValue = process.env.OPENAI_API_KEY_ALIAS;
   if (!envValue) {
     return {};
   }

@@ -38,11 +38,6 @@ export const TextareaForm: FC = () => {
     });
   }, []);
 
-  /** 聚焦时滚动到最底下，bug 比较多，先关闭 */
-  // const onFocus = useCallback(() => {
-  //   scrollToBottom();
-  // }, []);
-
   /**
    * 更新 submit 按钮的 disable 态
    */
@@ -153,7 +148,6 @@ export const TextareaForm: FC = () => {
             ref={textareaRef}
             disabled={!isLogged}
             placeholder={isLogged ? '' : isMobile ? '请点击右上角设置密钥' : '请点击左上角钥匙按钮设置密钥'}
-            // onFocus={onFocus}
             onChange={onChange}
             onKeyDown={onKeyDone}
             onCompositionStart={onCompositionStart}
