@@ -86,7 +86,7 @@ git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
 | ----------------------------- | ---------------------------------- | ---------------- |
 | `OPENAI_API_KEY_ALIAS`        | apiKey 別名                        | 空               |
 | `CHATGPT_NEXT_DISABLE_PUBLIC` | 禁止陌生人通过他自己的 apiKey 访问 | `false`          |
-| `CHATGPT_NEXT_API_HOST`       | 配置 API 的请求 host（包含端口）   | `api.openai.com` |
+| `CHATGPT_NEXT_API_HOST`       | 配置 API 请求的 host（包含端口）   | `api.openai.com` |
 
 ### OPENAI_API_KEY_ALIAS
 
