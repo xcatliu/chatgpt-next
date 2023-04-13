@@ -6,7 +6,7 @@
   微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！
 </h3>
 <p align="center">
-  <a href="https://chatgpt-next.com">官方网站</a>（<a href="#备份网址">备份网址</a>） | <a href="#交流群">交流群</a> | <a href="#私有化部署">私有化部署</a> | <a href="#配置">配置</a>
+  <a href="https://chatgpt-next.com">官方网站</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#交流群">交流群</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#私有化部署">私有化部署</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#配置">配置</a>
 </p>
 <p align="center">
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
