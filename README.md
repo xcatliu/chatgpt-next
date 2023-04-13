@@ -78,6 +78,28 @@ pm2 start npm --name chatgpt-next -- start
 git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
 ```
 
+## 配置
+
+以下表格记录了所有的环境变量配置，一些较为复杂的配置在后面有单独的说明。
+
+| 环境变量                      | 描述                               | 默认值           |
+| ----------------------------- | ---------------------------------- | ---------------- |
+| `OPENAI_API_KEY_ALIAS`        | apiKey 別名                        | 空               |
+| `CHATGPT_NEXT_DISABLE_PUBLIC` | 禁止陌生人通过他自己的 apiKey 访问 | `false`          |
+| `CHATGPT_NEXT_API_HOST`       | 配置 API 的请求 host（包含端口）   | `api.openai.com` |
+
+### OPENAI_API_KEY_ALIAS
+
+配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名。
+
+使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
+
+```
+OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
+```
+
+按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
+
 ## 本地开发
 
 需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
@@ -104,28 +126,6 @@ pnpm dev
 chatgpt-next.com/api ignore://*
 chatgpt-next.com 127.0.0.1:3000
 ```
-
-## 配置
-
-以下表格记录了所有的环境变量配置，一些较为复杂的配置在后面有单独的说明。
-
-| 环境变量                      | 描述                               | 默认值           |
-| ----------------------------- | ---------------------------------- | ---------------- |
-| `OPENAI_API_KEY_ALIAS`        | apiKey 別名                        | 空               |
-| `CHATGPT_NEXT_DISABLE_PUBLIC` | 禁止陌生人通过他自己的 apiKey 访问 | `false`          |
-| `CHATGPT_NEXT_API_HOST`       | 配置 API 的请求 host（包含端口）   | `api.openai.com` |
-
-### OPENAI_API_KEY_ALIAS
-
-配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名。
-
-使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
-
-```
-OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
-```
-
-按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
 
 ## 备份网址
 
