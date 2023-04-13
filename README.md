@@ -10,13 +10,13 @@
 </p>
 <p align="center">
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
-    <img src="https://github.com/xcatliu/chatgpt-next/workflows/server/badge.svg" alt="server" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/server.yml/badge.svg" alt="server" />
   </a>
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/docker.yml">
-    <img src="https://github.com/xcatliu/chatgpt-next/workflows/docker/badge.svg" alt="docker" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/docker.yml/badge.svg" alt="docker" />
   </a>
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/test.yml">
-    <img src="https://github.com/xcatliu/chatgpt-next/workflows/test/badge.svg" alt="test" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/test.yml/badge.svg" alt="test" />
   </a>
 </p>
 
