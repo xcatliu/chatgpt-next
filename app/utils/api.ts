@@ -38,5 +38,5 @@ export const fetchApiChat = async ({
   }
 
   // 如果 res.ok 为 true，则使用 stream2string 来读取内容
-  await stream2string(res.body, onMessage);
+  return await stream2string(res.body, onMessage);
 };

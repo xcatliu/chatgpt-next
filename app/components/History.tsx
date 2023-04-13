@@ -1,104 +1,106 @@
 'use client';
 
-import { TrashIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
 import { useContext } from 'react';
 
+import type { HistoryItem } from '@/context/ChatContext';
 import { ChatContext } from '@/context/ChatContext';
+import { FULL_SPACE } from '@/utils/constants';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
 import { getContent } from '@/utils/message';
 
+import { DeleteHistoryButton } from './buttons/DeleteHistoryButton';
+
 /**
  * 聊天记录
  */
-export const History: FC = () => {
-  let { messages, history, clearHistory, historyIndex, loadHistory, deleteHistory } = useContext(ChatContext)!;
+export const History = () => {
+  const { messages, history, historyIndex } = useContext(ChatContext)!;
 
-  history = history ?? [];
-  // 如果当前有消息，则将当前消息放入聊天记录中
-  if (messages.length > 0) {
-    history = [{ messages }, ...history];
-  }
-
-  /**
-   * 当前激活的历史消息
-   */
-  let activeHistoryIndex: number;
-  if (historyIndex === 'current') {
-    activeHistoryIndex = 0;
-  } else if (typeof historyIndex === 'number') {
-    activeHistoryIndex = historyIndex;
+  if (messages.length === 0 && (history === undefined || history.length === 0)) {
+    return <div className="my-4 text-center text-gray-400 text-sm">暂无聊天记录</div>;
   }
 
   return (
     <>
       <ul>
-        {history.map((historyItem, index) => (
-          <li
-            className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray-300 md:-mx-4 md:px-8', {
-              'bg-gray-300': activeHistoryIndex === index,
-            })}
-            key={index}
-            onClick={() => loadHistory(index)}
-          >
-            <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
-            <p
-              className={classNames('mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate', {
-                'pr-8 md:pr-4': activeHistoryIndex === index,
-              })}
-            >
-              {getContent(last(historyItem.messages))}
-            </p>
-            {activeHistoryIndex === index && (
-              <button
-                className="absolute bottom-0 right-0"
-                onClick={() => {
-                  deleteHistory(activeHistoryIndex);
-                }}
-              >
-                <TrashIcon />
-              </button>
-            )}
-          </li>
+        {historyIndex === 'current' && <HistoryItemComp historyIndex={historyIndex} isActive={true} />}
+        {history?.map((_, index) => (
+          <HistoryItemComp key={index} historyIndex={index} isActive={historyIndex === index} />
         ))}
       </ul>
-      {history.length === 0 && <div className="my-4 text-center text-gray-400 text-sm">暂无聊天记录</div>}
-      {history.length > 0 && (
-        <>
-          <div className="my-4 text-center text-gray-400 text-sm">
-            聊天记录仅会保存在浏览器缓存
-            <br />
-            为避免丢失，请尽快
-            <a
-              className="text-link-gray"
-              onClick={() => {
-                let newHistory = [...(history ?? [])];
-                if (historyIndex === 'current') {
-                  newHistory = [{ messages }, ...newHistory];
-                }
-                exportJSON(newHistory, `ChatGPT-Next-${dayjs().format('YYYYMMDD-HHmmss')}.json`);
-              }}
-            >
-              导出聊天记录
-            </a>
-          </div>
-          <div className="my-4 text-center text-sm">
-            <a
-              className="text-link-gray"
-              onClick={() => {
-                if (window.confirm('确定要清空聊天记录吗？')) {
-                  clearHistory();
-                }
-              }}
-            >
-              清空聊天记录
-            </a>
-          </div>
-        </>
-      )}
+      <ExportHistory />
     </>
+  );
+};
+
+/**
+ * 单条聊天记录
+ */
+export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: boolean }> = ({
+  historyIndex,
+  isActive,
+}) => {
+  const { messages, history, loadHistory } = useContext(ChatContext)!;
+
+  let historyItem: HistoryItem;
+
+  if (historyIndex === 'current') {
+    historyItem = { messages };
+  } else if (history === undefined) {
+    return null;
+  } else {
+    historyItem = history[historyIndex];
+  }
+
+  return (
+    <li
+      className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray-300 md:-mx-4 md:px-8', {
+        'bg-gray-300': isActive,
+      })}
+      onClick={() => historyIndex !== 'current' && loadHistory(historyIndex)}
+    >
+      <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
+      <p
+        className={classNames('mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate', {
+          'pr-8 md:pr-4': isActive,
+        })}
+      >
+        {historyItem.messages.length > 1 ? getContent(last(historyItem.messages)) : FULL_SPACE}
+      </p>
+      {isActive && <DeleteHistoryButton historyIndex={historyIndex} />}
+    </li>
+  );
+};
+
+/**
+ * 导出聊天记录
+ */
+export const ExportHistory = () => {
+  const { messages, history } = useContext(ChatContext)!;
+
+  let historyWithCurrentMessages = history ?? [];
+  // 如果当前有消息，则将当前消息放入聊天记录中
+  if (messages.length > 0) {
+    historyWithCurrentMessages = [{ messages }, ...historyWithCurrentMessages];
+  }
+
+  return (
+    <div className="my-4 text-center text-gray-400 text-sm">
+      聊天记录仅会保存在浏览器缓存
+      <br />
+      为避免丢失，请尽快
+      <a
+        className="text-link-gray"
+        onClick={() => {
+          exportJSON(historyWithCurrentMessages, `ChatGPT-Next-${dayjs().format('YYYYMMDD-HHmmss')}.json`);
+        }}
+      >
+        导出聊天记录
+      </a>
+    </div>
   );
 };

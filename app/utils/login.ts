@@ -1,16 +1,13 @@
 import { getCookie, removeCookies, setCookie } from 'cookies-next';
 
-import { sleep } from './sleep';
+import { removeCache, setCache } from '@/utils/cache';
 
-/** 是否登录 */
-export function isLogin() {
-  return getCookie('apiKey');
-}
+import { sleep } from './sleep';
 
 /** 开始登录 */
 export function login() {
   // 如果已登录，则提前结束
-  if (isLogin()) {
+  if (getCookie('apiKey')) {
     return true;
   }
 
@@ -22,7 +19,11 @@ export function login() {
 
     // 如果用户输入了密钥，则设置 cookie，登录成功
     if (apiKey) {
+      // 同时存储在 cookie 和 localStorage 中，防止微信中容易丢失 cookie
       setCookie('apiKey', apiKey);
+      setCache('apiKey', apiKey);
+      // @ts-ignore 第二个参数 ts 不支持传 null，但其实是可以传的，表示不修改标题
+      history.replaceState(null, null, '/');
       return resolve(true);
     }
 
@@ -34,7 +35,7 @@ export function login() {
 /** 登出 */
 export function logout() {
   // 如果未登录，则提前结束
-  if (!isLogin()) {
+  if (!getCookie('apiKey')) {
     return true;
   }
 
@@ -49,6 +50,9 @@ export function logout() {
     // 如果确认要登出，则删除 cookie，登出成功
     if (logoutConfirmed) {
       removeCookies('apiKey');
+      removeCache('apiKey');
+      // @ts-ignore 第二个参数 ts 不支持传 null，但其实是可以传的，表示不修改标题
+      history.replaceState(null, null, '/');
       return resolve(true);
     }
 

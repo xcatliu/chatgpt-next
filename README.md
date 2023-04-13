@@ -1,8 +1,24 @@
-# ChatGPT Next
+<h1 align="center">
+  ChatGPT Next
+</h1>
 
-微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！
-
-https://chatgpt-next.com
+<h3 align="center">
+  微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！
+</h3>
+<p align="center">
+  <a href="https://chatgpt-next.com">官方网站</a> | <a href="#交流群">交流群</a> | <a href="#私有化部署">私有化部署</a> | <a href="#配置">配置</a>
+</p>
+<p align="center">
+  <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
+    <img src="https://github.com/xcatliu/pagic/workflows/server/badge.svg" alt="server" />
+  </a>
+  <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/docker.yml">
+    <img src="https://github.com/xcatliu/pagic/workflows/docker/badge.svg" alt="docker" />
+  </a>
+  <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/test.yml">
+    <img src="https://github.com/xcatliu/pagic/workflows/test/badge.svg" alt="test" />
+  </a>
+</p>
 
 备份网址：
 
@@ -15,46 +31,16 @@ https://chatgpt-next.com
 ## 特性
 
 - 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
-- 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
 - 支持私有化部署，使用 Vercel/Zeabur/netlify 等一键部署
+- 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
 
 <img src="./public/screenshot-wechat.png" width="390">
-
-## 快速开始
-
-需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
-
-```bash
-# 安装依赖
-npm i -g pnpm
-pnpm i
-# 本地开发
-pnpm dev
-```
-
-### 重要提醒
-
-**中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 [app/api/chat/route.ts](https://github.com/xcatliu/chatgpt-next/blob/main/app/api/chat/route.ts) 文件中的相关代码注释掉。**
-
-## 配置
-
-### 配置 apiKey 別名
-
-配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名。
-
-使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
-
-```
-OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
-```
-
-按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
 
 ## 交流群
 
 <img src="./public/wechat-group.jpg" width="155">
 
-## 部署
+## 私有化部署
 
 ### 使用 [Vercel](https://vercel.com/) 一键部署
 
@@ -99,6 +85,55 @@ pm2 start npm --name chatgpt-next -- start
 # 一行命令更新应用
 git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
 ```
+
+## 本地开发
+
+需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
+
+```bash
+# 安装依赖
+npm i -g pnpm
+pnpm i
+# 本地开发
+pnpm dev
+```
+
+### 重要提醒
+
+**中国地区直接请求 OpenAI 接口可能导致封号，所以 dev 环境下跳过了请求。如需发送请求，请将 [app/api/chat/route.ts](https://github.com/xcatliu/chatgpt-next/blob/main/app/api/chat/route.ts) 文件中的相关代码注释掉。**
+
+### whistle 代理
+
+使用 [whistle](https://github.com/avwo/whistle) 可以方便的抓包，并将 api 请求代理到现网。
+
+下面是本地开发时的 whistle 配置：
+
+```
+chatgpt-next.com/api ignore://*
+chatgpt-next.com 127.0.0.1:3000
+```
+
+## 配置
+
+以下表格记录了所有的环境变量配置，一些较为复杂的配置在后面有单独的说明。
+
+| 环境变量                      | 描述                               | 默认值           |
+| ----------------------------- | ---------------------------------- | ---------------- |
+| `OPENAI_API_KEY_ALIAS`        | apiKey 別名                        | 空               |
+| `CHATGPT_NEXT_DISABLE_PUBLIC` | 禁止陌生人通过他自己的 apiKey 访问 | `false`          |
+| `CHATGPT_NEXT_API_HOST`       | 配置 API 的请求 host（包含端口）   | `api.openai.com` |
+
+### OPENAI_API_KEY_ALIAS
+
+配置环境变量 `OPENAI_API_KEY_ALIAS` 即可支持 apiKey 别名。
+
+使用 `|` 分隔多项别名配置，每个别名配置使用 `:` 分隔别名和真实 apiKey，举例如下：
+
+```
+OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
+```
+
+按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
 
 ## 开源协议
 

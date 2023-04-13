@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '!README.md'
 jobs:
   server:
     runs-on: ubuntu-latest

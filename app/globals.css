@@ -34,11 +34,13 @@ textarea {
 }
 button {
   @apply w-10 h-10 m-2 p-[0.625rem];
-}
-input[type='button'],
-input[type='submit'],
-button {
   @apply cursor-pointer text-gray-400 hover:text-gray-500;
+}
+
+input[type='button'],
+input[type='submit'] {
+  @apply cursor-pointer hover:bg-gray-200;
+  @apply disabled:bg-gray-200 disabled:cursor-not-allowed disabled:text-gray-400;
 }
 
 /* 用于 fixed 宽度设置 */

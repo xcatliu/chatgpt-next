@@ -7,7 +7,6 @@ import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
 import { isDomChildren } from '@/utils/isDomChildren';
-// import { scrollToBottom } from '@/utils/scrollToBottom';
 
 export const TextareaForm: FC = () => {
   const { isMobile } = useContext(DeviceContext)!;
@@ -156,7 +155,7 @@ export const TextareaForm: FC = () => {
           />
           <div className="flex items-center">
             <input
-              className="px-3 py-2 h-full max-h-16 bg-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="px-3 py-2 h-full max-h-16 bg-white"
               type="submit"
               disabled={submitDisabled}
               value="发送"

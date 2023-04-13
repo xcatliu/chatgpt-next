@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const cookiesWindowHeight = cookies().get('windowHeight')?.value;
   const windowHeight = cookiesWindowHeight ? Number(cookiesWindowHeight) : '100vh';
 
-  const isLogged = !!cookies().get('apiKey')?.value;
+  const cookieApiKey = cookies().get('apiKey')?.value;
 
   return (
     <html lang="zh-CN">
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           windowWidth={windowWidth}
           windowHeight={windowHeight}
         >
-          <LoginProvider isLogged={isLogged}>
+          <LoginProvider cookieApiKey={cookieApiKey}>
             <MenuProvider>
               <ChatProvider>{children}</ChatProvider>
             </MenuProvider>

@@ -10,6 +10,11 @@ export enum HttpStatus {
 }
 
 /**
+ * 全角空格，用于 html 中的占位符
+ */
+export const FULL_SPACE = '　';
+
+/**
  * 角色
  * 参考 https://github.com/openai/openai-node/blob/master/api.ts
  */

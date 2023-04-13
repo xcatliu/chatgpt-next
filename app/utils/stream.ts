@@ -1,3 +1,6 @@
+/**
+ * 将 ReadableStream 转为字符串
+ */
 export async function stream2string(stream: ReadableStream | undefined | null, onMessage?: (content: string) => void) {
   if (!stream) {
     return '';

@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 
 import type { ChatResponseChunk, ChatResponseError } from '@/utils/constants';
 import { HttpStatus } from '@/utils/constants';
+import { env } from '@/utils/env';
 import { getApiKey } from '@/utils/getApiKey';
 
 export const config = {
@@ -12,7 +13,7 @@ export const config = {
 };
 
 export async function POST(req: NextRequest) {
-  if (process.env.NODE_ENV === 'development') {
+  if (env.NODE_ENV === 'development') {
     return NextResponse.json(
       {
         code: HttpStatus.BadRequest,
@@ -23,9 +24,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const apiKey = getApiKey(cookies().get('apiKey')?.value ?? '');
+  const apiKey = getApiKey(cookies().get('apiKey')?.value);
 
-  const fetchResult = await fetch('https://api.openai.com/v1/chat/completions', {
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        code: HttpStatus.BadRequest,
+        message: '密钥不存在',
+      },
+      { status: HttpStatus.BadRequest },
+    );
+  }
+
+  const fetchResult = await fetch(`https://${env.CHATGPT_NEXT_API_HOST}/v1/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

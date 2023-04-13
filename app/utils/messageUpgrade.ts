@@ -1,3 +1,7 @@
+/**
+ * 由于变更了数据格式，所以这个文件做了兼容
+ */
+
 import { Role } from './constants';
 import type { Message } from './constants';
 
