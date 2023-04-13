@@ -2,31 +2,23 @@
   ChatGPT Next
 </h1>
 
-<h3 align="center">
+<h4 align="center">
   微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！
-</h3>
+</h4>
 <p align="center">
-  <a href="https://chatgpt-next.com">官方网站</a> | <a href="#交流群">交流群</a> | <a href="#私有化部署">私有化部署</a> | <a href="#配置">配置</a>
+  <a href="https://chatgpt-next.com">官方网站</a>（<a href="#备份网址">备份网址</a>） | <a href="#交流群">交流群</a> | <a href="#私有化部署">私有化部署</a> | <a href="#配置">配置</a>
 </p>
 <p align="center">
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
-    <img src="https://github.com/xcatliu/pagic/workflows/server/badge.svg" alt="server" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/server/badge.svg" alt="server" />
   </a>
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/docker.yml">
-    <img src="https://github.com/xcatliu/pagic/workflows/docker/badge.svg" alt="docker" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/docker/badge.svg" alt="docker" />
   </a>
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/test.yml">
-    <img src="https://github.com/xcatliu/pagic/workflows/test/badge.svg" alt="test" />
+    <img src="https://github.com/xcatliu/chatgpt-next/workflows/test/badge.svg" alt="test" />
   </a>
 </p>
-
-备份网址：
-
-- https://chatgpt-next-xcatliu.vercel.app
-- https://chatgpt-next.zeabur.app
-- https://chatgpt-next-xcatliu.netlify.app
-
-如果你也部署了一个站点并且愿意公开出来，欢迎 pr！
 
 ## 特性
 
@@ -134,6 +126,14 @@ OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
 ```
 
 按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
+
+## 备份网址
+
+- https://chatgpt-next-xcatliu.vercel.app
+- https://chatgpt-next.zeabur.app
+- https://chatgpt-next-xcatliu.netlify.app
+
+如果你也部署了一个站点并且愿意公开出来，欢迎 pr！
 
 ## 开源协议
 
