@@ -100,6 +100,12 @@ OPENAI_API_KEY_ALIAS="firstkey:sk-********FUt3|secondkey:sk-********f1J3"
 
 按照上面的配置，用户在打开页面的弹窗中输入 `firstkey` 就会以第一个 apiKey 发送请求，输入 `secondkey` 就会以第二个 apiKey 发送请求。
 
+链接中支持直接带上 `api-key`，更方便的分享给朋友，比如：
+
+```
+https://chatgpt-next.com/?api-key=firstkey
+```
+
 ## 本地开发
 
 需要先安装 Node.js 环境，可以在[官网下载安装](https://nodejs.org/en/)。
