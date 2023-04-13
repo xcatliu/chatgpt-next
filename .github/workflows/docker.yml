@@ -1,4 +1,4 @@
-name: docker push
+name: Docker push
 on:
   push:
     branches:
