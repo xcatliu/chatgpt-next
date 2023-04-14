@@ -188,7 +188,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     [setIsMenuShow, historyIndex, messages, history],
   );
 
-  /** 删除当前单条聊天记录 */
+  /** 删除单条聊天记录 */
   const deleteHistory = useCallback(
     async (deleteIndex: 'current' | number) => {
       // 如果删除的是还没有写入 history 的当前聊天，则直接删除 messages
@@ -196,8 +196,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setMessages([]);
         setCache('messages', []);
         setHistoryIndex(history && history.length > 0 ? 0 : 'empty');
-        await sleep(16);
-        scrollToBottom();
         return;
       }
 
@@ -208,8 +206,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
       // 选择最近的一条聊天记录展示
       setHistoryIndex(newHistory && newHistory.length > 0 ? Math.min(deleteIndex, newHistory.length - 1) : 'empty');
-      await sleep(16);
-      scrollToBottom();
     },
     [history],
   );
