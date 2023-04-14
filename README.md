@@ -23,7 +23,7 @@
 ## 特性
 
 - 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
-- 支持私有化部署，使用 Vercel/Zeabur/netlify 等一键部署
+- 支持私有化部署，使用 [Vercel](#使用-vercel-一键部署)/[Zeabur](#使用-zeabur-一键部署)/[netlify](#使用-netlify-一键部署) 等一键部署
 - 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
 
 <img src="./public/screenshot-wechat.png" width="390">
@@ -34,19 +34,19 @@
 
 ## 私有化部署
 
-### 使用 [Vercel](https://vercel.com/) 一键部署
+### 使用 Vercel 一键部署
 
 1. Fork 本仓库
 2. 在 [Vercel](https://vercel.com/dashboard) 中 Add New Project
 3. 选择 chatgpt-next 点击 Import 进行导入
 
-### 使用 [Zeabur](https://github.com/zeabur) 一键部署
+### 使用 Zeabur 一键部署
 
 1. Fork 本仓库
 2. 在 [Zeabur](https://dash.zeabur.com) 中创建新服务
 3. 选择 chatgpt-next 导入部署
 
-### 使用 [netlify](https://www.netlify.com/) 一键部署
+### 使用 netlify 一键部署
 
 1. Fork 本仓库
 2. 在 [netlify](https://www.netlify.com/) 中 Add new site => Import an existing project
