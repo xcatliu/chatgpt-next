@@ -123,7 +123,7 @@ const MenuTabsContent = () => {
   const { currentMenu } = useContext(MenuContext)!;
 
   return (
-    <div className="grow overflow-y-scroll md:px-4">
+    <div className="grow overflow-y-auto md:px-4">
       {currentMenu === MenuKey.InboxStack && <History />}
       {currentMenu === MenuKey.AdjustmentsHorizontal && (
         <>
