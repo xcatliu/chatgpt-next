@@ -32,7 +32,7 @@
 
 由于域名被墙，政策风险较大，所以解散了微信群，有问题可以在 [Discussions](https://github.com/xcatliu/chatgpt-next/discussions) 讨论。
 
-如果无法访问 https://chatgpt-next.com，可以尝试访问[备份网址](#备份网址)，或者私有化部署。
+如果无法访问 [https://chatgpt-next.com](https://chatgpt-next.com)，可以尝试访问[备份网址](#备份网址)，或者私有化部署。
 
 ## 私有化部署
 
