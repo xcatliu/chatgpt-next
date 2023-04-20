@@ -52,6 +52,7 @@ input[type='submit'] {
 .chatgpt-message p,
 .chatgpt-message pre[class*='language-'] {
   @apply mt-6 first:mt-0;
+  white-space: pre-wrap;
 }
 .chatgpt-message pre[class*='language-'] {
   @apply text-sm px-3 py-2 mb-0 bg-gray-100 rounded;
