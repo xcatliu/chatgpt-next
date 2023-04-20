@@ -6,7 +6,7 @@
   微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！
 </h3>
 <p align="center">
-  <a href="https://chatgpt-next.com">官方网站</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#微信群解散通知">微信群解散通知</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#私有化部署">私有化部署</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#配置">配置</a>
+  <a href="https://chatgpt-next.com">官方网站</a>已被墙 [<a href="https://1.caninae.com">镜像</a>]&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#私有化部署">私有化部署</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#配置">配置</a>
 </p>
 <p align="center">
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
@@ -28,13 +28,13 @@
 
 <img src="./public/screenshot-wechat.png" width="390">
 
-## 微信群解散通知
+## 官方网站被墙通知
 
-由于域名被墙，政策风险较大，所以解散了微信群，有问题可以在 [Discussions](https://github.com/xcatliu/chatgpt-next/discussions) 讨论。
-
-如果无法访问 [https://chatgpt-next.com](https://chatgpt-next.com)，可以尝试访问[备份网址](#备份网址)，或者私有化部署。
+如果无法访问官方网站 [https://chatgpt-next.com](https://chatgpt-next.com)，可以尝试访问镜像站 [https://1.caninae.com](https://1.caninae.com)，或者[备份网址](#备份网址)，或者私有化部署。
 
 ## 私有化部署
+
+私有化部署时，域名最好不要带 chat、gpt、ai 等字眼，否则容易被墙探测到。
 
 ### 使用 Vercel 一键部署
 
