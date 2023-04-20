@@ -49,13 +49,30 @@ input[type='submit'] {
 }
 
 /* chatgpt-message 内部样式 */
-.chatgpt-message p {
+.chatgpt-message p,
+.chatgpt-message pre[class*='language-'] {
   @apply mt-6 first:mt-0;
 }
+.chatgpt-message pre[class*='language-'] {
+  @apply text-sm px-3 py-2 mb-0 bg-gray-100 rounded;
+  text-shadow: none;
+}
+.chatgpt-message code[class*='language-'] {
+  @apply p-0;
+  text-shadow: none;
+}
 .chatgpt-message code {
-  @apply text-sm bg-gray-100 py-0.5;
-  padding-left: 3px;
-  padding-right: 3px;
+  @apply text-sm bg-gray-100 py-0.5 px-[3px];
+}
+.chatgpt-message a:-webkit-any-link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.chatgpt-message .prism-title {
+  @apply -mx-3 -mt-2 mb-2 px-3 py-1 h-7 bg-gray-200 text-gray-400;
+}
+.chatgpt-message .prism-copy {
+  @apply float-right cursor-pointer hover:text-gray-500;
 }
 
 .text-link-gray {

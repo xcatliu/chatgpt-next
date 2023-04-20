@@ -44,6 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </MenuProvider>
           </LoginProvider>
         </DeviceProvider>
+        {/* eslint-disable-next-line @next/next/no-css-tags */}
+        <link rel="stylesheet" type="text/css" href="/prism.css" />
+        <script async src="/prism.js" />
       </body>
     </html>
   );

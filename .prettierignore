@@ -1,13 +1,19 @@
 .prettierignore
 .gitignore
 .next
+.DS_Store
 pnpm-lock.yaml
 
 *.ico
 *.svg
 *.png
 *.jpg
+*.conf
 
 .husky
 
 Dockerfile
+LICENSE
+
+public/prism.js
+public/prism.css
