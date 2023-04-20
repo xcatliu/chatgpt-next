@@ -69,7 +69,7 @@ input[type='submit'] {
   text-decoration: underline;
 }
 .chatgpt-message .prism-title {
-  @apply -mx-3 -mt-2 mb-2 px-3 py-1 h-7 bg-gray-200 text-gray-400;
+  @apply -mx-3 -mt-2 mb-2 px-3 h-7 leading-7 bg-gray-200 text-gray-400;
 }
 .chatgpt-message .prism-copy {
   @apply float-right cursor-pointer hover:text-gray-500;

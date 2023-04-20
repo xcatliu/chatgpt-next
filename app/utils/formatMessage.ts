@@ -1,5 +1,7 @@
 import MarkdownIt from 'markdown-it';
 
+import { sleep } from './sleep';
+
 /** 多种 markdown-it 配置 */
 const markdownItMap = {
   zero: new MarkdownIt('zero'),
@@ -33,8 +35,12 @@ if (typeof window !== 'undefined') {
       const text: string = e.target.parentNode?.nextSibling?.innerText;
       navigator.clipboard
         .writeText(text)
-        .then(() => {
-          console.log('Text copied to clipboard');
+        .then(async () => {
+          // @ts-ignore
+          e.target.innerHTML = '<span style="margin-right:3px">拷贝成功</span>✅';
+          await sleep(1000);
+          // @ts-ignore
+          e.target.innerText = '拷贝代码';
         })
         .catch((err) => {
           alert(`拷贝代码时出错：${err.message}`);
