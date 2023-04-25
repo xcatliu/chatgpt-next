@@ -43,7 +43,7 @@ export const MenuProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // 由于 transform 的 fixed 定位失效问题，这里需要手动设置和取消 form-container 的 top
     const formContainer = document.getElementById('form-container');
     if (formContainer) {
-      formContainer.style.top = `${formContainer.offsetTop}px`;
+      formContainer.style.top = `${getComputedStyle(formContainer).top}px`;
     }
     document.documentElement.classList.add('show-menu');
   }, []);
