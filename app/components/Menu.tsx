@@ -3,7 +3,7 @@
 import { AdjustmentsHorizontalIcon, InboxStackIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import type { FC, ReactNode } from 'react';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
 import { DeviceContext } from '@/context/DeviceContext';
 import { MenuContext, MenuKey } from '@/context/MenuContext';
@@ -38,7 +38,7 @@ export const Menu = () => {
  * 菜单栏蒙层
  */
 const MenuMask: FC<{ children: ReactNode }> = ({ children }) => {
-  const { windowHeight } = useContext(DeviceContext)!;
+  const { windowHeight, isMobile } = useContext(DeviceContext)!;
   const { isMenuShow, setIsMenuShow } = useContext(MenuContext)!;
 
   const onTouchMask = useCallback(async () => {
@@ -70,8 +70,10 @@ const MenuMask: FC<{ children: ReactNode }> = ({ children }) => {
         })}
       >
         <div
-          className="w-inherit fixed flex flex-col bg-gray-100 md:h-screen md:border-r md:border-gray-300"
-          style={{ height: windowHeight }}
+          className={`w-inherit fixed flex flex-col bg-gray-100 border-l border-gray
+                      md:h-screen md:tall:h-[calc(100vh-12rem)] md:border-l-0 md:border-r
+                      dark:bg-gray-900`}
+          style={isMobile ? { height: windowHeight } : {}}
         >
           {children}
         </div>
@@ -93,8 +95,8 @@ const MenuTabs = () => {
 
   return (
     <menu
-      className={`w-inherit flex z-10 justify-end bg-gray-wx border-b-[0.5px] border-gray-300
-                   md:flex-row-reverse md:px-4 md:border-r`}
+      className={`w-inherit flex z-10 justify-end bg-chat-100 border-b-[0.5px] border-gray
+                  md:flex-row-reverse md:px-4 md:border-r`}
     >
       {[MenuKey.InboxStack, MenuKey.AdjustmentsHorizontal].map((key) => {
         const Icon = IconMap[key];
@@ -103,6 +105,7 @@ const MenuTabs = () => {
             key={key}
             className={classNames({
               'text-gray-700 hover:text-gray-700': currentMenu === key,
+              'dark:text-gray-200 dark:hover:text-gray-200': currentMenu === key,
             })}
             onClick={() => setCurrentMenu(key)}
           >
@@ -121,6 +124,31 @@ const MenuTabs = () => {
  */
 const MenuTabsContent = () => {
   const { currentMenu } = useContext(MenuContext)!;
+
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // 暗色模式
+      link.href = '/prism-dark.css';
+    } else {
+      // 浅色模式
+      link.href = '/prism-light.css';
+    }
+    document.head.appendChild(link);
+
+    let darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    darkModeQuery.addEventListener('change', (e) => {
+      if (e.matches) {
+        // 暗色模式
+        link.href = '/prism-dark.css';
+      } else {
+        // 浅色模式
+        link.href = '/prism-light.css';
+      }
+    });
+  }, []);
 
   return (
     <div className="grow overflow-y-auto md:px-4">
@@ -169,9 +197,12 @@ const MenuTabsContent = () => {
  */
 const MenuFooter = () => {
   return (
-    <div className="flex-none mx-4 my-5 pb-[env(safe-area-inset-bottom)] text-center text-gray-400 text-sm">
+    <div
+      className={`flex-none px-4 py-5 text-center text-gray text-sm border-t-[0.5px] border-gray
+                  pb-[calc(1.25rem+env(safe-area-inset-bottom))]`}
+    >
       由{' '}
-      <a className="text-link-gray" href="https://github.com/xcatliu/chatgpt-next" target="_blank">
+      <a className="text-gray-link" href="https://github.com/xcatliu/chatgpt-next" target="_blank">
         ChatGPT Next
       </a>{' '}
       驱动

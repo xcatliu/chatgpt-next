@@ -2,15 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 微信灰色背景 */
-.bg-gray-wx {
-  @apply bg-[#ededed];
-}
-
 html {
-  @apply bg-[#ededed];
   /* 移动端全屏应用，大屏下白色背景墙 */
-  @apply md:bg-white;
+  @apply bg-chat-bg md:bg-white text-gray-900;
+  @apply dark:bg-chat-bg-dark dark:md:bg-gray-800 dark:text-gray-200;
 }
 body {
   /* 移动端菜单从右侧滑出，需要整个 body 偏移 */
@@ -25,6 +20,19 @@ html.show-menu body {
   @apply translate-x-[calc(6.25rem-100vw)];
 }
 
+.text-gray {
+  @apply text-gray-400;
+  @apply dark:text-gray-500;
+}
+.text-gray-link {
+  @apply text-gray-400 hover:text-gray-500 cursor-pointer underline;
+  @apply dark:text-gray-500 hover:text-gray-400;
+}
+.border-gray {
+  @apply border-gray-300;
+  @apply dark:border-gray-700;
+}
+
 /* 按钮和输入框统一样式 */
 input,
 button,
@@ -35,12 +43,15 @@ textarea {
 button {
   @apply w-10 h-10 m-2 p-[0.625rem];
   @apply cursor-pointer text-gray-400 hover:text-gray-500;
+  @apply dark:text-gray-500 dark:hover:text-gray-400;
 }
 
 input[type='button'],
 input[type='submit'] {
-  @apply cursor-pointer hover:bg-gray-200;
-  @apply disabled:bg-gray-200 disabled:cursor-not-allowed disabled:text-gray-400;
+  @apply cursor-pointer bg-white hover:bg-gray-200;
+  @apply disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400;
+  @apply dark:bg-gray-800 dark:hover:bg-gray-700;
+  @apply dark:disabled:bg-gray-700 dark:disabled:text-gray-500;
 }
 
 /* 用于 fixed 宽度设置 */
@@ -48,34 +59,38 @@ input[type='submit'] {
   width: inherit;
 }
 
-/* chatgpt-message 内部样式 */
-.chatgpt-message p,
-.chatgpt-message pre[class*='language-'] {
+/* message-chatgpt 内部样式 */
+.message-chatgpt p,
+.message-chatgpt pre[class*='language-'] {
   @apply mt-6 first:mt-0;
   white-space: pre-wrap;
 }
-.chatgpt-message pre[class*='language-'] {
-  @apply text-sm px-3 py-2 mb-0 bg-gray-100 rounded;
+
+.message-chatgpt pre[class*='language-'],
+.message-chatgpt code[class*='language-'] {
   text-shadow: none;
-}
-.chatgpt-message code[class*='language-'] {
-  @apply p-0;
-  text-shadow: none;
-}
-.chatgpt-message code {
-  @apply text-sm bg-gray-100 py-0.5 px-[3px];
-}
-.chatgpt-message a:-webkit-any-link {
-  cursor: pointer;
-  text-decoration: underline;
-}
-.chatgpt-message .prism-title {
-  @apply -mx-3 -mt-2 mb-2 px-3 h-7 leading-7 bg-gray-200 text-gray-400;
-}
-.chatgpt-message .prism-copy {
-  @apply float-right cursor-pointer hover:text-gray-500;
 }
 
-.text-link-gray {
-  @apply underline cursor-pointer text-gray-400 hover:text-gray-500;
+.message-chatgpt pre[class*='language-'] {
+  @apply text-sm px-3 pt-9 pb-2 mb-0 bg-gray-100 rounded;
+  @apply dark:bg-gray-800;
+}
+.message-chatgpt code[class*='language-'] {
+  @apply p-0;
+  @apply dark:bg-gray-800;
+}
+.message-chatgpt code {
+  @apply text-sm bg-gray-100 py-0.5 px-[3px];
+  @apply dark:bg-gray-700;
+}
+.message-chatgpt a:-webkit-any-link {
+  @apply cursor-pointer underline;
+}
+.message-chatgpt .prism-title {
+  @apply absolute w-[calc(100%-1.5rem)] -ml-3 -mt-9 px-3 h-7 leading-7 bg-gray-200 text-gray-400 rounded-t;
+  @apply dark:bg-gray-700 dark:text-gray-400;
+}
+.message-chatgpt .prism-copy {
+  @apply float-right cursor-pointer hover:text-gray-500;
+  @apply dark:hover:text-gray-300;
 }

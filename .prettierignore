@@ -16,4 +16,5 @@ Dockerfile
 LICENSE
 
 public/prism.js
-public/prism.css
+public/prism-light.css
+public/prism-dark.css

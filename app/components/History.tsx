@@ -21,7 +21,7 @@ export const History = () => {
   const { messages, history, historyIndex } = useContext(ChatContext)!;
 
   if (messages.length === 0 && (history === undefined || history.length === 0)) {
-    return <div className="my-4 text-center text-gray-400 text-sm">暂无聊天记录</div>;
+    return <div className="my-4 text-center text-gray text-sm">暂无聊天记录</div>;
   }
 
   return (
@@ -58,14 +58,14 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
 
   return (
     <li
-      className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray-300 md:-mx-4 md:px-8', {
-        'bg-gray-300': isActive,
+      className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray md:-mx-4 md:px-8', {
+        'bg-gray-300 dark:bg-gray-700': isActive,
       })}
       onClick={() => historyIndex !== 'current' && loadHistory(historyIndex)}
     >
       <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
       <p
-        className={classNames('mt-1 text-gray-500 text-[15px] overflow-hidden whitespace-nowrap truncate', {
+        className={classNames('mt-1 text-gray text-[15px] overflow-hidden whitespace-nowrap truncate', {
           'pr-8 md:pr-4': isActive,
         })}
       >
@@ -89,12 +89,12 @@ export const ExportHistory = () => {
   }
 
   return (
-    <div className="my-4 text-center text-gray-400 text-sm">
+    <div className="my-4 text-center text-gray text-sm">
       聊天记录仅会保存在浏览器缓存
       <br />
       为避免丢失，请尽快
       <a
-        className="text-link-gray"
+        className="text-gray-link"
         onClick={() => {
           exportJSON(historyWithCurrentMessages, `ChatGPT-Next-${dayjs().format('YYYYMMDD-HHmmss')}.json`);
         }}

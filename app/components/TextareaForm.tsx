@@ -136,14 +136,18 @@ export const TextareaForm: FC = () => {
         <div placeholder="" className="h-10 md:h-16" ref={placeholderRef} />
       </div>
       <div
-        className={`w-inherit fixed z-10 bottom-0 px-3 pt-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] bg-gray-100
-                   md:px-[1.75rem] md:-mx-4 md:py-4`}
+        className={`w-inherit fixed z-10 bottom-0 px-3 pt-2.5 bg-gray-100 border-t-[0.5px] border-gray
+                    pb-[calc(0.625rem+env(safe-area-inset-bottom))]
+                    md:tall:bottom-24 md:px-[1.75rem] md:-mx-4 md:py-4
+                    dark:bg-gray-900`}
         ref={formContainerRef}
         id="form-container"
       >
         <form className="flex space-x-3" onSubmit={formOnSubmit}>
           <textarea
-            className="flex-grow px-3 py-2 resize-none disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]"
+            className={`flex-grow px-3 py-2 resize-none bg-chat-bubble placeholder:text-gray-400
+                      disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]
+                      dark:bg-chat-bubble-dark dark:disabled:bg-gray-700 dark:placeholder:text-gray-500`}
             ref={textareaRef}
             disabled={!isLogged}
             placeholder={isLogged ? '' : isMobile ? '请点击右上角设置密钥' : '请点击左上角钥匙按钮设置密钥'}
@@ -154,12 +158,7 @@ export const TextareaForm: FC = () => {
             rows={1}
           />
           <div className="flex items-center">
-            <input
-              className="px-3 py-2 h-full max-h-16 bg-white"
-              type="submit"
-              disabled={submitDisabled}
-              value="发送"
-            />
+            <input className="px-3 py-2 h-full max-h-16" type="submit" disabled={submitDisabled} value="发送" />
           </div>
         </form>
       </div>

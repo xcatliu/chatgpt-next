@@ -26,7 +26,7 @@ export const DeviceProvider: FC<{
   // 由于移动端的 height:100vh 不靠谱，故需要精确的数值用于设置高度
   const [windowHeight, setWindowHeight] = useState<number | '100vh'>(propsWindowHeight);
 
-  const isMobile = typeof windowWidth === 'number' ? windowWidth < 1126 : uaIsMobile;
+  const isMobile = typeof windowWidth === 'number' ? windowWidth < 1125 : uaIsMobile;
 
   /**
    * 重置 window 宽高计算
