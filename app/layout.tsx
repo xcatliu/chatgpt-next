@@ -11,7 +11,7 @@ import { MenuProvider } from '@/context/MenuContext';
 import { isWeChat as utilIsWeChat } from '@/utils/device';
 
 export const metadata: Metadata = {
-  title: 'ChatGPT Next',
+  title: 'NK--GPT',
   description: '微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！',
   icons: { icon: '/chatgpt-icon-green.png', apple: '/chatgpt-icon-green.png' },
   viewport: { width: 'device-width', initialScale: 1, viewportFit: 'cover' },
