@@ -113,9 +113,12 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
           model: Model['gpt-3.5-turbo-0301'],
-          messages: newMessages.map((message) => {
-            return isMessage(message) ? message : message.choices[0].message;
-          }),
+          messages: newMessages
+            // 过滤掉 isError 的消息
+            .filter((message) => !(message as Message).isError)
+            .map((message) => {
+              return isMessage(message) ? message : message.choices[0].message;
+            }),
           stream: true,
           onMessage: (content) => {
             // stream 模式下，由前端组装消息
