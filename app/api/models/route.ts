@@ -21,11 +21,22 @@ export async function GET(req: NextRequest) {
 
   // 正式环境透传即可
   const apiKey = getApiKey(cookies().get('apiKey')?.value);
-  return fetch(`https://${env.CHATGPT_NEXT_API_HOST}/v1/models`, {
+
+  const fetchResult = await fetch(`https://${env.CHATGPT_NEXT_API_HOST}/v1/models`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
     },
   });
+
+  // https://stackoverflow.com/a/29082416/2777142
+  // 当状态码为 401 且响应头包含 Www-Authenticate 时，浏览器会弹一个框要求输入用户名和密码，故这里需要过滤此 header
+  if (fetchResult.status === HttpStatus.Unauthorized && fetchResult.headers.get('Www-Authenticate')) {
+    const wwwAuthenticateValue = fetchResult.headers.get('Www-Authenticate') ?? '';
+    fetchResult.headers.delete('Www-Authenticate');
+    fetchResult.headers.set('X-Www-Authenticate', wwwAuthenticateValue);
+  }
+
+  return fetchResult;
 }
