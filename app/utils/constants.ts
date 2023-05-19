@@ -203,3 +203,68 @@ export interface ChatResponseError {
     type: string;
   };
 }
+
+/**
+ * /v1/models 的响应体
+ * https://platform.openai.com/docs/api-reference/models
+ */
+export interface ModelsResponse {
+  data: {
+    created: number;
+    id: Model;
+    object: 'model';
+    owned_by: 'openai';
+    parent: null;
+    permission: {
+      0: {
+        allow_create_engine: boolean;
+        allow_fine_tuning: boolean;
+        allow_logprobs: boolean;
+        allow_sampling: boolean;
+        allow_search_indices: boolean;
+        allow_view: boolean;
+        created: number;
+        group: null;
+        id: string;
+        is_blocking: boolean;
+        object: 'model_permission';
+        organization: '*';
+      };
+    };
+    root: Model;
+  }[];
+  object: 'list';
+}
+
+/**
+ * /v1/models 的响应体示例
+ */
+export const exampleModelsResponse: ModelsResponse = {
+  data: [
+    {
+      created: 1677610602,
+      id: Model['gpt-3.5-turbo'],
+      object: 'model',
+      owned_by: 'openai',
+      parent: null,
+      permission: {
+        0: {
+          allow_create_engine: false,
+          allow_fine_tuning: false,
+          allow_logprobs: true,
+          allow_sampling: true,
+          allow_search_indices: false,
+          allow_view: true,
+          created: 1684434433,
+          group: null,
+          id: 'modelperm-Gsp3SyIu7GamHB3McQv3rMf5',
+          is_blocking: false,
+          object: 'model_permission',
+          organization: '*',
+        },
+      },
+      root: Model['gpt-3.5-turbo'],
+    },
+  ],
+  object: 'list',
+};
