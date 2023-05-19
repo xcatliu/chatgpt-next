@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { exampleModelsResponse, HttpStatus } from '@/utils/constants';
+import { exampleModelsResponse, HttpHeaderJson, HttpMethod, HttpStatus } from '@/utils/constants';
 import { env } from '@/utils/env';
 import { getApiKey } from '@/utils/getApiKey';
 
@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
   const apiKey = getApiKey(cookies().get('apiKey')?.value);
 
   const fetchResult = await fetch(`https://${env.CHATGPT_NEXT_API_HOST}/v1/models`, {
-    method: 'GET',
+    method: HttpMethod.GET,
     headers: {
-      'Content-Type': 'application/json',
+      ...HttpHeaderJson,
       Authorization: `Bearer ${apiKey}`,
     },
   });

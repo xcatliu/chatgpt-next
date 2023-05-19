@@ -10,6 +10,10 @@ export enum HttpStatus {
   MethodNotAllowed = 405,
 }
 
+export const HttpHeaderJson = {
+  'Content-Type': 'application/json',
+};
+
 /**
  * 全角空格，用于 html 中的占位符
  */
