@@ -7,6 +7,7 @@ import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
 import type { ChatResponse, Message } from '@/utils/constants';
 import { Model, Role } from '@/utils/constants';
+import type { ResError } from '@/utils/error';
 import { isMessage } from '@/utils/message';
 import { isOldMessage, upgradeMessage } from '@/utils/messageUpgrade';
 import { gapToBottom, getIsScrolling, scrollToBottom } from '@/utils/scroll';
@@ -143,7 +144,10 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       } catch (e) {
         // 发生错误时，展示错误消息
         setIsLoading(false);
-        setMessages([...newMessages, { isError: true, role: Role.assistant, content: (e as Error).message }]);
+        setMessages([
+          ...newMessages,
+          { isError: true, role: Role.assistant, content: (e as ResError).message || (e as ResError).code.toString() },
+        ]);
       }
     },
     [messages, history, historyIndex],

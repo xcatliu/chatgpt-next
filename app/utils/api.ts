@@ -36,7 +36,7 @@ export const fetchApiChat = async ({
  * 请求 /api/models 接口
  * 获取可用的模型列表
  */
-export const fetchModels = async () => {
+export const fetchApiModels = async () => {
   const fetchResult = await fetch('/api/models', {
     method: HttpMethod.GET,
     headers: HttpHeaderJson,

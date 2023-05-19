@@ -3,15 +3,17 @@
 import { AdjustmentsHorizontalIcon, InboxStackIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import type { FC, ReactNode } from 'react';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 
 import { DeviceContext } from '@/context/DeviceContext';
 import { MenuContext, MenuKey } from '@/context/MenuContext';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { sleep } from '@/utils/sleep';
 
 import { LoginButton } from './buttons/LoginButton';
 import { MenuEntryButton } from './buttons/MenuEntryButton';
 import { History } from './History';
+import { Settings } from './Settings';
 
 /**
  * 菜单栏
@@ -19,6 +21,8 @@ import { History } from './History';
 export const Menu = () => {
   const { isWeChat } = useContext(DeviceContext)!;
   const { isMenuShow } = useContext(MenuContext)!;
+
+  useDarkMode();
 
   return (
     <>
@@ -125,69 +129,10 @@ const MenuTabs = () => {
 const MenuTabsContent = () => {
   const { currentMenu } = useContext(MenuContext)!;
 
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      // 暗色模式
-      link.href = '/prism-dark.css';
-    } else {
-      // 浅色模式
-      link.href = '/prism-light.css';
-    }
-    document.head.appendChild(link);
-
-    let darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    darkModeQuery.addEventListener('change', (e) => {
-      if (e.matches) {
-        // 暗色模式
-        link.href = '/prism-dark.css';
-      } else {
-        // 浅色模式
-        link.href = '/prism-light.css';
-      }
-    });
-  }, []);
-
   return (
     <div className="grow overflow-y-auto md:px-4">
       {currentMenu === MenuKey.InboxStack && <History />}
-      {currentMenu === MenuKey.AdjustmentsHorizontal && (
-        <>
-          {/* <div className="m-4">
-            模型：
-            <select
-              value={completionParams.model}
-              onChange={(e) =>
-                setCompletionParams({
-                  ...completionParams,
-                  model: e.target.value as Model,
-                })
-              }
-            >
-              {Object.values(CompletionParamsModel).map((model) => (
-                <option key={model}>{model}</option>
-              ))}
-            </select>
-          </div>
-          <div className="m-4">
-            <label>
-              流式响应：
-              <input
-                defaultChecked={completionParams.stream}
-                type="checkbox"
-                onChange={(e) =>
-                  setCompletionParams({
-                    ...completionParams,
-                    stream: e.target.checked,
-                  })
-                }
-              />
-            </label>
-          </div> */}
-        </>
-      )}
+      {currentMenu === MenuKey.AdjustmentsHorizontal && <Settings />}
     </div>
   );
 };
