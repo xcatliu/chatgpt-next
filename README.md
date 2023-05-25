@@ -9,6 +9,9 @@
   <a href="https://chatgpt-next.com">官方网站</a>已被墙 [<a href="https://1.caninae.com">镜像</a>]&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#私有化部署">私有化部署</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#配置">配置</a>
 </p>
 <p align="center">
+  <a href="https://www.npmjs.com/package/chatgpt-next">
+    <img alt="npm" src="https://img.shields.io/npm/v/chatgpt-next">
+  </a>
   <a href="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml">
     <img src="https://github.com/xcatliu/chatgpt-next/actions/workflows/server.yml/badge.svg" alt="server" />
   </a>
@@ -26,7 +29,7 @@
 - 支持私有化部署，使用 [Vercel](#使用-vercel-一键部署) / [Zeabur](#使用-zeabur-一键部署) / [netlify](#使用-netlify-一键部署) 等一键部署
 - 配置密钥别名，无需暴露 apiKey 就可以分享给朋友
 
-<img src="./public/screenshot-wechat.png" width="390">
+<img src="https://raw.githubusercontent.com/xcatliu/chatgpt-next/main/public/screenshot-wechat.png" width="390">
 
 ## 官方网站被墙通知
 
@@ -61,23 +64,14 @@ docker run --name chatgpt-next -d -p 3000:3000 -e OPENAI_API_KEY_ALIAS xcatliu/c
 # --name 容器名称，-d 后台运行，-p 端口映射，-e 透传环境变量
 ```
 
-### 使用 npm script 手动运行
+### 使用 npx 运行
 
 ```bash
-# 构建
-pnpm build
-# 启动
-pnpm start
-```
+npx chatgpt-next -- -p 3000
+# -- 后面的参数会透传给 next start，比如 -p 可以指定端口，默认端口是 3000
 
-#### 使用 pm2 后台运行
-
-```bash
 # 使用 pm2 后台运行
-npm i -g pm2
-pm2 start npm --name chatgpt-next -- start
-# 一行命令更新应用
-git pull && pnpm i && pnpm build && pm2 restart chatgpt-next
+npx pm2 start --name chatgpt-next npx -- chatgpt-next -- -p 3000
 ```
 
 ## 配置
@@ -118,6 +112,11 @@ npm i -g pnpm
 pnpm i
 # 本地开发
 pnpm dev
+
+# 构建
+pnpm build
+# 启动
+pnpm start
 ```
 
 ### 重要提醒
@@ -137,6 +136,8 @@ chatgpt-next.com 127.0.0.1:3000
 
 ## 备份网址
 
+- https://chatgpt-next.com
+- https://1.caninae.com
 - https://chatgpt-next-xcatliu.vercel.app
 - https://chatgpt-next.zeabur.app
 - https://chatgpt-next-xcatliu.netlify.app
