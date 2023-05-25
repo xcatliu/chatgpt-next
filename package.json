@@ -19,6 +19,20 @@
   "bin": {
     "chatgpt-next": "./bin.js"
   },
+  "files": [
+    ".next",
+    "app",
+    "public",
+    "bin.js",
+    "LICENSE",
+    "next.config.js",
+    "package.json",
+    "pnpm-lock.yaml",
+    "postcss.config.js",
+    "README.md",
+    "tailwind.config.js",
+    "tsconfig.json"
+  ],
   "lint-staged": {
     "*.{ts,tsx,js}": [
       "eslint",
