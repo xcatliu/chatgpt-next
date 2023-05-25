@@ -1,9 +1,12 @@
 {
   "name": "chatgpt-next",
   "description": "微信风格的 ChatGPT，基于 Next.js 构建，私有化部署的最佳选择！",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "license": "MIT",
+  "bin": {
+    "chatgpt-next": "./bin.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
