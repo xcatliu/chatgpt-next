@@ -4,9 +4,6 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "bin": {
-    "chatgpt-next": "./bin.js"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -16,7 +13,11 @@
     "eslint:fix": "eslint --ext .ts,.tsx,.js --fix .",
     "prettier": "prettier -l \"./**/*\"",
     "prettier:fix": "prettier --write -l \"./**/*\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "preversion": "npm run build"
+  },
+  "bin": {
+    "chatgpt-next": "./bin.js"
   },
   "lint-staged": {
     "*.{ts,tsx,js}": [
