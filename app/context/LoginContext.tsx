@@ -3,10 +3,12 @@
 import { setCookie } from 'cookies-next';
 import { useSearchParams } from 'next/navigation';
 import type { FC, ReactNode } from 'react';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { getCache, setCache } from '@/utils/cache';
 import { login as utilsLogin, logout as utilsLogout } from '@/utils/login';
+
+import { SettingsContext } from './SettingsContext';
 
 /**
  * 登录相关的 Context
@@ -18,6 +20,7 @@ export const LoginContext = createContext<{
 } | null>(null);
 
 export const LoginProvider: FC<{ children: ReactNode; cookieApiKey?: string }> = ({ children, cookieApiKey }) => {
+  const { initAvailableModels } = useContext(SettingsContext)!;
   const [isLogged, setIsLogged] = useState(!!cookieApiKey);
 
   const queryApiKey = useSearchParams().get('api-key');
@@ -52,11 +55,15 @@ export const LoginProvider: FC<{ children: ReactNode; cookieApiKey?: string }> =
   }, []);
 
   const login = useCallback(async () => {
-    const loginResult = await utilsLogin();
-    setIsLogged(loginResult);
+    const isLogged = await utilsLogin();
+    setIsLogged(isLogged);
 
-    return loginResult;
-  }, []);
+    if (isLogged) {
+      initAvailableModels();
+    }
+
+    return isLogged;
+  }, [initAvailableModels]);
 
   const logout = useCallback(async () => {
     const logoutResult = await utilsLogout();

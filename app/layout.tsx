@@ -8,6 +8,7 @@ import { ChatProvider } from '@/context/ChatContext';
 import { DeviceProvider } from '@/context/DeviceContext';
 import { LoginProvider } from '@/context/LoginContext';
 import { MenuProvider } from '@/context/MenuContext';
+import { SettingsProvider } from '@/context/SettingsContext';
 import { isWeChat as utilIsWeChat } from '@/utils/device';
 
 export const metadata: Metadata = {
@@ -38,11 +39,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           windowWidth={windowWidth}
           windowHeight={windowHeight}
         >
-          <LoginProvider cookieApiKey={cookieApiKey}>
-            <MenuProvider>
-              <ChatProvider>{children}</ChatProvider>
-            </MenuProvider>
-          </LoginProvider>
+          <SettingsProvider isLogged={!!cookieApiKey}>
+            <LoginProvider cookieApiKey={cookieApiKey}>
+              <MenuProvider>
+                <ChatProvider>{children}</ChatProvider>
+              </MenuProvider>
+            </LoginProvider>
+          </SettingsProvider>
         </DeviceProvider>
         <script async src="/prism.js" />
       </body>

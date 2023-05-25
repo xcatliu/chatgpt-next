@@ -1,12 +1,13 @@
 'use client';
 
+import omit from 'lodash.omit';
 import type { FC, ReactNode } from 'react';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
 import type { ChatResponse, Message } from '@/utils/constants';
-import { Model, Role } from '@/utils/constants';
+import { Role } from '@/utils/constants';
 import type { ResError } from '@/utils/error';
 import { isMessage } from '@/utils/message';
 import { isOldMessage, upgradeMessage } from '@/utils/messageUpgrade';
@@ -14,6 +15,7 @@ import { gapToBottom, getIsScrolling, scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
 import { MenuContext, MenuKey } from './MenuContext';
+import { SettingsContext } from './SettingsContext';
 
 /**
  * 聊天记录
@@ -38,6 +40,7 @@ export const ChatContext = createContext<{
 
 export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { setIsMenuShow, setCurrentMenu } = useContext(MenuContext)!;
+  const { settings } = useContext(SettingsContext)!;
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<(Message | ChatResponse)[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
@@ -113,7 +116,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         let partialContent = '';
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
-          model: Model['gpt-3.5-turbo-0301'],
+          ...omit(settings, 'availableModels'),
           messages: newMessages
             // 过滤掉 isError 的消息
             .filter((message) => !(message as Message).isError)
@@ -150,7 +153,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         ]);
       }
     },
-    [messages, history, historyIndex],
+    [settings, messages, history, historyIndex],
   );
 
   /**

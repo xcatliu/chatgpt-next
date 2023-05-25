@@ -1,4 +1,4 @@
-import type { ChatRequest } from './constants';
+import type { ChatRequest, ModelsResponse } from './constants';
 import { HttpHeaderJson, HttpMethod } from './constants';
 import { ResError } from './error';
 import { stream2string } from './stream';
@@ -36,7 +36,7 @@ export const fetchApiChat = async ({
  * 请求 /api/models 接口
  * 获取可用的模型列表
  */
-export const fetchApiModels = async () => {
+export const fetchApiModels = async (): Promise<ModelsResponse> => {
   const fetchResult = await fetch('/api/models', {
     method: HttpMethod.GET,
     headers: HttpHeaderJson,

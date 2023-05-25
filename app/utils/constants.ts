@@ -41,6 +41,24 @@ export enum Model {
   'gpt-4-32k-0314' = 'gpt-4-32k-0314',
 }
 
+export const AllModels = [
+  Model['gpt-3.5-turbo'],
+  Model['gpt-3.5-turbo-0301'],
+  Model['gpt-4'],
+  Model['gpt-4-0314'],
+  Model['gpt-4-32k'],
+  Model['gpt-4-32k-0314'],
+];
+
+export const MAX_TOKENS: Record<Model, number> = {
+  [Model['gpt-3.5-turbo']]: 4096,
+  [Model['gpt-3.5-turbo-0301']]: 4096,
+  [Model['gpt-4']]: 8000,
+  [Model['gpt-4-0314']]: 8000,
+  [Model['gpt-4-32k']]: 32000,
+  [Model['gpt-4-32k-0314']]: 32000,
+};
+
 /**
  * 单条消息
  */
@@ -114,7 +132,7 @@ export interface ChatRequest {
    */
   stop?: string | string[];
   /**
-   * 最大 token 数量
+   * tokens 限制
    */
   max_tokens?: number;
   /**
@@ -132,6 +150,8 @@ export interface ChatRequest {
    *
    * 用于惩罚模型生成频率较高的 token，从而使得生成的文本更加多样化。
    * 与 presence_penalty 相似，frequency_penalty 越高，模型生成的文本中就越不可能包含频率较高的 token。
+   *
+   * @default 0;
    */
   frequency_penalty?: number;
   /**
