@@ -20,6 +20,10 @@ html.show-menu body {
   @apply translate-x-[calc(6.25rem-100vw)];
 }
 
+select {
+  @apply dark:text-gray-900;
+}
+
 .text-gray {
   @apply text-gray-400;
   @apply dark:text-gray-500;
