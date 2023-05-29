@@ -50,6 +50,15 @@ export const AllModels = [
   Model['gpt-4-32k-0314'],
 ];
 
+export const MIN_TOKENS: Record<Model, number> = {
+  [Model['gpt-3.5-turbo']]: 1024,
+  [Model['gpt-3.5-turbo-0301']]: 1024,
+  [Model['gpt-4']]: 1000,
+  [Model['gpt-4-0314']]: 1000,
+  [Model['gpt-4-32k']]: 1000,
+  [Model['gpt-4-32k-0314']]: 1000,
+};
+
 export const MAX_TOKENS: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 4096,
   [Model['gpt-3.5-turbo-0301']]: 4096,
@@ -57,6 +66,15 @@ export const MAX_TOKENS: Record<Model, number> = {
   [Model['gpt-4-0314']]: 8000,
   [Model['gpt-4-32k']]: 32000,
   [Model['gpt-4-32k-0314']]: 32000,
+};
+
+export const TOKENS_STEP: Record<Model, number> = {
+  [Model['gpt-3.5-turbo']]: 512,
+  [Model['gpt-3.5-turbo-0301']]: 512,
+  [Model['gpt-4']]: 1000,
+  [Model['gpt-4-0314']]: 1000,
+  [Model['gpt-4-32k']]: 1000,
+  [Model['gpt-4-32k-0314']]: 1000,
 };
 
 /**

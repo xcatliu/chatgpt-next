@@ -1,18 +1,24 @@
 'use client';
 
 import classNames from 'classnames';
-import Image from 'next/image';
 import type { FC, ReactNode } from 'react';
+import { useContext } from 'react';
 
-import { Role } from '@/utils/constants';
+import { SettingsContext } from '@/context/SettingsContext';
+import { Model, Role } from '@/utils/constants';
 import type { ChatResponse, Message as MessageType } from '@/utils/constants';
 import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
 import { getContent, getRole } from '@/utils/message';
+
+import { ChatGPTIcon } from './icons/ChatGPTIcon';
+import { HeroiconsUser } from './icons/HeroiconsUser';
 
 /**
  * 单个消息气泡
  */
 export const Message: FC<MessageType | ChatResponse> = (props) => {
+  let { settings } = useContext(SettingsContext)!;
+
   const role = getRole(props);
   const content = getContent(props);
   const isError = !!(props as MessageType).isError;
@@ -26,15 +32,18 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
         'flex-row-reverse': isUser,
       })}
     >
-      <Image
-        className={classNames('rounded w-10 h-10', {
-          'p-1.5 bg-white dark:bg-gray-200': isUser,
-        })}
-        src={isAssistant ? '/chatgpt-icon-green.png' : isUser ? '/heroicons-user.svg' : 'TODO'}
-        alt={`${role} avatar`}
-        width={40}
-        height={40}
-      />
+      {isAssistant ? (
+        <ChatGPTIcon
+          className={classNames('rounded w-10 h-10 p-1  text-white', {
+            'bg-[#1aa181]': [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0301']].includes(settings.model),
+            'bg-[#a969f8]': [Model['gpt-4'], Model['gpt-4-0314'], Model['gpt-4-32k'], Model['gpt-4-32k-0314']].includes(
+              settings.model,
+            ),
+          })}
+        />
+      ) : (
+        <HeroiconsUser className="rounded w-10 h-10 p-1.5 bg-white dark:bg-gray-200" />
+      )}
       <div
         className={classNames('relative mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words', {
           'message-chatgpt bg-chat-bubble dark:bg-chat-bubble-dark': isAssistant,

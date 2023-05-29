@@ -80,7 +80,7 @@ input[type='submit'] {
   @apply dark:bg-gray-800;
 }
 .message-chatgpt code[class*='language-'] {
-  @apply p-0;
+  @apply text-sm p-0;
   @apply dark:bg-gray-800;
 }
 .message-chatgpt code {

@@ -2,26 +2,33 @@
 
 import { useContext } from 'react';
 
+import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import type { Model } from '@/utils/constants';
-import { MAX_TOKENS } from '@/utils/constants';
+import { MAX_TOKENS, MIN_TOKENS, TOKENS_STEP } from '@/utils/constants';
 
 /**
  * 聊天记录
  */
 export const Settings = () => {
   const { settings, setSettings, resetSettings } = useContext(SettingsContext)!;
+  const { historyIndex } = useContext(ChatContext)!;
 
   return (
     <div>
       <h2 className="m-4 text-lg">配置选项</h2>
       <div className="m-4">
         模型：
-        <select value={settings.model} onChange={(e) => setSettings({ model: e.target.value as Model })}>
+        <select
+          value={settings.model}
+          onChange={(e) => setSettings({ model: e.target.value as Model })}
+          disabled={historyIndex !== 'empty'}
+        >
           {settings.availableModels.map((model) => (
             <option key={model}>{model}</option>
           ))}
         </select>
+        {historyIndex !== 'empty' && <p className="mt-1 ml-12 text-sm text-gray">已开启的对话不支持修改模型</p>}
       </div>
       <div className="m-4">
         温度：
@@ -54,8 +61,8 @@ export const Settings = () => {
         <input
           className="w-36 mr-2"
           type="range"
-          step={512}
-          min={1024}
+          step={TOKENS_STEP[settings.model]}
+          min={MIN_TOKENS[settings.model]}
           max={MAX_TOKENS[settings.model]}
           value={settings.max_tokens ?? MAX_TOKENS[settings.model]}
           onChange={(e) => setSettings({ max_tokens: Number(e.target.value) })}

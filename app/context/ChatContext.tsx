@@ -7,20 +7,21 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
 import type { ChatResponse, Message } from '@/utils/constants';
-import { Role } from '@/utils/constants';
+import { MAX_TOKENS, Model, Role } from '@/utils/constants';
 import type { ResError } from '@/utils/error';
 import { isMessage } from '@/utils/message';
-import { isOldMessage, upgradeMessage } from '@/utils/messageUpgrade';
 import { gapToBottom, getIsScrolling, scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
 
 import { MenuContext, MenuKey } from './MenuContext';
+import type { SettingsState } from './SettingsContext';
 import { SettingsContext } from './SettingsContext';
 
 /**
  * 聊天记录
  */
 export interface HistoryItem {
+  model: Model;
   messages: (Message | ChatResponse)[];
 }
 
@@ -40,7 +41,7 @@ export const ChatContext = createContext<{
 
 export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { setIsMenuShow, setCurrentMenu } = useContext(MenuContext)!;
-  const { settings } = useContext(SettingsContext)!;
+  const { settings, setSettings } = useContext(SettingsContext)!;
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<(Message | ChatResponse)[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
@@ -51,21 +52,11 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   // 如果 messages 不为空，则将最近的一条消息写入 history
   useEffect(() => {
     let history = getCache<HistoryItem[]>('history');
-    // 读取的 history 有可能是旧版的格式，这里做一个转换
-    if (history !== undefined && history.length > 0 && isOldMessage(history[0].messages[0])) {
-      history = history.map((historyItem) => ({
-        messages: historyItem.messages.map(upgradeMessage),
-      }));
-    }
-    // 读取的 messages 有可能是旧版的格式，这里做一个转换
     let messages = getCache<(Message | ChatResponse)[]>('messages');
-    if (messages !== undefined && isOldMessage(messages)) {
-      messages = messages.map(upgradeMessage);
-    }
-
+    let settings = getCache<SettingsState>('settings');
     // 如果检测到缓存中有上次还未存储到 cache 的 message，则加入到 history 中
     if (messages && messages.length > 0) {
-      history = [{ messages }, ...(history ?? [])];
+      history = [{ model: settings?.model ?? Model['gpt-3.5-turbo'], messages }, ...(history ?? [])];
       setHistory(history);
       setCache('history', history);
       setMessages([]);
@@ -165,8 +156,19 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         return;
       }
 
+      const oldModel = settings.model;
+      const newModel = history?.[index].model ?? Model['gpt-3.5-turbo'];
+
       if (historyIndex === 'empty') {
         setHistoryIndex(index);
+        setSettings({
+          model: newModel,
+        });
+        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+          setSettings({
+            max_tokens: MAX_TOKENS[newModel],
+          });
+        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
@@ -176,6 +178,14 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       // 如果当前是在浏览历史，则直接切换 historyIndex
       if (typeof historyIndex === 'number') {
         setHistoryIndex(index);
+        setSettings({
+          model: newModel,
+        });
+        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+          setSettings({
+            max_tokens: MAX_TOKENS[newModel],
+          });
+        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
@@ -184,28 +194,50 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
       // 如果当前有正在进行的聊天，则将正在进行的聊天归档到 history 中
       if (historyIndex === 'current') {
-        const newHistory = [{ messages }, ...(history ?? [])];
+        const newHistory = [{ model: settings.model, messages }, ...(history ?? [])];
         setHistory(newHistory);
         setCache('history', newHistory);
         setMessages([]);
         setCache('messages', []);
         setHistoryIndex(index);
+        setSettings({
+          model: newModel,
+        });
+        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+          setSettings({
+            max_tokens: MAX_TOKENS[newModel],
+          });
+        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
       }
     },
-    [setIsMenuShow, historyIndex, messages, history],
+    [setIsMenuShow, historyIndex, messages, history, settings.model, setSettings],
   );
 
   /** 删除单条聊天记录 */
   const deleteHistory = useCallback(
     async (deleteIndex: 'current' | number) => {
+      const oldModel = settings.model;
+
       // 如果删除的是还没有写入 history 的当前聊天，则直接删除 messages
       if (deleteIndex === 'current') {
         setMessages([]);
         setCache('messages', []);
-        setHistoryIndex(history && history.length > 0 ? 0 : 'empty');
+        const newIndex = history && history.length > 0 ? 0 : 'empty';
+        setHistoryIndex(newIndex);
+        if (typeof newIndex === 'number') {
+          const newModel = history?.[newIndex].model ?? Model['gpt-3.5-turbo'];
+          setSettings({
+            model: newModel,
+          });
+          if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+            setSettings({
+              max_tokens: MAX_TOKENS[newModel],
+            });
+          }
+        }
         return;
       }
 
@@ -215,24 +247,35 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setCache('history', newHistory);
 
       // 选择最近的一条聊天记录展示
-      setHistoryIndex(newHistory && newHistory.length > 0 ? Math.min(deleteIndex, newHistory.length - 1) : 'empty');
+      const newIndex = newHistory && newHistory.length > 0 ? Math.min(deleteIndex, newHistory.length - 1) : 'empty';
+      setHistoryIndex(newIndex);
+      if (typeof newIndex === 'number') {
+        const newModel = newHistory[newIndex].model ?? Model['gpt-3.5-turbo'];
+        setSettings({
+          model: newModel,
+        });
+        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+          setSettings({
+            max_tokens: MAX_TOKENS[newModel],
+          });
+        }
+      }
     },
-    [history],
+    [history, setSettings, settings.model],
   );
 
   /** 开启新对话 */
   const startNewChat = useCallback(() => {
     let newHistory = [...(history ?? [])];
     if (messages.length > 0) {
-      newHistory = [{ messages }, ...newHistory];
+      newHistory = [{ model: settings.model, messages }, ...newHistory];
     }
     setHistory(newHistory);
     setCache('history', newHistory);
     setMessages([]);
     setCache('messages', []);
-    setCurrentMenu(MenuKey.InboxStack);
     setHistoryIndex('empty');
-  }, [messages, history, setCurrentMenu]);
+  }, [messages, history, settings.model]);
 
   return (
     <ChatContext.Provider

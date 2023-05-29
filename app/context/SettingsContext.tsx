@@ -8,7 +8,7 @@ import { getCache, setCache } from '@/utils/cache';
 import type { ChatRequest } from '@/utils/constants';
 import { AllModels, MAX_TOKENS, Model } from '@/utils/constants';
 
-interface SettingsState extends Omit<ChatRequest, 'messages'> {
+export interface SettingsState extends Omit<ChatRequest, 'messages'> {
   availableModels: Model[];
 }
 
@@ -21,7 +21,6 @@ enum SettingsActionType {
   RESET,
   REPLACE_SETTINGS,
   SET_SETTINGS,
-  SET_AVAILABLE_MODEL,
 }
 
 const settingsReducer = (settings: SettingsState, action: { type: SettingsActionType; payload?: any }) => {
@@ -106,11 +105,14 @@ export const SettingsProvider: FC<{ children: ReactNode; isLogged: boolean }> = 
       const apiModelsResponse = await fetchApiModels();
 
       // 需要过滤 AllModels 中的模型
-      const availableModels = apiModelsResponse.data.map(({ id }) => id).filter((model) => AllModels.includes(model));
+      const availableModels = apiModelsResponse.data
+        .map(({ id }) => id)
+        .filter((model) => AllModels.includes(model))
+        .sort((a, b) => AllModels.indexOf(a) - AllModels.indexOf(b));
 
       dispatch({
-        type: SettingsActionType.SET_AVAILABLE_MODEL,
-        payload: availableModels,
+        type: SettingsActionType.SET_SETTINGS,
+        payload: { availableModels },
       });
     } catch (e: any) {
       alert(e.message);

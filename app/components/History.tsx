@@ -7,6 +7,7 @@ import { useContext } from 'react';
 
 import type { HistoryItem } from '@/context/ChatContext';
 import { ChatContext } from '@/context/ChatContext';
+import { SettingsContext } from '@/context/SettingsContext';
 import { FULL_SPACE } from '@/utils/constants';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
@@ -45,11 +46,12 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
   isActive,
 }) => {
   const { messages, history, loadHistory } = useContext(ChatContext)!;
+  const { settings } = useContext(SettingsContext)!;
 
   let historyItem: HistoryItem;
 
   if (historyIndex === 'current') {
-    historyItem = { messages };
+    historyItem = { model: settings.model, messages };
   } else if (history === undefined) {
     return null;
   } else {
@@ -81,11 +83,12 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
  */
 export const ExportHistory = () => {
   const { messages, history } = useContext(ChatContext)!;
+  const { settings } = useContext(SettingsContext)!;
 
   let historyWithCurrentMessages = history ?? [];
   // 如果当前有消息，则将当前消息放入聊天记录中
   if (messages.length > 0) {
-    historyWithCurrentMessages = [{ messages }, ...historyWithCurrentMessages];
+    historyWithCurrentMessages = [{ model: settings.model, messages }, ...historyWithCurrentMessages];
   }
 
   return (
