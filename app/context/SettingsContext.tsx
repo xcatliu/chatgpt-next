@@ -41,9 +41,9 @@ const settingsReducer = (settings: SettingsState, action: { type: SettingsAction
   else if (action.type === SettingsActionType.SET_SETTINGS) {
     newSettings = { ...newSettings, ...action.payload };
     // 如果设置可用模型后发现已设置的 model 不在可用模型里，则将 model 设置为可用模型中的第一个
-    if (!newSettings.availableModels.includes(newSettings.model)) {
-      newSettings.model = newSettings.availableModels[0];
-    }
+    // if (!newSettings.availableModels.includes(newSettings.model)) {
+    //   newSettings.model = newSettings.availableModels[0];
+    // }
     // 如果 max_tokens 大于最大值，则将其降低为最大值
     if (newSettings.max_tokens && newSettings.max_tokens > MAX_TOKENS[newSettings.model]) {
       newSettings.max_tokens = MAX_TOKENS[newSettings.model];

@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import type { Model } from '@/utils/constants';
-import { MAX_TOKENS, MIN_TOKENS, TOKENS_STEP } from '@/utils/constants';
+import { AllModels, MAX_TOKENS, MIN_TOKENS, TOKENS_STEP } from '@/utils/constants';
 
 /**
  * 聊天记录
@@ -24,8 +24,10 @@ export const Settings = () => {
           onChange={(e) => setSettings({ model: e.target.value as Model })}
           disabled={historyIndex !== 'empty'}
         >
-          {settings.availableModels.map((model) => (
-            <option key={model}>{model}</option>
+          {AllModels.map((model) => (
+            <option key={model} disabled={!settings.availableModels.includes(model)}>
+              {model}
+            </option>
           ))}
         </select>
         {historyIndex !== 'empty' && <p className="mt-1 ml-12 text-sm text-gray">已开启的对话不支持修改模型</p>}
