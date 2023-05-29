@@ -166,7 +166,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         });
         if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
           setSettings({
-            max_tokens: MAX_TOKENS[newModel],
+            max_tokens: undefined,
           });
         }
         setIsMenuShow(false);
@@ -183,7 +183,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         });
         if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
           setSettings({
-            max_tokens: MAX_TOKENS[newModel],
+            max_tokens: undefined,
           });
         }
         setIsMenuShow(false);
@@ -205,7 +205,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         });
         if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
           setSettings({
-            max_tokens: MAX_TOKENS[newModel],
+            max_tokens: undefined,
           });
         }
         setIsMenuShow(false);
@@ -234,7 +234,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           });
           if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
             setSettings({
-              max_tokens: MAX_TOKENS[newModel],
+              max_tokens: undefined,
             });
           }
         }
@@ -256,7 +256,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         });
         if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
           setSettings({
-            max_tokens: MAX_TOKENS[newModel],
+            max_tokens: undefined,
           });
         }
       }
