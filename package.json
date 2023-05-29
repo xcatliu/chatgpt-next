@@ -13,7 +13,7 @@
     "prettier": "prettier -l \"./**/*\"",
     "prettier:fix": "prettier --write -l \"./**/*\"",
     "prepare": "husky install",
-    "preversion": "rimraf .next && npm run build",
+    "preversion": "npm run build && rimraf .next/cache",
     "postversion": "git push --follow-tags && npm publish"
   },
   "bin": {
