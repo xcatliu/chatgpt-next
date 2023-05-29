@@ -13,7 +13,7 @@
     "prettier": "prettier -l \"./**/*\"",
     "prettier:fix": "prettier --write -l \"./**/*\"",
     "prepare": "husky install",
-    "preversion": "npm run build",
+    "preversion": "rimraf .next && npm run build",
     "postversion": "git push --follow-tags && npm publish"
   },
   "bin": {
@@ -76,6 +76,7 @@
   "devDependencies": {
     "husky": "8.0.3",
     "lint-staged": "13.2.0",
-    "prettier": "2.8.7"
+    "prettier": "2.8.7",
+    "rimraf": "^5.0.1"
   }
 }
