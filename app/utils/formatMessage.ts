@@ -1,4 +1,6 @@
 import MarkdownIt from 'markdown-it';
+// @ts-ignore
+import katex from 'markdown-it-katex';
 
 import { sleep } from './sleep';
 
@@ -23,7 +25,8 @@ const markdownItMap = {
     },
   })
     .enable(['code', 'fence'])
-    .enable(['autolink', 'backticks', 'image', 'link', 'newline']),
+    .enable(['autolink', 'backticks', 'image', 'link', 'newline'])
+    .use(katex),
 };
 
 // 实现「拷贝代码」功能
