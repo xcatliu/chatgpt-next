@@ -1,4 +1,5 @@
 import { Menu } from '@/components/Menu';
+import { MessageDetail } from '@/components/MessageDetail';
 import { Messages } from '@/components/Messages';
 import { TextareaForm } from '@/components/TextareaForm';
 import { Title } from '@/components/Title';
@@ -14,6 +15,7 @@ export default function Home() {
         <TextareaForm />
       </main>
       <div className="hidden md:tall:block fixed bottom-0 w-inherit z-10 h-24 bg-white dark:bg-gray-800" />
+      <MessageDetail />
     </div>
   );
 }

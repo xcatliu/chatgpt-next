@@ -2,13 +2,15 @@
 
 import classNames from 'classnames';
 import type { FC, ReactNode } from 'react';
-import { useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 
+import { MessageDetailContext } from '@/context/MessageDetailContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import { Model, Role } from '@/utils/constants';
 import type { ChatResponse, Message as MessageType } from '@/utils/constants';
 import { formatMessage, FormatMessageMode } from '@/utils/formatMessage';
 import { getContent, getRole } from '@/utils/message';
+import { disableScroll, scrollToTop } from '@/utils/scroll';
 
 import { ChatGPTIcon } from './icons/ChatGPTIcon';
 import { HeroiconsUser } from './icons/HeroiconsUser';
@@ -17,7 +19,8 @@ import { HeroiconsUser } from './icons/HeroiconsUser';
  * 单个消息气泡
  */
 export const Message: FC<MessageType | ChatResponse> = (props) => {
-  let { settings } = useContext(SettingsContext)!;
+  const { settings } = useContext(SettingsContext)!;
+  const { setMessageDetail, setFormatMessageMode } = useContext(MessageDetailContext)!;
 
   const role = getRole(props);
   const content = getContent(props);
@@ -25,6 +28,24 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
 
   const isUser = role === Role.user;
   const isAssistant = role === Role.assistant;
+
+  const [lastTapTime, setLastTapTime] = useState(0);
+  const handleTap = useCallback(() => {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTapTime;
+
+    if (tapLength < 500 && tapLength > 0) {
+      scrollToTop();
+      disableScroll();
+      setMessageDetail(content);
+      setFormatMessageMode(isAssistant ? FormatMessageMode.partial : FormatMessageMode.zero);
+      // 处理双击事件
+    } else {
+      // 处理单击事件
+    }
+
+    setLastTapTime(currentTime);
+  }, [lastTapTime, setLastTapTime, content, setMessageDetail, isAssistant, setFormatMessageMode]);
 
   return (
     <div
@@ -53,6 +74,7 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
         dangerouslySetInnerHTML={{
           __html: formatMessage(content, isAssistant ? FormatMessageMode.partial : FormatMessageMode.zero),
         }}
+        onTouchEnd={handleTap}
       />
       {/* 三角箭头 */}
       <div

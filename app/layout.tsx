@@ -8,6 +8,7 @@ import { ChatProvider } from '@/context/ChatContext';
 import { DeviceProvider } from '@/context/DeviceContext';
 import { LoginProvider } from '@/context/LoginContext';
 import { MenuProvider } from '@/context/MenuContext';
+import { MessageDetailProvider } from '@/context/MessageDetailContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { isWeChat as utilIsWeChat } from '@/utils/device';
 
@@ -42,7 +43,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SettingsProvider isLogged={!!cookieApiKey}>
             <LoginProvider cookieApiKey={cookieApiKey}>
               <MenuProvider>
-                <ChatProvider>{children}</ChatProvider>
+                <ChatProvider>
+                  <MessageDetailProvider>{children}</MessageDetailProvider>
+                </ChatProvider>
               </MenuProvider>
             </LoginProvider>
           </SettingsProvider>

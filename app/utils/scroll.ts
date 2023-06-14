@@ -43,3 +43,10 @@ export function scrollToTop() {
   window.scrollTo(0, 0);
   setTimeout(() => (isScriptScrolling = false), 0);
 }
+
+export function disableScroll() {
+  window.document.body.style.overflow = 'hidden';
+}
+export function enableScroll() {
+  window.document.body.style.overflow = 'visible';
+}
