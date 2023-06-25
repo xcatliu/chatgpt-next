@@ -34,47 +34,57 @@ export enum Role {
  */
 export enum Model {
   'gpt-3.5-turbo' = 'gpt-3.5-turbo',
-  'gpt-3.5-turbo-0301' = 'gpt-3.5-turbo-0301',
+  'gpt-3.5-turbo-0613' = 'gpt-3.5-turbo-0613',
+  'gpt-3.5-turbo-16k' = 'gpt-3.5-turbo-16k',
+  'gpt-3.5-turbo-16k-0613' = 'gpt-3.5-turbo-16k-0613',
   'gpt-4' = 'gpt-4',
-  'gpt-4-0314' = 'gpt-4-0314',
+  'gpt-4-0613' = 'gpt-4-0613',
   'gpt-4-32k' = 'gpt-4-32k',
-  'gpt-4-32k-0314' = 'gpt-4-32k-0314',
+  'gpt-4-32k-0613' = 'gpt-4-32k-0613',
 }
 
 export const AllModels = [
   Model['gpt-3.5-turbo'],
-  Model['gpt-3.5-turbo-0301'],
+  Model['gpt-3.5-turbo-0613'],
+  Model['gpt-3.5-turbo-16k'],
+  Model['gpt-3.5-turbo-16k-0613'],
   Model['gpt-4'],
-  Model['gpt-4-0314'],
+  Model['gpt-4-0613'],
   Model['gpt-4-32k'],
-  Model['gpt-4-32k-0314'],
+  Model['gpt-4-32k-0613'],
 ];
 
 export const MIN_TOKENS: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 1024,
-  [Model['gpt-3.5-turbo-0301']]: 1024,
-  [Model['gpt-4']]: 1000,
-  [Model['gpt-4-0314']]: 1000,
-  [Model['gpt-4-32k']]: 1000,
-  [Model['gpt-4-32k-0314']]: 1000,
+  [Model['gpt-3.5-turbo-0613']]: 1024,
+  [Model['gpt-3.5-turbo-16k']]: 1024,
+  [Model['gpt-3.5-turbo-16k-0613']]: 1024,
+  [Model['gpt-4']]: 1024,
+  [Model['gpt-4-0613']]: 1024,
+  [Model['gpt-4-32k']]: 1024,
+  [Model['gpt-4-32k-0613']]: 1024,
 };
 
 export const MAX_TOKENS: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 4096,
-  [Model['gpt-3.5-turbo-0301']]: 4096,
-  [Model['gpt-4']]: 8000,
-  [Model['gpt-4-0314']]: 8000,
-  [Model['gpt-4-32k']]: 32000,
-  [Model['gpt-4-32k-0314']]: 32000,
+  [Model['gpt-3.5-turbo-0613']]: 4096,
+  [Model['gpt-3.5-turbo-16k']]: 16384,
+  [Model['gpt-3.5-turbo-16k-0613']]: 16384,
+  [Model['gpt-4']]: 8192,
+  [Model['gpt-4-0613']]: 8192,
+  [Model['gpt-4-32k']]: 32768,
+  [Model['gpt-4-32k-0613']]: 32768,
 };
 
 export const TOKENS_STEP: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 512,
-  [Model['gpt-3.5-turbo-0301']]: 512,
-  [Model['gpt-4']]: 1000,
-  [Model['gpt-4-0314']]: 1000,
-  [Model['gpt-4-32k']]: 1000,
-  [Model['gpt-4-32k-0314']]: 1000,
+  [Model['gpt-3.5-turbo-0613']]: 512,
+  [Model['gpt-3.5-turbo-16k']]: 1024,
+  [Model['gpt-3.5-turbo-16k-0613']]: 1024,
+  [Model['gpt-4']]: 1024,
+  [Model['gpt-4-0613']]: 1024,
+  [Model['gpt-4-32k']]: 1024,
+  [Model['gpt-4-32k-0613']]: 1024,
 };
 
 /**

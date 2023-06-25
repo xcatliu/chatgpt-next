@@ -14,7 +14,7 @@ export interface SettingsState extends Omit<ChatRequest, 'messages'> {
 
 const INITIAL_SETTINGS: SettingsState = {
   model: Model['gpt-3.5-turbo'],
-  availableModels: [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0301']],
+  availableModels: [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0613']],
 };
 
 enum SettingsActionType {

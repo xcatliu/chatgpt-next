@@ -56,8 +56,8 @@ export const Message: FC<MessageType | ChatResponse> = (props) => {
       {isAssistant ? (
         <ChatGPTIcon
           className={classNames('rounded w-10 h-10 p-1  text-white', {
-            'bg-[#1aa181]': [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0301']].includes(settings.model),
-            'bg-[#a969f8]': [Model['gpt-4'], Model['gpt-4-0314'], Model['gpt-4-32k'], Model['gpt-4-32k-0314']].includes(
+            'bg-[#1aa181]': [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0613']].includes(settings.model),
+            'bg-[#a969f8]': [Model['gpt-4'], Model['gpt-4-0613'], Model['gpt-4-32k'], Model['gpt-4-32k-0613']].includes(
               settings.model,
             ),
           })}
