@@ -3,6 +3,7 @@
 import { useContext, useEffect } from 'react';
 
 import { ChatContext } from '@/context/ChatContext';
+import { SettingsContext } from '@/context/SettingsContext';
 import { Role } from '@/utils/constants';
 // import { exampleMessages } from '@/utils/exampleMessages';
 import { initEventListenerScroll } from '@/utils/scroll';
@@ -20,6 +21,7 @@ const WELCOME_MESSAGE = '你好！有什么我可以帮助你的吗？';
 const LOADING_MESSAGE = '正在努力思考...';
 
 export const Messages = () => {
+  const { settings } = useContext(SettingsContext)!;
   let { isLoading, messages, history, historyIndex, startNewChat } = useContext(ChatContext)!;
 
   // 初始化滚动事件
@@ -36,6 +38,7 @@ export const Messages = () => {
     <div className="md:grow" style={{ display: 'flow-root' }}>
       <SystemMessage>{SYSTEM_MESSAGE}</SystemMessage>
       <Message role={Role.assistant} content={WELCOME_MESSAGE} />
+      {settings.systemMessage?.content && <SystemMessage>system: {settings.systemMessage.content}</SystemMessage>}
       {messages.map((message, index) => (
         <Message key={index} {...message} />
       ))}

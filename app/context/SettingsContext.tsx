@@ -5,15 +5,18 @@ import { createContext, useCallback, useEffect, useReducer } from 'react';
 
 import { fetchApiModels } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
-import type { ChatRequest } from '@/utils/constants';
+import type { ChatRequest, Message } from '@/utils/constants';
 import { AllModels, MAX_TOKENS, Model } from '@/utils/constants';
 
 export interface SettingsState extends Omit<ChatRequest, 'messages'> {
+  maxHistoryLength: number;
+  systemMessage?: Message;
   availableModels: Model[];
 }
 
 const INITIAL_SETTINGS: SettingsState = {
   model: Model['gpt-3.5-turbo'],
+  maxHistoryLength: 5,
   availableModels: [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0613']],
 };
 
@@ -30,6 +33,7 @@ const settingsReducer = (settings: SettingsState, action: { type: SettingsAction
   if (action.type === SettingsActionType.RESET) {
     newSettings = {
       model: settings.availableModels[0],
+      maxHistoryLength: settings.maxHistoryLength,
       availableModels: settings.availableModels,
     };
   }

@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import type { Model } from '@/utils/constants';
-import { AllModels, MAX_TOKENS, MIN_TOKENS, TOKENS_STEP } from '@/utils/constants';
+import { AllModels, MAX_TOKENS, MIN_TOKENS, Role, TOKENS_STEP } from '@/utils/constants';
 
 /**
  * 聊天记录
@@ -31,6 +31,19 @@ export const Settings = () => {
           ))}
         </select>
         {historyIndex !== 'empty' && <p className="mt-1 ml-12 text-sm text-gray">已开启的对话不支持修改模型</p>}
+      </div>
+      <div className="m-4">
+        历史长度：
+        <input
+          className="w-36 mr-2"
+          type="range"
+          step={1}
+          min={0}
+          max={20}
+          value={settings.maxHistoryLength ?? 5}
+          onChange={(e) => setSettings({ maxHistoryLength: Number(e.target.value) })}
+        />
+        {settings.maxHistoryLength ?? 5}
       </div>
       <div className="m-4">
         温度：
@@ -96,6 +109,15 @@ export const Settings = () => {
           onChange={(e) => setSettings({ frequency_penalty: Number(e.target.value) })}
         />
         {settings.frequency_penalty ?? 0}
+      </div>
+      <div className="m-4">
+        系统消息：
+        <input
+          className="block px-3 py-2 my-2 w-full border border-gray"
+          type="text"
+          value={settings.systemMessage?.content}
+          onChange={(e) => setSettings({ systemMessage: { role: Role.system, content: e.target.value } })}
+        />
       </div>
       <input className="m-4 mt-0 px-3 py-2" type="button" onClick={() => resetSettings()} value="重置所有配置" />
     </div>

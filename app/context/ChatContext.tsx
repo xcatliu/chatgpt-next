@@ -105,15 +105,21 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       try {
         // stream 模式下，由前端组装消息
         let partialContent = '';
+        const fetchApiChatMessages = newMessages
+          // 过滤掉 isError 的消息
+          .filter((message) => !(message as Message).isError)
+          .slice(-(settings.maxHistoryLength * 2 + 1))
+          .map((message) => {
+            return isMessage(message) ? message : message.choices[0].message;
+          });
+        // 如果有系统消息，则写入到最前面
+        if (settings.systemMessage) {
+          fetchApiChatMessages.unshift(settings.systemMessage);
+        }
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
-          ...omit(settings, 'availableModels'),
-          messages: newMessages
-            // 过滤掉 isError 的消息
-            .filter((message) => !(message as Message).isError)
-            .map((message) => {
-              return isMessage(message) ? message : message.choices[0].message;
-            }),
+          ...omit(settings, 'maxHistoryLength', 'systemMessage', 'availableModels'),
+          messages: fetchApiChatMessages,
           stream: true,
           onMessage: (content) => {
             // stream 模式下，由前端组装消息
