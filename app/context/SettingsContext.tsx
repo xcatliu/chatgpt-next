@@ -11,12 +11,13 @@ import { AllModels, MAX_TOKENS, Model } from '@/utils/constants';
 export interface SettingsState extends Omit<ChatRequest, 'messages'> {
   maxHistoryLength: number;
   systemMessage?: Message;
+  prefixMessages?: Message[];
   availableModels: Model[];
 }
 
 const INITIAL_SETTINGS: SettingsState = {
   model: Model['gpt-3.5-turbo'],
-  maxHistoryLength: 5,
+  maxHistoryLength: 6,
   availableModels: [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0613']],
 };
 

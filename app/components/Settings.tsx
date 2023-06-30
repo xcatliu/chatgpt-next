@@ -37,13 +37,13 @@ export const Settings = () => {
         <input
           className="w-36 mr-2"
           type="range"
-          step={1}
+          step={2}
           min={0}
           max={20}
-          value={settings.maxHistoryLength ?? 5}
+          value={settings.maxHistoryLength}
           onChange={(e) => setSettings({ maxHistoryLength: Number(e.target.value) })}
         />
-        {settings.maxHistoryLength ?? 5}
+        {settings.maxHistoryLength}
       </div>
       <div className="m-4">
         温度：
@@ -115,8 +115,29 @@ export const Settings = () => {
         <input
           className="block px-3 py-2 my-2 w-full border border-gray"
           type="text"
-          value={settings.systemMessage?.content}
-          onChange={(e) => setSettings({ systemMessage: { role: Role.system, content: e.target.value } })}
+          value={settings.systemMessage?.content ?? ''}
+          onChange={(e) => {
+            if (e.target.value === '') {
+              setSettings({ systemMessage: undefined });
+            } else {
+              setSettings({ systemMessage: { role: Role.system, content: e.target.value } });
+            }
+          }}
+        />
+      </div>
+      <div className="m-4">
+        前置消息：
+        <input
+          className="block px-3 py-2 my-2 w-full border border-gray"
+          type="text"
+          value={settings.prefixMessages?.[0].content ?? ''}
+          onChange={(e) => {
+            if (e.target.value === '') {
+              setSettings({ prefixMessages: undefined });
+            } else {
+              setSettings({ prefixMessages: [{ role: Role.user, content: e.target.value }] });
+            }
+          }}
         />
       </div>
       <input className="m-4 mt-0 px-3 py-2" type="button" onClick={() => resetSettings()} value="重置所有配置" />

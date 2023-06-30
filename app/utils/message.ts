@@ -4,7 +4,7 @@ import type { ChatResponse, Message } from './constants';
  * 判断传入的 message 是简单的 Message 还是完整的 ChatResponse
  */
 export function isMessage(message: Message | ChatResponse): message is Message {
-  if ((message as Message).content) {
+  if ((message as Message).content !== undefined) {
     return true;
   }
   return false;

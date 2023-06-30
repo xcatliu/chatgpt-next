@@ -108,17 +108,21 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         const fetchApiChatMessages = newMessages
           // 过滤掉 isError 的消息
           .filter((message) => !(message as Message).isError)
-          .slice(-(settings.maxHistoryLength * 2 + 1))
+          .slice(-(settings.maxHistoryLength + 1))
           .map((message) => {
             return isMessage(message) ? message : message.choices[0].message;
           });
+        // 如果有前置消息，则写入到最前面
+        if (settings.prefixMessages && settings.prefixMessages.length > 0) {
+          fetchApiChatMessages.unshift(...settings.prefixMessages);
+        }
         // 如果有系统消息，则写入到最前面
         if (settings.systemMessage) {
           fetchApiChatMessages.unshift(settings.systemMessage);
         }
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
-          ...omit(settings, 'maxHistoryLength', 'systemMessage', 'availableModels'),
+          ...omit(settings, 'maxHistoryLength', 'systemMessage', 'prefixMessages', 'availableModels'),
           messages: fetchApiChatMessages,
           stream: true,
           onMessage: (content) => {
