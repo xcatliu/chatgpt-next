@@ -150,6 +150,10 @@ MIT，随便拿去用，记得帮我多宣传宣传。
 
 如果觉得帮助到你了，欢迎[请我喝一杯咖啡 ☕️](https://github.com/xcatliu/buy-me-a-coffee)。
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=xcatliu/chatgpt-next&type=Date)](https://star-history.com/#xcatliu/chatgpt-next&Date)
+
 ---
 
 MIT License
