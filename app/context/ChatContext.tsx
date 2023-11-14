@@ -6,9 +6,10 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 
 import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
-import type { ChatResponse, Message } from '@/utils/constants';
-import { MAX_TOKENS, Model, Role } from '@/utils/constants';
+import type { ChatResponse, Message, StructuredMessageContentItem } from '@/utils/constants';
+import { MAX_TOKENS, MessageContentType, Model, Role } from '@/utils/constants';
 import type { ResError } from '@/utils/error';
+import type { ImageProp } from '@/utils/image';
 import { isMessage } from '@/utils/message';
 import { gapToBottom, getIsScrolling, scrollToBottom } from '@/utils/scroll';
 import { sleep } from '@/utils/sleep';
@@ -29,9 +30,12 @@ export interface HistoryItem {
  * 对话相关的 Context
  */
 export const ChatContext = createContext<{
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content?: string) => Promise<void>;
   isLoading: boolean;
   messages: (Message | ChatResponse)[];
+  images: ImageProp[];
+  appendImages: (...images: ImageProp[]) => void;
+  deleteImage: (index: number) => void;
   history: HistoryItem[] | undefined;
   historyIndex: 'empty' | 'current' | number;
   loadHistory: (historyIndex: number) => void;
@@ -44,6 +48,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { settings, setSettings } = useContext(SettingsContext)!;
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<(Message | ChatResponse)[]>([]);
+  const [images, setImages] = useState<ImageProp[]>([]);
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<'empty' | 'current' | number>('empty');
@@ -80,7 +85,12 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
    * 发送消息
    */
   const sendMessage = useCallback(
-    async (content: string) => {
+    async (content?: string) => {
+      // 如果是空消息
+      if ((content === undefined || content.length === 0) && images.length === 0) {
+        return;
+      }
+
       // 先获取旧的 messages 的备份
       let newMessages = [...messages];
       // 如果当前是在浏览聊天记录，则激活历史消息
@@ -93,10 +103,45 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setCache('messages', newMessages);
       }
 
+      let newMessage: Message;
+      // 没图片时，插入单条文字消息
+      if (images.length === 0) {
+        newMessage = {
+          role: Role.user,
+          content: content as string,
+        };
+      }
+      // 有图片时则插入混合消息
+      else {
+        newMessage = {
+          role: Role.user,
+          content: images.map((image) => ({
+            type: MessageContentType.image_url,
+            image_url: {
+              url: image.src,
+              width: image.width,
+              height: image.height,
+            },
+          })),
+        };
+        // 如果有文字，则在最前面插入文字消息
+        if (content) {
+          newMessage.content = [
+            {
+              type: MessageContentType.text,
+              text: content,
+            },
+            ...(newMessage.content as StructuredMessageContentItem[]),
+          ];
+        }
+      }
+
       // 先插入一条用户消息
-      newMessages = [...newMessages, { role: Role.user, content }];
+      newMessages = [...newMessages, newMessage];
       setMessages(newMessages);
       setCache('messages', newMessages);
+      // 清空已上传的图片
+      setImages([]);
       setIsLoading(true);
       setHistoryIndex('current');
       await sleep(16);
@@ -122,6 +167,10 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
+          // gpt-4-vision-preview 有个 bug：不传 max_tokens 时，会中断消息
+          ...(settings.model === Model['gpt-4-vision-preview'] && settings.max_tokens === undefined
+            ? { max_tokens: MAX_TOKENS['gpt-4-vision-preview'] }
+            : undefined),
           ...omit(settings, 'maxHistoryLength', 'systemMessage', 'prefixMessages', 'availableModels'),
           messages: fetchApiChatMessages,
           stream: true,
@@ -154,7 +203,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         ]);
       }
     },
-    [settings, messages, history, historyIndex],
+    [settings, messages, images, history, historyIndex],
   );
 
   /**
@@ -287,12 +336,37 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setHistoryIndex('empty');
   }, [messages, history, settings.model]);
 
+  const appendImages = useCallback(
+    (...newImages: ImageProp[]) => {
+      const finalImages = [...images, ...newImages];
+      if (finalImages.length > 9) {
+        setImages(finalImages.slice(0, 9));
+        alert('最多只能发送九张图片，超出的图片已删除');
+        return;
+      }
+      setImages(finalImages);
+    },
+    [images],
+  );
+
+  const deleteImage = useCallback(
+    (index: number) => {
+      const finalImages = [...images];
+      finalImages.splice(index, 1);
+      setImages(finalImages);
+    },
+    [images],
+  );
+
   return (
     <ChatContext.Provider
       value={{
         sendMessage,
         isLoading,
         messages,
+        images,
+        appendImages,
+        deleteImage,
         history,
         historyIndex,
         loadHistory,

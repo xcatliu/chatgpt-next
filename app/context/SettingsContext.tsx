@@ -5,20 +5,20 @@ import { createContext, useCallback, useEffect, useReducer } from 'react';
 
 import { fetchApiModels } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
-import type { ChatRequest, Message } from '@/utils/constants';
+import type { ChatRequest, SimpleStringMessage } from '@/utils/constants';
 import { AllModels, MAX_TOKENS, Model } from '@/utils/constants';
 
 export interface SettingsState extends Omit<ChatRequest, 'messages'> {
   maxHistoryLength: number;
-  systemMessage?: Message;
-  prefixMessages?: Message[];
+  systemMessage?: SimpleStringMessage;
+  prefixMessages?: SimpleStringMessage[];
   availableModels: Model[];
 }
 
 const INITIAL_SETTINGS: SettingsState = {
   model: Model['gpt-3.5-turbo'],
   maxHistoryLength: 6,
-  availableModels: [Model['gpt-3.5-turbo'], Model['gpt-3.5-turbo-0613']],
+  availableModels: [Model['gpt-3.5-turbo']],
 };
 
 enum SettingsActionType {

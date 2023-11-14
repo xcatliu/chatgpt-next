@@ -6,16 +6,20 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
+import { SettingsContext } from '@/context/SettingsContext';
 import { isDomChildren } from '@/utils/isDomChildren';
+
+import { AttachImage } from './AttachImage';
 
 export const TextareaForm: FC = () => {
   const { isMobile } = useContext(DeviceContext)!;
   const { isLogged } = useContext(LoginContext)!;
-  const { sendMessage } = useContext(ChatContext)!;
+  const { settings } = useContext(SettingsContext)!;
+  const { images, sendMessage } = useContext(ChatContext)!;
 
   // 是否正在中文输入
   const [isComposing, setIsComposing] = useState(false);
-  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [isTextareaEmpty, setIsTextareaEmpty] = useState(true);
   const formContainerRef = useRef<HTMLDivElement>(null);
   const placeholderRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -38,14 +42,14 @@ export const TextareaForm: FC = () => {
   }, []);
 
   /**
-   * 更新 submit 按钮的 disable 态
+   * 更新 textarea 的 empty 状态
    */
-  const updateSubmitDisabled = useCallback(() => {
+  const updateIsTextareaEmpty = useCallback(() => {
     const value = textareaRef.current?.value?.trim();
     if (value) {
-      setSubmitDisabled(false);
+      setIsTextareaEmpty(false);
     } else {
-      setSubmitDisabled(true);
+      setIsTextareaEmpty(true);
     }
   }, []);
 
@@ -74,15 +78,15 @@ export const TextareaForm: FC = () => {
     updateTextareaHeight();
     // 保持滚动到最底下，bug 太多，先关闭
     // scrollToBottom();
-    updateSubmitDisabled();
-  }, [updateTextareaHeight, updateSubmitDisabled]);
+    updateIsTextareaEmpty();
+  }, [updateTextareaHeight, updateIsTextareaEmpty]);
   /** 中文输入法控制 */
   const onCompositionStart = useCallback(() => setIsComposing(true), []);
   const onCompositionEnd = useCallback(() => {
     setIsComposing(false);
     // 由于 onChange 和 onCompositionEnd 的时序问题，这里也需要调用 updateSubmitDisabled
-    updateSubmitDisabled();
-  }, [updateSubmitDisabled]);
+    updateIsTextareaEmpty();
+  }, [updateIsTextareaEmpty]);
 
   /**
    * 提交表单处理
@@ -91,18 +95,15 @@ export const TextareaForm: FC = () => {
     async (e?: FormEvent<HTMLFormElement>) => {
       e?.preventDefault();
       const value = textareaRef.current?.value?.trim();
-      if (!value) {
-        return;
-      }
       // 提交后清空内容
       if (textareaRef.current?.value) {
         textareaRef.current.value = '';
       }
       updateTextareaHeight();
-      updateSubmitDisabled();
+      updateIsTextareaEmpty();
       await sendMessage(value);
     },
-    [sendMessage, updateTextareaHeight, updateSubmitDisabled],
+    [sendMessage, updateTextareaHeight, updateIsTextareaEmpty],
   );
 
   /**
@@ -157,8 +158,14 @@ export const TextareaForm: FC = () => {
             onCompositionEnd={onCompositionEnd}
             rows={1}
           />
+          {settings.model.includes('vision') && <AttachImage />}
           <div className="flex items-center">
-            <input className="px-3 py-2 h-full max-h-16" type="submit" disabled={submitDisabled} value="发送" />
+            <input
+              className="px-3 py-2 h-full max-h-16"
+              type="submit"
+              disabled={isTextareaEmpty && images.length === 0}
+              value="发送"
+            />
           </div>
         </form>
       </div>

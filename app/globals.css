@@ -40,22 +40,28 @@ select {
 /* 按钮和输入框统一样式 */
 input,
 button,
-textarea {
+textarea,
+.button-attach-image {
   @apply rounded;
   @apply focus-visible:outline focus-visible:outline-1 focus-visible:outline-amber-500;
 }
-button {
+.button-icon {
   @apply w-10 h-10 m-2 p-[0.625rem];
   @apply cursor-pointer text-gray-400 hover:text-gray-500;
   @apply dark:text-gray-500 dark:hover:text-gray-400;
 }
 
 input[type='button'],
-input[type='submit'] {
+input[type='submit'],
+.button-attach-image {
   @apply cursor-pointer bg-white hover:bg-gray-200;
   @apply disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400;
   @apply dark:bg-gray-800 dark:hover:bg-gray-700;
   @apply dark:disabled:bg-gray-700 dark:disabled:text-gray-500;
+}
+.button-attach-image.disabled {
+  @apply cursor-not-allowed bg-gray-200 text-gray-400;
+  @apply dark:bg-gray-700 dark:text-gray-500;
 }
 
 /* 用于 fixed 宽度设置 */
@@ -97,4 +103,11 @@ input[type='submit'] {
 .message-chatgpt .prism-copy {
   @apply float-right cursor-pointer hover:text-gray-500;
   @apply dark:hover:text-gray-300;
+}
+
+.attach-image-container:hover .attach-image-delete {
+  @apply block bg-white bg-opacity-50;
+}
+.attach-image-container .attach-image-delete:hover {
+  @apply bg-opacity-100;
 }

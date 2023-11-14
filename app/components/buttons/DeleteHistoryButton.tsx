@@ -12,7 +12,7 @@ export const DeleteHistoryButton: FC<{ historyIndex: 'current' | number }> = ({ 
 
   return (
     <button
-      className="absolute bottom-0 right-0"
+      className="button-icon absolute bottom-0 right-0"
       onClick={(e) => {
         // 点击删除时，阻止冒泡
         e.stopPropagation();

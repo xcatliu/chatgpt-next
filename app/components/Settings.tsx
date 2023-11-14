@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import type { Model } from '@/utils/constants';
-import { AllModels, MAX_TOKENS, MIN_TOKENS, Role, TOKENS_STEP } from '@/utils/constants';
+import { AllModels, MAX_TOKENS, MIN_TOKENS, Role } from '@/utils/constants';
 
 /**
  * 聊天记录
@@ -76,7 +76,7 @@ export const Settings = () => {
         <input
           className="w-36 mr-2"
           type="range"
-          step={TOKENS_STEP[settings.model]}
+          step={(MAX_TOKENS[settings.model] - MIN_TOKENS[settings.model]) / 1024 < 7 ? 512 : 1024}
           min={MIN_TOKENS[settings.model]}
           max={MAX_TOKENS[settings.model]}
           value={settings.max_tokens ?? MAX_TOKENS[settings.model]}

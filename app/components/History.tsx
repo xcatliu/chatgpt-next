@@ -11,7 +11,7 @@ import { SettingsContext } from '@/context/SettingsContext';
 import { FULL_SPACE } from '@/utils/constants';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
-import { getContent } from '@/utils/message';
+import { getContentText } from '@/utils/message';
 
 import { DeleteHistoryButton } from './buttons/DeleteHistoryButton';
 
@@ -65,13 +65,13 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
       })}
       onClick={() => historyIndex !== 'current' && loadHistory(historyIndex)}
     >
-      <h3 className="overflow-hidden whitespace-nowrap truncate">{getContent(historyItem.messages[0])}</h3>
+      <h3 className="overflow-hidden whitespace-nowrap truncate">{getContentText(historyItem.messages[0])}</h3>
       <p
         className={classNames('mt-1 text-gray text-[15px] overflow-hidden whitespace-nowrap truncate', {
           'pr-8 md:pr-4': isActive,
         })}
       >
-        {historyItem.messages.length > 1 ? getContent(last(historyItem.messages)) : FULL_SPACE}
+        {historyItem.messages.length > 1 ? getContentText(last(historyItem.messages)) : FULL_SPACE}
       </p>
       {isActive && <DeleteHistoryButton historyIndex={historyIndex} />}
     </li>

@@ -34,63 +34,73 @@ export enum Role {
  */
 export enum Model {
   'gpt-3.5-turbo' = 'gpt-3.5-turbo',
-  'gpt-3.5-turbo-0613' = 'gpt-3.5-turbo-0613',
   'gpt-3.5-turbo-16k' = 'gpt-3.5-turbo-16k',
-  'gpt-3.5-turbo-16k-0613' = 'gpt-3.5-turbo-16k-0613',
   'gpt-4' = 'gpt-4',
-  'gpt-4-0613' = 'gpt-4-0613',
   'gpt-4-32k' = 'gpt-4-32k',
-  'gpt-4-32k-0613' = 'gpt-4-32k-0613',
+  'gpt-4-vision-preview' = 'gpt-4-vision-preview',
 }
 
 export const AllModels = [
   Model['gpt-3.5-turbo'],
-  Model['gpt-3.5-turbo-0613'],
   Model['gpt-3.5-turbo-16k'],
-  Model['gpt-3.5-turbo-16k-0613'],
   Model['gpt-4'],
-  Model['gpt-4-0613'],
   Model['gpt-4-32k'],
-  Model['gpt-4-32k-0613'],
+  Model['gpt-4-vision-preview'],
 ];
 
 export const MIN_TOKENS: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 1024,
-  [Model['gpt-3.5-turbo-0613']]: 1024,
   [Model['gpt-3.5-turbo-16k']]: 1024,
-  [Model['gpt-3.5-turbo-16k-0613']]: 1024,
   [Model['gpt-4']]: 1024,
-  [Model['gpt-4-0613']]: 1024,
   [Model['gpt-4-32k']]: 1024,
-  [Model['gpt-4-32k-0613']]: 1024,
+  [Model['gpt-4-vision-preview']]: 1024,
 };
 
 export const MAX_TOKENS: Record<Model, number> = {
   [Model['gpt-3.5-turbo']]: 4096,
-  [Model['gpt-3.5-turbo-0613']]: 4096,
   [Model['gpt-3.5-turbo-16k']]: 16384,
-  [Model['gpt-3.5-turbo-16k-0613']]: 16384,
   [Model['gpt-4']]: 8192,
-  [Model['gpt-4-0613']]: 8192,
   [Model['gpt-4-32k']]: 32768,
-  [Model['gpt-4-32k-0613']]: 32768,
+  [Model['gpt-4-vision-preview']]: 4096,
 };
 
-export const TOKENS_STEP: Record<Model, number> = {
-  [Model['gpt-3.5-turbo']]: 512,
-  [Model['gpt-3.5-turbo-0613']]: 512,
-  [Model['gpt-3.5-turbo-16k']]: 1024,
-  [Model['gpt-3.5-turbo-16k-0613']]: 1024,
-  [Model['gpt-4']]: 1024,
-  [Model['gpt-4-0613']]: 1024,
-  [Model['gpt-4-32k']]: 1024,
-  [Model['gpt-4-32k-0613']]: 1024,
-};
+export enum MessageContentType {
+  text = 'text',
+  image_url = 'image_url',
+}
+
+export interface MessageContentItemText {
+  type: MessageContentType.text;
+  text: string;
+}
+export interface MessageContentItemImageUrl {
+  type: MessageContentType.image_url;
+  image_url: {
+    url: string;
+    width: number;
+    height: number;
+  };
+}
+
+/**
+ * 结构化的 MessageContent
+ */
+export type StructuredMessageContentItem = MessageContentItemText | MessageContentItemImageUrl;
 
 /**
  * 单条消息
  */
 export interface Message {
+  isError?: boolean;
+  role: Role;
+  content: string | StructuredMessageContentItem[];
+}
+
+/**
+ * 简单文本消息
+ * @TODO 实现 isSimpleStringMessage 方法
+ */
+export interface SimpleStringMessage {
   isError?: boolean;
   role: Role;
   content: string;
