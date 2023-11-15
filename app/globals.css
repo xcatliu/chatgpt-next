@@ -52,11 +52,15 @@ textarea,
 }
 
 input[type='button'],
-input[type='submit'],
 .button-attach-image {
   @apply cursor-pointer bg-white hover:bg-gray-200;
   @apply disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400;
   @apply dark:bg-gray-800 dark:hover:bg-gray-700;
+  @apply dark:disabled:bg-gray-700 dark:disabled:text-gray-500;
+}
+input[type='submit'] {
+  @apply cursor-pointer bg-[#57be6b] text-white;
+  @apply disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400;
   @apply dark:disabled:bg-gray-700 dark:disabled:text-gray-500;
 }
 .button-attach-image.disabled {

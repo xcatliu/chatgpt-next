@@ -13,7 +13,7 @@ export const AttachImage: FC = () => {
   const { images, deleteImage } = useContext(ChatContext)!;
 
   return (
-    <div className="flex flex-row-reverse items-center">
+    <div className="flex flex-row-reverse items-end">
       <AttachImageButton />
       {[...images].reverse().map((imageProp, index) => (
         <div key={index} className="attach-image-container relative mr-[-28px] z-10 cursor-pointer">

@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import type { FC, FormEvent, KeyboardEvent } from 'react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
@@ -70,6 +71,11 @@ export const TextareaForm: FC = () => {
       placeholderRef.current.style.height = `${newHeight}px`;
     }
   }, []);
+
+  useEffect(() => {
+    updateTextareaHeight();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [images.length]);
 
   /**
    * 输入内容触发
@@ -144,11 +150,16 @@ export const TextareaForm: FC = () => {
         ref={formContainerRef}
         id="form-container"
       >
-        <form className="flex space-x-3" onSubmit={formOnSubmit}>
+        <form className="flex space-x-2" onSubmit={formOnSubmit}>
           <textarea
-            className={`flex-grow px-3 py-2 resize-none bg-chat-bubble placeholder:text-gray-400
-                      disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]
-                      dark:bg-chat-bubble-dark dark:disabled:bg-gray-700 dark:placeholder:text-gray-500`}
+            className={classNames(
+              `flex-grow px-3 py-2 resize-none bg-chat-bubble placeholder:text-gray-400
+                disabled:bg-gray-200 disabled:cursor-not-allowed md:min-h-[4rem]
+                dark:bg-chat-bubble-dark dark:disabled:bg-gray-700 dark:placeholder:text-gray-500`,
+              {
+                'min-h-[4rem]': images.length > 0,
+              },
+            )}
             ref={textareaRef}
             disabled={!isLogged}
             placeholder={isLogged ? '' : isMobile ? '请点击右上角设置密钥' : '请点击左上角钥匙按钮设置密钥'}
@@ -159,7 +170,7 @@ export const TextareaForm: FC = () => {
             rows={1}
           />
           {settings.model.includes('vision') && <AttachImage />}
-          <div className="flex items-center">
+          <div className="flex items-end">
             <input
               className="px-3 py-2 h-full max-h-16"
               type="submit"

@@ -18,13 +18,13 @@ export const AttachImageButton: FC<{}> = () => {
     <div className="h-full max-h-16">
       <label
         htmlFor="input-attach-image"
-        className={classNames('button-attach-image flex items-center w-14 py-2 h-full max-h-16', {
+        className={classNames('button-attach-image flex items-center w-10 h-10 md:w-14 md:h-16', {
           disabled: !isLogged || images.length === 9,
-          'px-[18px]': images.length === 0,
-          'pl-[28px] pr-[8px]': images.length > 0,
+          'justify-center': images.length === 0,
+          'justify-end w-14 h-16': images.length > 0,
         })}
       >
-        {images.length === 0 ? <PhotoIcon /> : <PlusIcon />}
+        {images.length === 0 ? <PhotoIcon className="w-9 h-9 p-2" /> : <PlusIcon className="w-9 h-9 p-2" />}
       </label>
 
       <input
@@ -43,6 +43,9 @@ export const AttachImageButton: FC<{}> = () => {
 
           const images = await Promise.all(Array.from(files).map(readImageFile));
           appendImages(...images);
+
+          // https://stackoverflow.com/a/56258902
+          e.target.value = '';
         }}
       />
     </div>
