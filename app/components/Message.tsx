@@ -1,5 +1,6 @@
 'use client';
 
+import { UserIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import Image from 'next/image';
 import type { FC, ReactNode } from 'react';
@@ -20,7 +21,6 @@ import { getContent, getRole } from '@/utils/message';
 import { disableScroll, scrollToTop } from '@/utils/scroll';
 
 import { ChatGPTIcon } from './icons/ChatGPTIcon';
-import { HeroiconsUser } from './icons/HeroiconsUser';
 
 /**
  * 单个消息气泡
@@ -119,7 +119,7 @@ export const MessageContentItemTextComp: FC<
           })}
         />
       ) : (
-        <HeroiconsUser className="rounded w-10 h-10 p-1.5 bg-white dark:bg-gray-200" />
+        <UserIcon className="rounded w-10 h-10 p-1.5 text-black bg-white dark:bg-gray-200" />
       )}
       <div
         className={classNames('relative mx-3 px-3 py-2 max-w-[calc(100%-6rem)] rounded break-words', {
@@ -172,7 +172,7 @@ export const MessageContentItemImageUrlComp: FC<
           })}
         />
       ) : (
-        <HeroiconsUser className="rounded w-10 h-10 p-1.5 bg-white dark:bg-gray-200" />
+        <UserIcon className="rounded w-10 h-10 p-1.5 text-black bg-white dark:bg-gray-200" />
       )}
       <Image
         src={image_url.url}
