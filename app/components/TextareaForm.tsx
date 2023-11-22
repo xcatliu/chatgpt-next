@@ -48,6 +48,10 @@ export const TextareaForm: FC = () => {
    */
   const handlePaste = useCallback(
     async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      // 仅在 vision 模式下支持粘贴图片
+      if (!settings.model.includes('vision')) {
+        return;
+      }
       const items = e.clipboardData?.items;
       if (items) {
         for (let i = 0; i < items.length; i++) {
@@ -62,7 +66,7 @@ export const TextareaForm: FC = () => {
         }
       }
     },
-    [appendImages],
+    [settings, appendImages],
   );
 
   /**
