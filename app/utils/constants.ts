@@ -20,6 +20,11 @@ export const HttpHeaderJson = {
 export const FULL_SPACE = '　';
 
 /**
+ * 使用 gpt-4-vision 时单次可传输的最多图片数量
+ */
+export const MAX_GPT_VISION_IMAGES = 9;
+
+/**
  * 角色
  * 参考 https://github.com/openai/openai-node/blob/master/api.ts
  */

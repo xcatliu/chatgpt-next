@@ -2,12 +2,12 @@
 
 import omit from 'lodash.omit';
 import type { FC, ReactNode } from 'react';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { fetchApiChat } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
 import type { ChatResponse, Message, StructuredMessageContentItem } from '@/utils/constants';
-import { MAX_TOKENS, MessageContentType, Model, Role } from '@/utils/constants';
+import { MAX_GPT_VISION_IMAGES, MAX_TOKENS, MessageContentType, Model, Role } from '@/utils/constants';
 import type { ResError } from '@/utils/error';
 import type { ImageProp } from '@/utils/image';
 import { isMessage } from '@/utils/message';
@@ -31,6 +31,7 @@ export interface HistoryItem {
  */
 export const ChatContext = createContext<{
   sendMessage: (content?: string) => Promise<void>;
+  abortSendMessage: () => void;
   isLoading: boolean;
   messages: (Message | ChatResponse)[];
   images: ImageProp[];
@@ -52,6 +53,8 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [history, setHistory] = useState<HistoryItem[] | undefined>(undefined);
   // 当前选中的对话在 history 中的 index，empty 表示未选中，current 表示选中的是当前对话
   const [historyIndex, setHistoryIndex] = useState<'empty' | 'current' | number>('empty');
+  // 控制请求中断
+  const [abortController, setAbortController] = useState<AbortController>();
 
   // 页面加载后从 cache 中读取 history 和 messages
   // 如果 messages 不为空，则将最近的一条消息写入 history
@@ -165,6 +168,9 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         if (settings.systemMessage) {
           fetchApiChatMessages.unshift(settings.systemMessage);
         }
+        // 创建一个新的 abortController
+        const newAbortController = new AbortController();
+        setAbortController(newAbortController);
         // TODO 收到完整消息后，写入 cache 中
         const fullContent = await fetchApiChat({
           // gpt-4-vision-preview 有个 bug：不传 max_tokens 时，会中断消息
@@ -184,6 +190,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
               scrollToBottom();
             }
           },
+          signal: newAbortController.signal,
         });
 
         // 收到完整消息后，重新设置 messages
@@ -194,7 +201,11 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         if (gapToBottom() <= 72 && !getIsScrolling()) {
           scrollToBottom();
         }
-      } catch (e) {
+      } catch (e: any) {
+        // 如果是调用 abortController.abort() 捕获到的 error 则不处理
+        if (e.name === 'AbortError') {
+          return;
+        }
         // 发生错误时，展示错误消息
         setIsLoading(false);
         setMessages([
@@ -203,8 +214,15 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         ]);
       }
     },
-    [settings, messages, images, history, historyIndex],
+    [settings, messages, images, history, historyIndex, setAbortController],
   );
+
+  /**
+   * 中断请求
+   */
+  const abortSendMessage = useCallback(() => {
+    abortController?.abort();
+  }, [abortController]);
 
   /**
    * 加载聊天记录
@@ -258,7 +276,8 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setCache('history', newHistory);
         setMessages([]);
         setCache('messages', []);
-        setHistoryIndex(index);
+        // 此时因为将 current 进行归档了，所以需要 +1
+        setHistoryIndex(index + 1);
         setSettings({
           model: newModel,
         });
@@ -339,9 +358,9 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const appendImages = useCallback(
     (...newImages: ImageProp[]) => {
       const finalImages = [...images, ...newImages];
-      if (finalImages.length > 9) {
-        setImages(finalImages.slice(0, 9));
-        alert('最多只能发送九张图片，超出的图片已删除');
+      if (finalImages.length > MAX_GPT_VISION_IMAGES) {
+        setImages(finalImages.slice(0, MAX_GPT_VISION_IMAGES));
+        alert(`最多只能发送 ${MAX_GPT_VISION_IMAGES} 张图片，超出的图片已删除`);
         return;
       }
       setImages(finalImages);
@@ -362,6 +381,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     <ChatContext.Provider
       value={{
         sendMessage,
+        abortSendMessage,
         isLoading,
         messages,
         images,

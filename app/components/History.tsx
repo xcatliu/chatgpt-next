@@ -45,7 +45,7 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
   historyIndex,
   isActive,
 }) => {
-  const { messages, history, loadHistory } = useContext(ChatContext)!;
+  const { messages, history, loadHistory, abortSendMessage } = useContext(ChatContext)!;
   const { settings } = useContext(SettingsContext)!;
 
   let historyItem: HistoryItem;
@@ -63,7 +63,12 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
       className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray md:-mx-4 md:px-8', {
         'bg-gray-300 dark:bg-gray-700': isActive,
       })}
-      onClick={() => historyIndex !== 'current' && loadHistory(historyIndex)}
+      onClick={() => {
+        if (historyIndex !== 'current') {
+          abortSendMessage();
+          loadHistory(historyIndex);
+        }
+      }}
     >
       <h3 className="overflow-hidden whitespace-nowrap truncate">{getContentText(historyItem.messages[0])}</h3>
       <p

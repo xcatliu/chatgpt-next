@@ -10,17 +10,23 @@ import { stream2string } from './stream';
  */
 export const fetchApiChat = async ({
   onMessage,
+  signal,
   ...chatRequest
 }: {
   /**
    * 接受 stream 消息的回调函数
    */
   onMessage?: (content: string) => void;
+  /**
+   * 控制请求中断的 AbortSignal
+   */
+  signal?: AbortSignal;
 } & Partial<ChatRequest>) => {
   const fetchResult = await fetch('/api/chat', {
     method: HttpMethod.POST,
     headers: HttpHeaderJson,
     body: JSON.stringify(chatRequest),
+    signal,
   });
 
   // 如果返回错误，则直接抛出错误

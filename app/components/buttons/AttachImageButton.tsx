@@ -5,6 +5,7 @@ import { useContext } from 'react';
 
 import { ChatContext } from '@/context/ChatContext';
 import { LoginContext } from '@/context/LoginContext';
+import { MAX_GPT_VISION_IMAGES } from '@/utils/constants';
 import { readImageFile } from '@/utils/image';
 
 /**
@@ -15,11 +16,11 @@ export const AttachImageButton: FC<{}> = () => {
   const { isLogged } = useContext(LoginContext)!;
 
   return (
-    <div className="h-full max-h-16">
+    <>
       <label
         htmlFor="input-attach-image"
         className={classNames('button-attach-image flex items-center w-10 h-10 md:w-14 md:h-16', {
-          disabled: !isLogged || images.length === 9,
+          disabled: !isLogged || images.length >= MAX_GPT_VISION_IMAGES,
           'justify-center': images.length === 0,
           'justify-end w-14 h-16': images.length > 0,
         })}
@@ -32,7 +33,7 @@ export const AttachImageButton: FC<{}> = () => {
         type="file"
         multiple
         accept="image/jpeg, image/png"
-        disabled={!isLogged || images.length === 9}
+        disabled={!isLogged || images.length >= MAX_GPT_VISION_IMAGES}
         className="hidden"
         onChange={async (e) => {
           const files = e.target.files;
@@ -48,6 +49,6 @@ export const AttachImageButton: FC<{}> = () => {
           e.target.value = '';
         }}
       />
-    </div>
+    </>
   );
 };

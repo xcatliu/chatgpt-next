@@ -22,7 +22,7 @@ const LOADING_MESSAGE = '正在努力思考...';
 
 export const Messages = () => {
   const { settings } = useContext(SettingsContext)!;
-  let { isLoading, messages, history, historyIndex, startNewChat } = useContext(ChatContext)!;
+  let { isLoading, messages, history, historyIndex, startNewChat, abortSendMessage } = useContext(ChatContext)!;
 
   // 初始化滚动事件
   useEffect(initEventListenerScroll, []);
@@ -52,7 +52,13 @@ export const Messages = () => {
       {messages.length > 1 && (
         <SystemMessage>
           连续对话会加倍消耗 tokens，
-          <a className="text-gray-link" onClick={startNewChat}>
+          <a
+            className="text-gray-link"
+            onClick={() => {
+              abortSendMessage();
+              startNewChat();
+            }}
+          >
             开启新对话
           </a>
         </SystemMessage>
