@@ -8,6 +8,7 @@ import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
 import { SettingsContext } from '@/context/SettingsContext';
+import { readImageFile } from '@/utils/image';
 import { isDomChildren } from '@/utils/isDomChildren';
 
 import { AttachImage } from './AttachImage';
@@ -16,7 +17,7 @@ export const TextareaForm: FC = () => {
   const { isMobile } = useContext(DeviceContext)!;
   const { isLogged } = useContext(LoginContext)!;
   const { settings } = useContext(SettingsContext)!;
-  const { images, sendMessage } = useContext(ChatContext)!;
+  const { images, appendImages, sendMessage } = useContext(ChatContext)!;
 
   // 是否正在中文输入
   const [isComposing, setIsComposing] = useState(false);
@@ -41,6 +42,27 @@ export const TextareaForm: FC = () => {
       textareaRef.current?.blur();
     });
   }, []);
+
+
+  /**
+   * Handle pasting images into the textarea
+   */
+  const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') === 0) {
+          const file = items[i].getAsFile();
+          if (file == null) {
+            throw new Error("Expected file")
+          }
+          const image = await readImageFile(file);
+          appendImages(image);
+        }
+      }
+    }
+  }, [appendImages]);
+
 
   /**
    * 更新 textarea 的 empty 状态
@@ -167,6 +189,7 @@ export const TextareaForm: FC = () => {
             onKeyDown={onKeyDone}
             onCompositionStart={onCompositionStart}
             onCompositionEnd={onCompositionEnd}
+            onPaste={handlePaste}
             rows={1}
           />
           {settings.model.includes('vision') && <AttachImage />}
@@ -183,3 +206,4 @@ export const TextareaForm: FC = () => {
     </>
   );
 };
+
