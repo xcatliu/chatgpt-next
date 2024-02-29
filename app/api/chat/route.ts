@@ -28,11 +28,24 @@ export async function POST(req: NextRequest) {
 
   const apiKey = getApiKey(cookies().get('apiKey')?.value);
 
-  const fetchResult = await fetch(`https://${env.CHATGPT_NEXT_API_HOST}/v1/chat/completions`, {
+  let apiURL = '';
+  switch (env.CHATGPT_NEXT_API_PROVIDER) {
+    case 'openai':
+      apiURL = `https://${env.CHATGPT_NEXT_API_HOST}/v1/chat/completions`;
+      break;
+    case 'azure':
+      apiURL = `${env.CHATGPT_NEXT_API_AzureAPIURL}/${env.CHATGPT_NEXT_API_AzureAPIURLPath}`;
+      break;
+    default:
+      apiURL = 'unknown';
+  }
+
+  const fetchResult = await fetch(apiURL, {
     method: HttpMethod.POST,
     headers: {
       ...HttpHeaderJson,
       Authorization: `Bearer ${apiKey}`,
+      'api-key': apiKey ?? '',
     },
     // 直接透传，组装逻辑完全由前端实现
     body: req.body,
