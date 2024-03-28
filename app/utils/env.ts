@@ -9,4 +9,11 @@ export const env = {
 
   /** 配置 API 请求的 host（包含端口） */
   CHATGPT_NEXT_API_HOST: process.env.CHATGPT_NEXT_API_HOST ?? 'api.openai.com',
+
+  /** API提供商: openai/azure */
+  CHATGPT_NEXT_API_PROVIDER: process.env.CHATGPT_NEXT_API_PROVIDER ?? 'openai',
+  /** azure api url */
+  CHATGPT_NEXT_API_AzureAPIURL: process.env.CHATGPT_NEXT_API_AzureAPIURL,
+  /** azure api url path */
+  CHATGPT_NEXT_API_AzureAPIURLPath: process.env.CHATGPT_NEXT_API_AzureAPIURLPath,
 };
