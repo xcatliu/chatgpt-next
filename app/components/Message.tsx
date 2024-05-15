@@ -112,10 +112,8 @@ export const MessageContentItemTextComp: FC<
       {isAssistant ? (
         <ChatGPTIcon
           className={classNames('rounded w-10 h-10 p-1  text-white', {
-            'bg-[#1aa181]': [Model['gpt-3.5-turbo']].includes(settings.model),
-            'bg-[#a969f8]': [Model['gpt-4'], Model['gpt-4-32k'], Model['gpt-4-vision-preview']].includes(
-              settings.model,
-            ),
+            'bg-[#1aa181]': settings.model.startsWith('gpt-3.5'),
+            'bg-[#a969f8]': settings.model.startsWith('gpt-4'),
           })}
         />
       ) : (
@@ -165,10 +163,8 @@ export const MessageContentItemImageUrlComp: FC<
       {isAssistant ? (
         <ChatGPTIcon
           className={classNames('rounded w-10 h-10 p-1  text-white', {
-            'bg-[#1aa181]': [Model['gpt-3.5-turbo']].includes(settings.model),
-            'bg-[#a969f8]': [Model['gpt-4'], Model['gpt-4-32k'], Model['gpt-4-vision-preview']].includes(
-              settings.model,
-            ),
+            'bg-[#1aa181]': settings.model.startsWith('gpt-3.5'),
+            'bg-[#a969f8]': settings.model.startsWith('gpt-4'),
           })}
         />
       ) : (

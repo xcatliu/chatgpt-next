@@ -25,7 +25,7 @@
 
 ## 特性
 
-- 🎉 支持 gpt-4-vision-preview 啦
+- 🎉 支持 gpt-4o 啦
 - 微信风格的聊天气泡，支持移动/PC 端，打造最极致的交互体验
 - 支持私有化部署，使用 [Vercel](#使用-vercel-一键部署) / [Zeabur](#使用-zeabur-一键部署) / [netlify](#使用-netlify-一键部署) 等一键部署
 - 配置密钥别名，无需暴露 apiKey 就可以分享给朋友

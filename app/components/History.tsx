@@ -1,5 +1,6 @@
 'use client';
 
+import { PlusIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import type { FC } from 'react';
@@ -8,7 +9,8 @@ import { useContext } from 'react';
 import type { HistoryItem } from '@/context/ChatContext';
 import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
-import { FULL_SPACE } from '@/utils/constants';
+import type { Model } from '@/utils/constants';
+import { AllModels, FULL_SPACE } from '@/utils/constants';
 import { exportJSON } from '@/utils/export';
 import { last } from '@/utils/last';
 import { getContentText } from '@/utils/message';
@@ -19,7 +21,8 @@ import { DeleteHistoryButton } from './buttons/DeleteHistoryButton';
  * 聊天记录
  */
 export const History = () => {
-  const { messages, history, historyIndex } = useContext(ChatContext)!;
+  const { messages, history, historyIndex, abortSendMessage, startNewChat } = useContext(ChatContext)!;
+  const { settings, setSettings } = useContext(SettingsContext)!;
 
   if (messages.length === 0 && (history === undefined || history.length === 0)) {
     return <div className="my-4 text-center text-gray text-sm">暂无聊天记录</div>;
@@ -27,6 +30,45 @@ export const History = () => {
 
   return (
     <>
+      <div
+        className={classNames('history-item-new justify-between hidden md:flex', {
+          'bg-gray-300 dark:bg-gray-700': historyIndex === 'empty',
+        })}
+      >
+        <div className="leading-[3.5rem]">
+          模型：
+          <select
+            value={settings.newChatModel}
+            onChange={(e) =>
+              setSettings({
+                newChatModel: e.target.value as Model,
+                ...(historyIndex === 'empty'
+                  ? {
+                      model: e.target.value as Model,
+                    }
+                  : {}),
+              })
+            }
+          >
+            {AllModels.map((model) => (
+              <option key={model} disabled={!settings.availableModels.includes(model)}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          className={classNames('ml-0', {
+            hidden: historyIndex === 'empty',
+          })}
+          onClick={() => {
+            abortSendMessage();
+            startNewChat();
+          }}
+        >
+          <PlusIcon />
+        </button>
+      </div>
       <ul>
         {historyIndex === 'current' && <HistoryItemComp historyIndex={historyIndex} isActive={true} />}
         {history?.map((_, index) => (
@@ -60,7 +102,8 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
 
   return (
     <li
-      className={classNames('p-4 border-b-[0.5px] relative cursor-default border-gray md:-mx-4 md:px-8', {
+      className={classNames('history-item', {
+        'hover:bg-gray-200 dark:hover:bg-gray-800': !isActive,
         'bg-gray-300 dark:bg-gray-700': isActive,
       })}
       onClick={() => {
@@ -73,12 +116,19 @@ export const HistoryItemComp: FC<{ historyIndex: 'current' | number; isActive: b
       <h3 className="overflow-hidden whitespace-nowrap truncate">{getContentText(historyItem.messages[0])}</h3>
       <p
         className={classNames('mt-1 text-gray text-[15px] overflow-hidden whitespace-nowrap truncate', {
-          'pr-8 md:pr-4': isActive,
+          'pr-8 md:pr-0': isActive,
         })}
       >
         {historyItem.messages.length > 1 ? getContentText(last(historyItem.messages)) : FULL_SPACE}
       </p>
-      {isActive && <DeleteHistoryButton historyIndex={historyIndex} />}
+      <DeleteHistoryButton
+        className={classNames('md:hidden', {
+          hidden: !isActive,
+          'bg-gray-300 dark:bg-gray-700': isActive,
+          'bg-gray-200 dark:bg-gray-800': !isActive,
+        })}
+        historyIndex={historyIndex}
+      />
     </li>
   );
 };

@@ -177,7 +177,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           ...(settings.model === Model['gpt-4-vision-preview'] && settings.max_tokens === undefined
             ? { max_tokens: MAX_TOKENS['gpt-4-vision-preview'] }
             : undefined),
-          ...omit(settings, 'maxHistoryLength', 'systemMessage', 'prefixMessages', 'availableModels'),
+          ...omit(settings, 'newChatModel', 'maxHistoryLength', 'systemMessage', 'prefixMessages', 'availableModels'),
           messages: fetchApiChatMessages,
           stream: true,
           onMessage: (content) => {
@@ -233,7 +233,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         return;
       }
 
-      const oldModel = settings.model;
       const newModel = history?.[index].model ?? Model['gpt-3.5-turbo'];
 
       if (historyIndex === 'empty') {
@@ -241,11 +240,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSettings({
           model: newModel,
         });
-        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
-          setSettings({
-            max_tokens: undefined,
-          });
-        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
@@ -258,11 +252,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSettings({
           model: newModel,
         });
-        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
-          setSettings({
-            max_tokens: undefined,
-          });
-        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
@@ -281,11 +270,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSettings({
           model: newModel,
         });
-        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
-          setSettings({
-            max_tokens: undefined,
-          });
-        }
         setIsMenuShow(false);
         await sleep(16);
         scrollToBottom();
@@ -297,8 +281,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
   /** 删除单条聊天记录 */
   const deleteHistory = useCallback(
     async (deleteIndex: 'current' | number) => {
-      const oldModel = settings.model;
-
       // 如果删除的是还没有写入 history 的当前聊天，则直接删除 messages
       if (deleteIndex === 'current') {
         setMessages([]);
@@ -310,11 +292,6 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           setSettings({
             model: newModel,
           });
-          if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
-            setSettings({
-              max_tokens: undefined,
-            });
-          }
         }
         return;
       }
@@ -324,22 +301,20 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setHistory(newHistory);
       setCache('history', newHistory);
 
-      // 选择最近的一条聊天记录展示
-      const newIndex = newHistory && newHistory.length > 0 ? Math.min(deleteIndex, newHistory.length - 1) : 'empty';
-      setHistoryIndex(newIndex);
-      if (typeof newIndex === 'number') {
-        const newModel = newHistory[newIndex].model ?? Model['gpt-3.5-turbo'];
-        setSettings({
-          model: newModel,
-        });
-        if (MAX_TOKENS[oldModel] !== MAX_TOKENS[newModel]) {
+      // 如果删除的是当前显示的 history，则选择最近的一条聊天记录展示
+      if (deleteIndex === historyIndex) {
+        // 选择最近的一条聊天记录展示
+        const newIndex = newHistory && newHistory.length > 0 ? Math.min(deleteIndex, newHistory.length - 1) : 'empty';
+        setHistoryIndex(newIndex);
+        if (typeof newIndex === 'number') {
+          const newModel = newHistory[newIndex].model ?? Model['gpt-3.5-turbo'];
           setSettings({
-            max_tokens: undefined,
+            model: newModel,
           });
         }
       }
     },
-    [history, setSettings, settings.model],
+    [history, historyIndex, setSettings],
   );
 
   /** 开启新对话 */
@@ -353,7 +328,10 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setMessages([]);
     setCache('messages', []);
     setHistoryIndex('empty');
-  }, [messages, history, settings.model]);
+    setSettings({
+      model: settings.newChatModel,
+    });
+  }, [messages, history, settings.model, settings.newChatModel, setSettings]);
 
   const appendImages = useCallback(
     (...newImages: ImageProp[]) => {

@@ -30,11 +30,17 @@ select {
 }
 .text-gray-link {
   @apply text-gray-400 hover:text-gray-500 cursor-pointer underline;
-  @apply dark:text-gray-500 hover:text-gray-400;
+  @apply dark:text-gray-500 dark:hover:text-gray-400;
 }
 .border-gray {
   @apply border-gray-300;
   @apply dark:border-gray-700;
+}
+
+button {
+  @apply w-10 h-10 m-2 p-[0.625rem];
+  @apply cursor-pointer text-gray-400 hover:text-gray-500 disabled:hover:text-gray-400;
+  @apply dark:text-gray-500 dark:hover:text-gray-400 disabled:hover:dark:text-gray-500;
 }
 
 /* 按钮和输入框统一样式 */
@@ -44,11 +50,6 @@ textarea,
 .button-attach-image {
   @apply rounded;
   @apply focus-visible:outline focus-visible:outline-1 focus-visible:outline-amber-500;
-}
-.button-icon {
-  @apply w-10 h-10 m-2 p-[0.625rem];
-  @apply cursor-pointer text-gray-400 hover:text-gray-500;
-  @apply dark:text-gray-500 dark:hover:text-gray-400;
 }
 
 input[type='button'],
@@ -114,4 +115,14 @@ input[type='submit'] {
 }
 .attach-image-container .attach-image-delete:hover {
   @apply bg-opacity-100;
+}
+
+.history-item {
+  @apply p-4 border-b-[0.5px] relative cursor-default border-gray md:-mx-4 md:px-8;
+}
+.history-item:hover button {
+  @apply block;
+}
+.history-item-new {
+  @apply pl-4 border-b-[0.5px] relative cursor-default border-gray md:-mx-4 md:pl-8 md:pr-4;
 }

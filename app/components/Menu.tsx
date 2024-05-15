@@ -107,7 +107,7 @@ const MenuTabs = () => {
         return (
           <button
             key={key}
-            className={classNames('button-icon', {
+            className={classNames({
               'text-gray-700 hover:text-gray-700': currentMenu === key,
               'dark:text-gray-200 dark:hover:text-gray-200': currentMenu === key,
             })}

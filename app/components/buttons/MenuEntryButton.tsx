@@ -27,7 +27,6 @@ export const MenuEntryButton = () => {
   if (history.length > 0) {
     return (
       <button
-        className="button-icon"
         onClick={() => {
           scrollToTop();
           setCurrentMenu(MenuKey.InboxStack);
@@ -41,7 +40,6 @@ export const MenuEntryButton = () => {
 
   return (
     <button
-      className="button-icon"
       onClick={() => {
         scrollToTop();
         setCurrentMenu(MenuKey.AdjustmentsHorizontal);

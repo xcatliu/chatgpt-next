@@ -29,7 +29,7 @@ export const MessageDetail = () => {
       <div className="flex">
         <div className="flex-grow" />
         <button
-          className="button-icon flex"
+          className="flex"
           onClick={() => {
             const revertFormatMessageMode = {
               [FormatMessageMode.zero]: FormatMessageMode.partial,
@@ -48,7 +48,7 @@ export const MessageDetail = () => {
           </span>
         </button>
         <button
-          className="button-icon text-gray-700 dark:text-gray-200"
+          className="text-gray-700 dark:text-gray-200"
           onClick={() => {
             setMessageDetail(undefined);
             enableScroll();

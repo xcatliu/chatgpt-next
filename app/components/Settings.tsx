@@ -21,7 +21,16 @@ export const Settings = () => {
         模型：
         <select
           value={settings.model}
-          onChange={(e) => setSettings({ model: e.target.value as Model })}
+          onChange={(e) =>
+            setSettings({
+              model: e.target.value as Model,
+              ...(historyIndex === 'empty'
+                ? {
+                    newChatModel: e.target.value as Model,
+                  }
+                : {}),
+            })
+          }
           disabled={historyIndex !== 'empty'}
         >
           {AllModels.map((model) => (

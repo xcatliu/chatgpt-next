@@ -8,6 +8,7 @@ import { ChatContext } from '@/context/ChatContext';
 import { DeviceContext } from '@/context/DeviceContext';
 import { LoginContext } from '@/context/LoginContext';
 import { SettingsContext } from '@/context/SettingsContext';
+import { VisionModels } from '@/utils/constants';
 import { readImageFile } from '@/utils/image';
 import { isDomChildren } from '@/utils/isDomChildren';
 
@@ -49,7 +50,7 @@ export const TextareaForm: FC = () => {
   const handlePaste = useCallback(
     async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
       // 仅在 vision 模式下支持粘贴图片
-      if (!settings.model.includes('vision')) {
+      if (!VisionModels.includes(settings.model)) {
         return;
       }
       const items = e.clipboardData?.items;
@@ -198,7 +199,7 @@ export const TextareaForm: FC = () => {
             onPaste={handlePaste}
             rows={1}
           />
-          {settings.model.includes('vision') && <AttachImage />}
+          {VisionModels.includes(settings.model) && <AttachImage />}
           <div className="flex items-end">
             <input
               className={classNames('px-3 py-2 h-10 md:h-16', {
