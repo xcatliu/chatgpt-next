@@ -85,7 +85,7 @@ export const Settings = () => {
         <input
           className="w-36 mr-2"
           type="range"
-          step={(MAX_TOKENS[settings.model] - MIN_TOKENS[settings.model]) / 1024 < 7 ? 512 : 1024}
+          step={1000}
           min={MIN_TOKENS[settings.model]}
           max={MAX_TOKENS[settings.model]}
           value={settings.max_tokens ?? MAX_TOKENS[settings.model]}

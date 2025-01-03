@@ -38,46 +38,32 @@ export enum Role {
  * ChatGPT 模型
  */
 export enum Model {
-  'gpt-3.5-turbo' = 'gpt-3.5-turbo',
-  'gpt-3.5-turbo-16k' = 'gpt-3.5-turbo-16k',
   'gpt-4o' = 'gpt-4o',
-  'gpt-4-turbo' = 'gpt-4-turbo',
-  'gpt-4' = 'gpt-4',
-  'gpt-4-32k' = 'gpt-4-32k',
-  'gpt-4-vision-preview' = 'gpt-4-vision-preview',
+  'gpt-4o-mini' = 'gpt-4o-mini',
+  'o1' = 'o1',
+  'o1-preview' = 'o1-preview',
+  'o1-mini' = 'o1-mini',
 }
 
-export const AllModels = [
-  Model['gpt-3.5-turbo'],
-  Model['gpt-3.5-turbo-16k'],
-  Model['gpt-4o'],
-  Model['gpt-4-turbo'],
-  Model['gpt-4'],
-  Model['gpt-4-32k'],
-  Model['gpt-4-vision-preview'],
-];
+export const AllModels = [Model['gpt-4o'], Model['gpt-4o-mini'], Model['o1'], Model['o1-preview'], Model['o1-mini']];
 
 /** 支持发送图片的模型 */
-export const VisionModels = [Model['gpt-4o'], Model['gpt-4-turbo'], Model['gpt-4-vision-preview']];
+export const VisionModels = [Model['gpt-4o'], Model['gpt-4o-mini'], Model['o1'], Model['o1-preview'], Model['o1-mini']];
 
 export const MIN_TOKENS: Record<Model, number> = {
-  [Model['gpt-3.5-turbo']]: 1024,
-  [Model['gpt-3.5-turbo-16k']]: 1024,
-  [Model['gpt-4o']]: 1024,
-  [Model['gpt-4-turbo']]: 1024,
-  [Model['gpt-4']]: 1024,
-  [Model['gpt-4-32k']]: 1024,
-  [Model['gpt-4-vision-preview']]: 1024,
+  [Model['gpt-4o']]: 1000,
+  [Model['gpt-4o-mini']]: 1000,
+  [Model['o1']]: 1000,
+  [Model['o1-preview']]: 1000,
+  [Model['o1-mini']]: 1000,
 };
 
 export const MAX_TOKENS: Record<Model, number> = {
-  [Model['gpt-3.5-turbo']]: 4096,
-  [Model['gpt-3.5-turbo-16k']]: 16384,
   [Model['gpt-4o']]: 128000,
-  [Model['gpt-4-turbo']]: 128000,
-  [Model['gpt-4']]: 8192,
-  [Model['gpt-4-32k']]: 32768,
-  [Model['gpt-4-vision-preview']]: 4096,
+  [Model['gpt-4o-mini']]: 128000,
+  [Model['o1']]: 200000,
+  [Model['o1-preview']]: 128000,
+  [Model['o1-mini']]: 128000,
 };
 
 export enum MessageContentType {
@@ -322,7 +308,7 @@ export const exampleModelsResponse: ModelsResponse = {
   data: [
     {
       created: 1677610602,
-      id: Model['gpt-3.5-turbo'],
+      id: Model['gpt-4o'],
       object: 'model',
       owned_by: 'openai',
       parent: null,
@@ -342,7 +328,7 @@ export const exampleModelsResponse: ModelsResponse = {
           organization: '*',
         },
       },
-      root: Model['gpt-3.5-turbo'],
+      root: Model['gpt-4o'],
     },
   ],
   object: 'list',
