@@ -48,7 +48,7 @@ export enum Model {
 export const AllModels = [Model['gpt-4o'], Model['gpt-4o-mini'], Model['o1'], Model['o1-preview'], Model['o1-mini']];
 
 /** 支持发送图片的模型 */
-export const VisionModels = [Model['gpt-4o'], Model['gpt-4o-mini'], Model['o1'], Model['o1-preview'], Model['o1-mini']];
+export const VisionModels = [Model['gpt-4o'], Model['gpt-4o-mini']];
 
 export const MIN_TOKENS: Record<Model, number> = {
   [Model['gpt-4o']]: 1000,

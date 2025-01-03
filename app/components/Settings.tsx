@@ -123,6 +123,8 @@ export const Settings = () => {
         系统消息：
         <input
           className="block px-3 py-2 my-2 w-full border border-gray"
+          disabled={settings.model.startsWith('o1')}
+          placeholder={settings.model.startsWith('o1') ? 'o1 模型不支持系统消息' : undefined}
           type="text"
           value={settings.systemMessage?.content ?? ''}
           onChange={(e) => {

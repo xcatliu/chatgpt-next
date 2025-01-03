@@ -113,7 +113,7 @@ export const MessageContentItemTextComp: FC<
         <ChatGPTIcon
           className={classNames('rounded w-10 h-10 p-1  text-white', {
             'bg-[#1aa181]': settings.model.startsWith('gpt-3.5'),
-            'bg-[#a969f8]': settings.model.startsWith('gpt-4'),
+            'bg-[#a969f8]': settings.model.startsWith('gpt-4') || settings.model.startsWith('gpt-o1'),
           })}
         />
       ) : (
@@ -164,7 +164,7 @@ export const MessageContentItemImageUrlComp: FC<
         <ChatGPTIcon
           className={classNames('rounded w-10 h-10 p-1  text-white', {
             'bg-[#1aa181]': settings.model.startsWith('gpt-3.5'),
-            'bg-[#a969f8]': settings.model.startsWith('gpt-4'),
+            'bg-[#a969f8]': settings.model.startsWith('gpt-4') || settings.model.startsWith('gpt-o1'),
           })}
         />
       ) : (

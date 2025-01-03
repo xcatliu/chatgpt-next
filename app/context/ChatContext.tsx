@@ -165,7 +165,7 @@ export const ChatProvider: FC<{ children: ReactNode }> = ({ children }) => {
           fetchApiChatMessages.unshift(...settings.prefixMessages);
         }
         // 如果有系统消息，则写入到最前面
-        if (settings.systemMessage) {
+        if (!settings.model.startsWith('o1') && settings.systemMessage) {
           fetchApiChatMessages.unshift(settings.systemMessage);
         }
         // 创建一个新的 abortController

@@ -38,13 +38,14 @@ export const Messages = () => {
     <div className="md:grow" style={{ display: 'flow-root' }}>
       <SystemMessage>{SYSTEM_MESSAGE}</SystemMessage>
       <Message role={Role.assistant} content={WELCOME_MESSAGE} />
-      {[...(settings.systemMessage ? [settings.systemMessage] : []), ...(settings.prefixMessages ?? [])].map(
-        (message, index) => (
-          <SystemMessage key={index}>
-            {message.role}: {message.content}
-          </SystemMessage>
-        ),
-      )}
+      {!settings.model.startsWith('o1') &&
+        [...(settings.systemMessage ? [settings.systemMessage] : []), ...(settings.prefixMessages ?? [])].map(
+          (message, index) => (
+            <SystemMessage key={index}>
+              {message.role}: {message.content}
+            </SystemMessage>
+          ),
+        )}
       {messages.map((message, index) => (
         <Message key={index} {...message} />
       ))}
