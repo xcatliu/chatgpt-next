@@ -17,10 +17,10 @@ export interface SettingsState extends Omit<ChatRequest, 'messages'> {
 }
 
 const INITIAL_SETTINGS: SettingsState = {
-  newChatModel: Model['gpt-5'],
-  model: Model['gpt-5'],
+  newChatModel: Model['gpt-4o'],
+  model: Model['gpt-4o'],
   maxHistoryLength: 6,
-  availableModels: [Model['gpt-5']],
+  availableModels: [Model['gpt-4o']],
 };
 
 enum SettingsActionType {

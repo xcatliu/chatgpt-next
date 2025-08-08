@@ -38,15 +38,29 @@ export enum Role {
  * ChatGPT 模型
  */
 export enum Model {
+  'gpt-4o' = 'gpt-4o',
+  'gpt-4o-mini' = 'gpt-4o-mini',
   'gpt-5' = 'gpt-5',
   'gpt-5-mini' = 'gpt-5-mini',
   'gpt-5-nano' = 'gpt-5-nano',
 }
 
-export const AllModels = [Model['gpt-5'], Model['gpt-5-mini'], Model['gpt-5-nano']];
+export const AllModels = [
+  Model['gpt-4o'],
+  Model['gpt-4o-mini'],
+  Model['gpt-5'],
+  Model['gpt-5-mini'],
+  Model['gpt-5-nano'],
+];
 
 /** 支持发送图片的模型 */
-export const VisionModels = [Model['gpt-5'], Model['gpt-5-mini'], Model['gpt-5-nano']];
+export const VisionModels = [
+  Model['gpt-4o'],
+  Model['gpt-4o-mini'],
+  Model['gpt-5'],
+  Model['gpt-5-mini'],
+  Model['gpt-5-nano'],
+];
 
 export enum MessageContentType {
   text = 'text',
@@ -153,6 +167,10 @@ export interface ChatRequest {
    * 结束语，最多设置四个，如果 ChatGPT 的回复中包含某个结束语，则停止生成
    */
   stop?: string | string[];
+  /**
+   * tokens 限制
+   */
+  max_tokens?: number;
   /**
    * 存在惩罚，取值范围 -2.0 到 2.0
    *
@@ -286,7 +304,7 @@ export const exampleModelsResponse: ModelsResponse = {
   data: [
     {
       created: 1677610602,
-      id: Model['gpt-5'],
+      id: Model['gpt-4o'],
       object: 'model',
       owned_by: 'openai',
       parent: null,
@@ -306,7 +324,7 @@ export const exampleModelsResponse: ModelsResponse = {
           organization: '*',
         },
       },
-      root: Model['gpt-5'],
+      root: Model['gpt-4o'],
     },
   ],
   object: 'list',
