@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ChatContext } from '@/context/ChatContext';
 import { SettingsContext } from '@/context/SettingsContext';
 import type { Model } from '@/utils/constants';
-import { AllModels, MAX_TOKENS, MIN_TOKENS, Role } from '@/utils/constants';
+import { AllModels, Role } from '@/utils/constants';
 
 /**
  * 聊天记录
@@ -79,19 +79,6 @@ export const Settings = () => {
           onChange={(e) => setSettings({ top_p: Number(e.target.value) })}
         />
         {settings.top_p ?? 1}
-      </div>
-      <div className="m-4">
-        tokens 限制：
-        <input
-          className="w-36 mr-2"
-          type="range"
-          step={1000}
-          min={MIN_TOKENS[settings.model]}
-          max={MAX_TOKENS[settings.model]}
-          value={settings.max_tokens ?? MAX_TOKENS[settings.model]}
-          onChange={(e) => setSettings({ max_tokens: Number(e.target.value) })}
-        />
-        {settings.max_tokens ?? MAX_TOKENS[settings.model]}
       </div>
       <div className="m-4">
         存在惩罚：

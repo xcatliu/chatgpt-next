@@ -38,33 +38,15 @@ export enum Role {
  * ChatGPT 模型
  */
 export enum Model {
-  'gpt-4o' = 'gpt-4o',
-  'gpt-4o-mini' = 'gpt-4o-mini',
-  'o1' = 'o1',
-  'o1-preview' = 'o1-preview',
-  'o1-mini' = 'o1-mini',
+  'gpt-5' = 'gpt-5',
+  'gpt-5-mini' = 'gpt-5-mini',
+  'gpt-5-nano' = 'gpt-5-nano',
 }
 
-export const AllModels = [Model['gpt-4o'], Model['gpt-4o-mini'], Model['o1'], Model['o1-preview'], Model['o1-mini']];
+export const AllModels = [Model['gpt-5'], Model['gpt-5-mini'], Model['gpt-5-nano']];
 
 /** 支持发送图片的模型 */
-export const VisionModels = [Model['gpt-4o'], Model['gpt-4o-mini']];
-
-export const MIN_TOKENS: Record<Model, number> = {
-  [Model['gpt-4o']]: 1000,
-  [Model['gpt-4o-mini']]: 1000,
-  [Model['o1']]: 1000,
-  [Model['o1-preview']]: 1000,
-  [Model['o1-mini']]: 1000,
-};
-
-export const MAX_TOKENS: Record<Model, number> = {
-  [Model['gpt-4o']]: 128000,
-  [Model['gpt-4o-mini']]: 128000,
-  [Model['o1']]: 200000,
-  [Model['o1-preview']]: 128000,
-  [Model['o1-mini']]: 128000,
-};
+export const VisionModels = [Model['gpt-5'], Model['gpt-5-mini'], Model['gpt-5-nano']];
 
 export enum MessageContentType {
   text = 'text',
@@ -171,10 +153,6 @@ export interface ChatRequest {
    * 结束语，最多设置四个，如果 ChatGPT 的回复中包含某个结束语，则停止生成
    */
   stop?: string | string[];
-  /**
-   * tokens 限制
-   */
-  max_tokens?: number;
   /**
    * 存在惩罚，取值范围 -2.0 到 2.0
    *

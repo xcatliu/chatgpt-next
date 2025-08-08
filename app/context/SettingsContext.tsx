@@ -6,7 +6,7 @@ import { createContext, useCallback, useEffect, useReducer } from 'react';
 import { fetchApiModels } from '@/utils/api';
 import { getCache, setCache } from '@/utils/cache';
 import type { ChatRequest, SimpleStringMessage } from '@/utils/constants';
-import { AllModels, MAX_TOKENS, Model } from '@/utils/constants';
+import { AllModels, Model } from '@/utils/constants';
 
 export interface SettingsState extends Omit<ChatRequest, 'messages'> {
   newChatModel: Model;
@@ -17,10 +17,10 @@ export interface SettingsState extends Omit<ChatRequest, 'messages'> {
 }
 
 const INITIAL_SETTINGS: SettingsState = {
-  newChatModel: Model['gpt-4o'],
-  model: Model['gpt-4o'],
+  newChatModel: Model['gpt-5'],
+  model: Model['gpt-5'],
   maxHistoryLength: 6,
-  availableModels: [Model['gpt-4o']],
+  availableModels: [Model['gpt-5']],
 };
 
 enum SettingsActionType {
@@ -48,20 +48,6 @@ const settingsReducer = (settings: SettingsState, action: { type: SettingsAction
   // 合并配置
   else if (action.type === SettingsActionType.SET_SETTINGS) {
     newSettings = { ...newSettings, ...action.payload };
-
-    // 如果设置可用模型后发现已设置的 model 不在可用模型里，则将 model 设置为可用模型中的第一个
-    // if (!newSettings.availableModels.includes(newSettings.model)) {
-    //   newSettings.model = newSettings.availableModels[0];
-    // }
-
-    // 如果修改了模型，则将 max_tokens 设为 undefined
-    if (MAX_TOKENS[settings.model] !== MAX_TOKENS[newSettings.model] && action.payload.max_tokens === undefined) {
-      newSettings.max_tokens = undefined;
-    }
-    // 如果 max_tokens 大于最大值，则将其设为默认值 undefined
-    if (newSettings.max_tokens && newSettings.max_tokens > MAX_TOKENS[newSettings.model]) {
-      newSettings.max_tokens = undefined;
-    }
   }
 
   setCache('settings', newSettings);
