@@ -286,7 +286,7 @@ export const exampleModelsResponse: ModelsResponse = {
   data: [
     {
       created: 1677610602,
-      id: Model['gpt-4o'],
+      id: Model['gpt-5'],
       object: 'model',
       owned_by: 'openai',
       parent: null,
@@ -306,7 +306,7 @@ export const exampleModelsResponse: ModelsResponse = {
           organization: '*',
         },
       },
-      root: Model['gpt-4o'],
+      root: Model['gpt-5'],
     },
   ],
   object: 'list',
